@@ -125,6 +125,9 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .sizes{display:flex;gap:8px;flex-wrap:wrap}
 .sizes button{min-width:54px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);font-weight:700}
 .sizes button:hover{border-color:var(--muted)}
+.sizes button:disabled{opacity:.3;text-decoration:line-through;cursor:not-allowed}
+.pf-img{width:100%;display:block;border-radius:14px;aspect-ratio:1;object-fit:cover;background:#fff}
+.pcard-img .pf-thumb{width:100%;height:100%;object-fit:cover;display:block}
 .sizes button[aria-pressed="true"]{background:var(--accent);color:#0B0D11;border-color:var(--accent)}
 .p-note{color:var(--muted);font-size:14px;margin-top:14px}
 .specs{margin-top:28px;border-top:1px solid var(--line)}
@@ -248,7 +251,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <div>
       <span class="eyebrow" id="pType"></span>
       <h1 class="p-title" id="pName"></h1>
-      <p class="p-price">Prix bientôt disponible</p>
+      <p class="p-price" id="pPrice">Prix bientôt disponible</p>
       <div class="p-block">
         <div class="p-label">Coloris : <b id="pWayName"></b></div>
         <div class="swatches" id="pSwatches"></div>
@@ -257,11 +260,11 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
         <div class="p-label">Taille : <b id="pSizeName">choisis ta taille</b></div>
         <div class="sizes" id="pSizes"></div>
       </div>
-      <button class="btn btn-main" disabled style="width:100%">Bientôt disponible</button>
+      <button class="btn btn-main" id="addBtn" disabled style="width:100%">Bientôt disponible</button>
       <p class="p-note">Matière, coupe et guide des tailles arriveront avec le choix du fournisseur.</p>
       <div class="specs">
         <div><span>Coloris</span><b id="pCount"></b></div>
-        <div><span>Tailles</span><b>XS à 3XL</b></div>
+        <div><span>Tailles</span><b id="pSizesSpec">XS à 3XL</b></div>
         <div><span>Impression</span><b id="pPrint"></b></div>
         <div><span>Zone d’impression</span><b>30 × 40 cm max.</b></div>
       </div>
@@ -337,11 +340,16 @@ function teeHTML(w,prod,side='front'){
 }
 
 /* ---------- Produits ---------- */
-const PRODUCTS=[
+let PRODUCTS=[
   {id:'tshirt-citation',type:'T-shirt',name:'T-shirt citation',ways:TEE_WAYS,isNew:true,
    print:{front:{html:TEE_PRINT}}}
 ];
+const money=(n,c)=>n==null?'Prix bientôt disponible':new Intl.NumberFormat('fr-FR',{style:'currency',currency:c||'EUR'}).format(n);
 function cardHTML(p){
+  if(p.pf){const f=p.pf;
+    return `<button class="pcard" data-product="${p.id}"><div class="pcard-img">${p.isNew?'<span class="badge">Nouveau</span>':''}<img class="pf-thumb" src="${f.colors[0].image||f.thumbnail}" alt="${esc(f.name)}" loading="lazy"></div>
+    <div class="pcard-body"><h3>${esc(f.name)}</h3><span class="price">${f.price!=null?'À partir de '+money(f.price,f.currency):'Prix bientôt disponible'}</span>
+    <div class="dots" aria-label="${f.colors.length} coloris">${f.colors.map(c=>`<span style="background:${c.hex}" title="${esc(c.name)}"></span>`).join('')}</div></div></button>`;}
   return `<button class="pcard" data-product="${p.id}"><div class="pcard-img">${p.isNew?'<span class="badge">Nouveau</span>':''}${teeHTML(p.ways[0],p)}</div>
     <div class="pcard-body"><h3>${esc(p.name)}</h3><span class="price">Prix bientôt disponible</span>
     <div class="dots" aria-label="${p.ways.length} coloris">${p.ways.map(w=>`<span style="background:${w.tee}"></span>`).join('')}</div></div></button>`;
@@ -352,7 +360,23 @@ function renderGrids(){
   $('#catGrid').innerHTML=PRODUCTS.map(cardHTML).join('')+soonHTML;
 }
 let cur=PRODUCTS[0],way=0,size=null,side='front';
+function renderPF(){
+  const f=cur.pf,c=f.colors[way]||f.colors[0],avail=f.variants.filter(v=>v.color===c.name),sel=size&&avail.find(v=>v.size===size);
+  $('#pType').textContent='T-shirt';$('#pName').textContent=f.name;
+  $('#pBig').innerHTML=`<img class="pf-img" src="${c.image}" alt="${esc(f.name)}, coloris ${esc(c.name)}">`;
+  $('#pSides').hidden=true;$('#pWayName').textContent=c.name;$('#pCount').textContent=f.colors.length;
+  $('#pThumbs').innerHTML=f.colors.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${esc(x.name)}"><img class="pf-img" src="${x.image}" alt="" loading="lazy"></button>`).join('');
+  $('#pSwatches').innerHTML=f.colors.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${esc(x.name)}" title="${esc(x.name)}" style="background:${x.hex}"></button>`).join('');
+  $('#pSizes').innerHTML=f.sizes.map(z=>`<button data-size="${z}" aria-pressed="${z===size}" ${avail.some(v=>v.size===z)?'':'disabled'}>${z}</button>`).join('');
+  $('#pSizeName').textContent=sel?size:'choisis ta taille';
+  $('#pPrice').textContent=money(sel?sel.price:f.price,f.currency);
+  $('#pPrint').textContent='Devant';
+  $('#pSizesSpec').textContent=f.sizes.length?f.sizes[0]+' à '+f.sizes[f.sizes.length-1]:'';
+  $('#addBtn').textContent='Paiement bientôt disponible';
+}
 function renderProduct(){
+  if(cur.pf)return renderPF();
+  $('#pPrice').textContent='Prix bientôt disponible';$('#pSizesSpec').textContent='XS à 3XL';$('#addBtn').textContent='Bientôt disponible';
   const w=cur.ways[way];
   $('#pType').textContent=cur.type;$('#pName').textContent=cur.name;
   $('#pBig').innerHTML=teeHTML(w,cur,side);
@@ -434,9 +458,21 @@ $('#accForm').onsubmit=async e=>{
 };
 $('#logoutBtn').onclick=()=>{session=null;ls.del('funax3-session');renderAccBtn();closeAcc()};
 
+/* ---------- Produits Printful ---------- */
+async function loadPrintful(){
+  try{
+    const r=await fetch('/api/products');if(!r.ok)return;
+    const d=await r.json();if(!d.products||!d.products.length)return;
+    PRODUCTS=d.products.map(p=>({id:'pf-'+p.id,type:'T-shirt',name:p.name,pf:p,isNew:true}));
+    $$('[data-product="tshirt-citation"]').forEach(el=>el.dataset.product=PRODUCTS[0].id);
+    renderGrids();
+    if(!$('#produit').hidden&&!cur.pf){cur=PRODUCTS[0];way=0;size=null;renderProduct()}
+  }catch(e){}
+}
+
 /* ---------- Démarrage ---------- */
 $('#heroTee').insertAdjacentHTML('beforeend',teeHTML(TEE_WAYS[0],PRODUCTS[0]));
-renderGrids();renderAccBtn();
+renderGrids();renderAccBtn();loadPrintful();
 </script>
 </body>
 </html>
