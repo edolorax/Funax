@@ -89,7 +89,10 @@ h2{font-size:clamp(26px,3.6vw,40px);line-height:1.1;margin:0 0 8px;letter-spacin
 .tee-duo .tee + .tee{margin-left:-8%}
 .tee{position:relative;width:100%;aspect-ratio:400/440}
 .tee svg{position:absolute;inset:0;width:100%;height:100%}
-.tee-print{position:absolute;left:31%;width:38%;top:26%;container-type:inline-size;color:var(--tink);text-align:center;font-family:"DM Serif Display",Georgia,serif}
+.tee-print{position:absolute;left:29%;width:42%;top:24%;container-type:inline-size;color:var(--tink);text-align:center;font-family:"DM Serif Display",Georgia,serif}
+.tl{white-space:nowrap;line-height:1.08}
+.tl:nth-child(n+3){font-family:Georgia,"Times New Roman",serif;line-height:1.2}
+.tl:nth-child(-n+5){font-weight:700}
 .tp-h{font-size:18cqw;line-height:.95}
 .tp-b{font-size:9.5cqw;line-height:1.2;margin-top:6cqw;font-family:Georgia,"Times New Roman",serif}
 .product{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;margin-top:20px;align-items:start}
@@ -1099,7 +1102,7 @@ $('#logoutBtn').onclick=async()=>{
 };
 
 /* ---------- T-shirt ---------- */
-const TEE_PRINT='<div class="tp-h">Pas de panique.</div><div class="tp-b">J’ai un plan.<br>Il est nul,<br>mais c’est un plan.</div>';
+const TEE_PRINT='<div class="tl" style="font-size:18cqw">Vous savez</div><div class="tl" style="font-size:14cqw">ce qu’on dit,</div><div class="tl" style="font-size:11cqw">faut pas chercher</div><div class="tl" style="font-size:10.5cqw">midi quand l’ours</div><div class="tl" style="font-size:10cqw">n’a pas cherché</div><div class="tl" style="font-size:9.4cqw">la pierre qui roule</div><div class="tl" style="font-size:9.4cqw">avant d’avoir tué</div><div class="tl" style="font-size:9.4cqw">le vieux singe.</div>';
 const TEE_WAYS=[
   {name:'Blanc, texte noir',tee:'#FFFFFF',ink:'#141414'},
   {name:'Noir, texte blanc',tee:'#161616',ink:'#FFFFFF'},
