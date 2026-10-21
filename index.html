@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Funax</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=Unbounded:wght@700;800&family=Sora:wght@400;600;700;800&family=Caveat:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&family=Unbounded:wght@700;800&family=Sora:wght@400;600;700;800&family=Caveat:wght@700&family=Bebas+Neue&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#FBF8F3; --bg2:#FFFFFF; --surface:#F3EEE6; --surface2:#EAE3D7;
@@ -79,6 +79,37 @@ h2{font-size:clamp(26px,3.6vw,40px);line-height:1.1;margin:0 0 8px;letter-spacin
 .fan{position:relative;height:180px}
 .fan span{position:absolute;left:50%;top:10px;width:100px;height:140px;margin-left:-50px;border-radius:10px;background:#fff;border:4px solid var(--c);transform-origin:50% 120%;transform:rotate(var(--a))}
 .fan span::before{content:"";position:absolute;inset:0 0 auto;height:22px;background:var(--c)}
+.cat-chips{margin-bottom:18px}
+.chip{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tag{display:inline-block;margin-top:14px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--cyan)}
+.tile2 .tag + h3{margin-top:4px}
+.tee-duo{display:flex;justify-content:center;align-items:flex-end;gap:0;padding-top:10px}
+.tee-duo .tee{width:44%}
+.tee-duo .tee + .tee{margin-left:-8%}
+.tee{position:relative;width:100%;aspect-ratio:400/440}
+.tee svg{position:absolute;inset:0;width:100%;height:100%}
+.tee-print{position:absolute;left:31%;width:38%;top:26%;container-type:inline-size;color:var(--tink);text-align:center;font-family:"DM Serif Display",Georgia,serif}
+.tp-h{font-size:18cqw;line-height:.95}
+.tp-b{font-size:9.5cqw;line-height:1.2;margin-top:6cqw;font-family:Georgia,"Times New Roman",serif}
+.product{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;margin-top:20px;align-items:start}
+.tee-stage{background:var(--surface);border-radius:24px;padding:6%}
+.tee-thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:10px;margin-top:12px}
+.tee-thumbs button{background:var(--surface);border:2px solid transparent;border-radius:14px;padding:6px}
+.tee-thumbs button[aria-pressed="true"]{border-color:var(--cyan)}
+.p-title{font-size:clamp(30px,4vw,44px);margin:4px 0 6px}
+.p-price{font-size:18px;color:var(--muted);margin:0 0 26px;font-weight:700}
+.p-block{margin-bottom:24px}
+.p-label{font-size:15px;color:var(--muted);margin-bottom:10px}
+.p-label b{color:var(--ink)}
+.swatches2{display:flex;gap:10px;flex-wrap:wrap}
+.swatches2 button{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);padding:0}
+.swatches2 button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--cyan)}
+.sizes{display:flex;gap:8px;flex-wrap:wrap}
+.sizes button{min-width:54px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-weight:800}
+.sizes button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.p-note{color:var(--muted);font-size:14px;margin-top:14px}
+@media (max-width:820px){.product{grid-template-columns:1fr;gap:24px}}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
 .tile2{border:1px solid var(--line);background:var(--bg2);border-radius:22px;padding:18px;display:flex;flex-direction:column;align-items:flex-start;transition:transform .2s,box-shadow .2s}
 .tile2:not(.soon-tile):hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(31,26,46,.1)}
@@ -263,15 +294,27 @@ input[type=range]{accent-color:var(--cyan);width:100%}
   <section id="boutique">
     <h2>Nos Produits</h2>
     <p class="sub">De nouveaux produits arrivent bientôt.</p>
-    <div class="tiles">
-      <div class="tile2">
+    <div class="seg cat-chips" id="catChips" role="group" aria-label="Catégories">
+      <button class="chip" data-cat="all" aria-pressed="true">Tout</button>
+      <button class="chip" data-cat="jeux" aria-pressed="false">Jeux</button>
+      <button class="chip" data-cat="vetements" aria-pressed="false">Vêtements</button>
+    </div>
+    <div class="tiles" id="tiles">
+      <div class="tile2" data-cat="vetements">
+        <div class="tile-vis tee-duo" id="teeTileVis"></div>
+        <span class="tag">Vêtements</span>
+        <h3>T-shirt citation</h3>
+        <p>Plusieurs coloris, du XS au 3XL. Prix bientôt disponible.</p>
+        <button class="btn btn-ghost btn-sm" data-go="tshirt">Voir le produit</button>
+      </div>
+      <div class="tile2" data-cat="jeux">
         <div class="tile-vis"><div class="fan" aria-hidden="true"><span style="--c:#E63946;--a:-16deg"></span><span style="--c:#2A9D8F;--a:0deg"></span><span style="--c:#8E6CC9;--a:16deg"></span></div></div>
+        <span class="tag">Jeux</span>
         <h3>Jeu des 7 familles personnalisé</h3>
         <p>Un jeu unique avec tes propres images.</p>
         <button class="btn btn-ghost btn-sm" data-go="jeu">Personnaliser</button>
       </div>
-      <div class="tile2 soon-tile"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Un nouveau produit arrive.</p></div>
-      <div class="tile2 soon-tile"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Un nouveau produit arrive.</p></div>
+      <div class="tile2 soon-tile" data-cat="all"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Un nouveau produit arrive.</p></div>
     </div>
   </section>
 
@@ -284,6 +327,34 @@ input[type=range]{accent-color:var(--cyan);width:100%}
           <button class="btn btn-main btn-sm" type="submit">S’inscrire</button>
         </form>
         <div class="msg" id="newsMsg" role="status"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= T-SHIRT ================= -->
+<main id="tshirt" class="page wrap" hidden>
+  <section>
+    <button class="btn btn-ghost btn-sm" data-go="accueil" data-scroll="boutique">← Nos produits</button>
+    <div class="product">
+      <div>
+        <div class="tee-stage" id="teeBig"></div>
+        <div class="tee-thumbs" id="teeThumbs" role="group" aria-label="Coloris"></div>
+      </div>
+      <div class="product-info">
+        <span class="tag">Vêtements</span>
+        <h1 class="p-title">T-shirt citation</h1>
+        <p class="p-price">Prix bientôt disponible</p>
+        <div class="p-block">
+          <div class="p-label">Coloris : <b id="teeWayName"></b></div>
+          <div class="swatches2" id="teeSwatches"></div>
+        </div>
+        <div class="p-block">
+          <div class="p-label">Taille : <b id="teeSizeName">choisis ta taille</b></div>
+          <div class="sizes" id="teeSizes"></div>
+        </div>
+        <button class="btn btn-main" disabled style="width:100%">Bientôt disponible</button>
+        <p class="p-note" id="teeMsg">Les détails (matière, coupe, guide des tailles) arriveront avec le choix du fournisseur.</p>
       </div>
     </div>
   </section>
@@ -448,7 +519,7 @@ input[type=range]{accent-color:var(--cyan);width:100%}
   <div class="wrap">
     <div class="foot">
       <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Des jeux et objets amusants.</p></div>
-      <div><h4>Boutique</h4><ul><li><a href="#" data-go="accueil" data-scroll="boutique">Tous les produits</a></li><li><a href="#" data-go="jeu">Jeu des 7 familles personnalisé</a></li></ul></div>
+      <div><h4>Boutique</h4><ul><li><a href="#" data-go="accueil" data-scroll="boutique">Tous les produits</a></li><li><a href="#" data-go="tshirt">T-shirt citation</a></li><li><a href="#" data-go="jeu">Jeu des 7 familles personnalisé</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#">Mentions légales</a></li><li><a href="#">Confidentialité</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
@@ -906,6 +977,7 @@ function go(page){
   $$('.tabs button').forEach(b=>{if(b.dataset.go===page)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   if(page==='jeu'){$('#projName').value=S.name;saveStatus();setStep(step)}
   if(page==='saves')renderSaves();
+  if(page==='tshirt')renderTee();
   window.scrollTo(0,0);
 }
 document.addEventListener('click',e=>{const t=e.target.closest('[data-go]');if(t){e.preventDefault();closeAcc();go(t.dataset.go);if(t.dataset.scroll)document.getElementById(t.dataset.scroll).scrollIntoView({behavior:'smooth'})}});
@@ -1024,6 +1096,55 @@ $('#accForm').onsubmit=async e=>{
 $('#logoutBtn').onclick=async()=>{
   commitDraw();clearTimeout(draftT);await idb.set(who()+':draft',S).catch(()=>{});
   session=null;ls.del('funax3-session');await loadDraft();refreshAll();closeAcc();
+};
+
+/* ---------- T-shirt ---------- */
+const TEE_PRINT='<div class="tp-h">Pas de panique.</div><div class="tp-b">J’ai un plan.<br>Il est nul,<br>mais c’est un plan.</div>';
+const TEE_WAYS=[
+  {name:'Blanc, texte noir',tee:'#FFFFFF',ink:'#141414'},
+  {name:'Noir, texte blanc',tee:'#161616',ink:'#FFFFFF'},
+  {name:'Corail, texte crème',tee:'#F2655A',ink:'#FFF4E4'},
+  {name:'Marine, texte jaune',tee:'#1E2A4A',ink:'#FFC93C'},
+  {name:'Vert sapin, texte blanc',tee:'#2F5D50',ink:'#FFFFFF'},
+  {name:'Lilas, texte violet',tee:'#CDBBFF',ink:'#2B1A55'},
+  {name:'Marinière, texte marine',tee:'#FFFFFF',ink:'#1E2A4A',pat:'stripes',p2:'#D5DEEE'},
+  {name:'Jaune à pois, texte noir',tee:'#FFD45C',ink:'#1F1A2E',pat:'dots',p2:'#FFF1C4'}
+];
+const TEE_SIZES=['XS','S','M','L','XL','XXL','3XL'];
+let teeWay=0,teeSize=null,teeN=0;
+function shade(h,k){return '#'+[1,3,5].map(i=>Math.round(Math.max(0,Math.min(255,parseInt(h.slice(i,i+2),16)*k))).toString(16).padStart(2,'0')).join('')}
+function teeHTML(w,print=true){
+  const id='t'+(teeN++),body='M118 22 L162 8 Q200 38 238 8 L282 22 L372 72 L342 148 L302 128 L304 418 Q200 432 96 418 L98 128 L58 148 L28 72 Z';
+  const lum=parseInt(w.tee.slice(1,3),16)*.3+parseInt(w.tee.slice(3,5),16)*.59+parseInt(w.tee.slice(5,7),16)*.11;
+  const edge=lum>200?'rgba(0,0,0,.14)':'rgba(0,0,0,.25)',fold=lum>60?shade(w.tee,.9):'#2a2a2a';
+  const defs=w.pat==='stripes'?`<pattern id="${id}" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="14" height="5" fill="${w.p2}"/></pattern>`
+    :w.pat==='dots'?`<pattern id="${id}" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="3" fill="${w.p2}"/><circle cx="16" cy="16" r="3" fill="${w.p2}"/></pattern>`:'';
+  return `<div class="tee" style="--tink:${w.ink}"><svg viewBox="0 0 400 440" aria-hidden="true"><defs>${defs}</defs>
+    <path d="${body}" fill="${w.tee}"/>${defs?`<path d="${body}" fill="url(#${id})"/>`:''}
+    <path d="M98 128 Q104 100 118 22 M302 128 Q296 100 282 22" fill="none" stroke="${fold}" stroke-width="2"/>
+    <path d="M162 8 Q200 38 238 8 Q200 58 162 8 Z" fill="${fold}"/>
+    <path d="${body}" fill="none" stroke="${edge}" stroke-width="2.5" stroke-linejoin="round"/></svg>
+    ${print?`<div class="tee-print">${TEE_PRINT}</div>`:''}</div>`;
+}
+function renderTee(){
+  const w=TEE_WAYS[teeWay];
+  $('#teeBig').innerHTML=teeHTML(w);
+  $('#teeWayName').textContent=w.name;
+  $('#teeThumbs').innerHTML=TEE_WAYS.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===teeWay}" aria-label="${x.name}">${teeHTML(x)}</button>`).join('');
+  $('#teeSwatches').innerHTML=TEE_WAYS.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===teeWay}" aria-label="${x.name}" style="background:linear-gradient(135deg,${x.tee} 50%,${x.ink} 50%)"></button>`).join('');
+  $('#teeSizes').innerHTML=TEE_SIZES.map(z=>`<button data-size="${z}" aria-pressed="${z===teeSize}">${z}</button>`).join('');
+  $('#teeSizeName').textContent=teeSize||'choisis ta taille';
+}
+$('#tshirt').addEventListener('click',e=>{
+  const w=e.target.closest('[data-way]'),z=e.target.closest('[data-size]');
+  if(w){teeWay=+w.dataset.way;renderTee()}
+  if(z){teeSize=z.dataset.size;renderTee()}
+});
+$('#teeTileVis').innerHTML=teeHTML(TEE_WAYS[0])+teeHTML(TEE_WAYS[3]);
+$('#catChips').onclick=e=>{
+  const b=e.target.closest('[data-cat]');if(!b)return;const c=b.dataset.cat;
+  $$('#catChips [data-cat]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  $$('#tiles .tile2').forEach(t=>t.hidden=!(c==='all'||t.dataset.cat===c||t.dataset.cat==='all'));
 };
 
 /* ---------- Démarrage ---------- */
