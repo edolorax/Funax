@@ -233,8 +233,7 @@ input[type=range]{accent-color:var(--cyan);width:100%}
     <button class="logo" data-go="accueil"><i aria-hidden="true"></i>FUNAX</button>
     <div class="tabs" role="navigation" aria-label="Navigation principale">
       <button data-go="accueil" aria-current="page">Accueil</button>
-      <button data-go="jeu">Créer</button>
-      <button data-go="saves">Mes créations</button>
+      <button data-go="accueil" data-scroll="boutique">Boutique</button>
     </div>
     <div class="right">
       <button class="icon-btn" id="accBtn" aria-label="Se connecter ou créer un compte"></button>
@@ -246,31 +245,31 @@ input[type=range]{accent-color:var(--cyan);width:100%}
 <main id="accueil" class="page wrap">
   <div class="hero">
     <div>
-      <h1>Des jeux à ton image.</h1>
-      <p>Funax, ce sont des jeux et des objets que tu imagines et personnalises toi-même, à ton style.</p>
-      <a href="#creations" class="btn btn-main">Découvrir les créations</a>
+      <h1>Des trucs fun et sympas.</h1>
+      <p>Funax, la boutique de jeux et d’objets amusants, pour se faire plaisir ou faire plaisir.</p>
+      <a href="#boutique" class="btn btn-main">Voir la boutique</a>
     </div>
     <div class="orb" aria-hidden="true"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div></div>
   </div>
 
-  <section id="creations">
-    <h2>Les créations</h2>
-    <p class="sub">Choisis ce que tu veux personnaliser. Le catalogue va s’agrandir.</p>
+  <section id="boutique">
+    <h2>La boutique</h2>
+    <p class="sub">De nouveaux produits arrivent bientôt.</p>
     <div class="tiles">
       <div class="tile2">
         <div class="tile-vis"><div class="fan" aria-hidden="true"><span style="--c:#E63946;--a:-16deg"></span><span style="--c:#2A9D8F;--a:0deg"></span><span style="--c:#8E6CC9;--a:16deg"></span></div></div>
-        <h3>Jeu des 7 familles</h3>
-        <p>Illustre tes cartes et habille la boîte.</p>
+        <h3>Jeu des 7 familles personnalisé</h3>
+        <p>Un jeu unique avec tes propres images.</p>
         <button class="btn btn-ghost btn-sm" data-go="jeu">Personnaliser</button>
       </div>
-      <div class="tile2 soon-tile"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Une nouvelle création arrive.</p></div>
-      <div class="tile2 soon-tile"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Une nouvelle création arrive.</p></div>
+      <div class="tile2 soon-tile"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Un nouveau produit arrive.</p></div>
+      <div class="tile2 soon-tile"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Un nouveau produit arrive.</p></div>
     </div>
   </section>
 
   <section>
     <div class="news">
-      <div><h2>Reste informé</h2><p>Un e-mail quand une nouvelle création arrive sur Funax.</p></div>
+      <div><h2>Reste informé</h2><p>Un e-mail quand de nouveaux produits arrivent sur Funax.</p></div>
       <div>
         <form id="newsForm">
           <input type="email" required placeholder="ton@email.fr" aria-label="Adresse e-mail">
@@ -425,11 +424,11 @@ input[type=range]{accent-color:var(--cyan);width:100%}
 <main id="saves" class="page wrap" hidden>
   <section>
     <div class="jeu-head" style="margin-bottom:24px">
-      <div><h2>Mes créations</h2><p class="sub" style="margin:0">Tout ce que tu as enregistré dans ton compte.</p></div>
+      <div><h2>Mes créations</h2><p class="sub" style="margin:0">Les jeux personnalisés enregistrés dans ton compte.</p></div>
       <button class="btn btn-main" id="newBtn">Nouveau jeu des 7 familles</button>
     </div>
     <div class="empty" id="savesGuest" hidden>
-      <h3>Connecte-toi pour retrouver tes créations</h3>
+      <h3>Connecte-toi pour retrouver tes jeux personnalisés</h3>
       <p>Avec un compte, tu peux enregistrer plusieurs jeux et les rouvrir quand tu veux.</p>
       <button class="btn btn-main" id="savesLogin">Se connecter ou créer un compte</button>
     </div>
@@ -440,8 +439,8 @@ input[type=range]{accent-color:var(--cyan);width:100%}
 <footer>
   <div class="wrap">
     <div class="foot">
-      <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Des jeux à personnaliser, imaginés en France.</p></div>
-      <div><h4>Créer</h4><ul><li><a href="#" data-go="jeu">Jeu des 7 familles</a></li><li><a href="#" data-go="saves">Mes créations</a></li></ul></div>
+      <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Des jeux et objets amusants.</p></div>
+      <div><h4>Boutique</h4><ul><li><a href="#" data-go="accueil" data-scroll="boutique">Tous les produits</a></li><li><a href="#" data-go="jeu">Jeu des 7 familles personnalisé</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#">Mentions légales</a></li><li><a href="#">Confidentialité</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
@@ -901,7 +900,7 @@ function go(page){
   if(page==='saves')renderSaves();
   window.scrollTo(0,0);
 }
-document.addEventListener('click',e=>{const t=e.target.closest('[data-go]');if(t){e.preventDefault();closeAcc();go(t.dataset.go)}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-go]');if(t){e.preventDefault();closeAcc();go(t.dataset.go);if(t.dataset.scroll)document.getElementById(t.dataset.scroll).scrollIntoView({behavior:'smooth'})}});
 $('#projName').oninput=e=>{S.name=e.target.value;touch()};
 $('#newsForm').onsubmit=e=>{e.preventDefault();$('#newsMsg').textContent='Inscription enregistrée.';e.target.reset()};
 
@@ -942,7 +941,7 @@ async function renderSaves(){
     <div class="save-thumb">${m.thumb?`<img src="${m.thumb}" alt="">`:''}</div>
     <div class="save-info"><b>${esc(m.name)}</b><span>Modifié le ${new Date(m.updated).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>${m.id===S.saveId?'<em>Ouvert en ce moment</em>':''}</div>
     <div class="tool-row"><button class="btn btn-main btn-sm" data-open="${m.id}">Ouvrir</button><button class="btn btn-ghost btn-sm" data-del="${m.id}">Supprimer</button></div>
-  </div>`).join(''):`<div class="empty" style="grid-column:1/-1"><h3>Aucune création enregistrée</h3><p>Personnalise une création, puis clique sur Enregistrer.</p><button class="btn btn-main" data-go="accueil">Voir les créations</button></div>`;
+  </div>`).join(''):`<div class="empty" style="grid-column:1/-1"><h3>Aucune création enregistrée</h3><p>Personnalise une création, puis clique sur Enregistrer.</p><button class="btn btn-main" data-go="jeu">Personnaliser un jeu</button></div>`;
 }
 async function openSave(id){
   const d=await idb.get(who()+':save:'+id);if(!valid(d))return;
