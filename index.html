@@ -195,7 +195,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <p>Funax, ce sont des vêtements avec des phrases qui font sourire, réfléchir, ou les deux.</p>
       <div class="ctas">
         <button class="btn btn-main" data-go="vetements">Voir les vêtements</button>
-        <button class="btn btn-ghost" data-product="tshirt-emoticones">Le T-shirt émoticônes</button>
+        <button class="btn btn-ghost" data-product="tshirt-citation">Le T-shirt citation</button>
       </div>
       <div class="stats">
         <div><b>8</b><span>coloris</span></div>
@@ -274,7 +274,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div class="wrap">
     <div class="foot">
       <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Des vêtements qui font parler.</p></div>
-      <div><h4>Boutique</h4><ul><li><a href="#" data-go="vetements">Tous les vêtements</a></li><li><a href="#" data-product="tshirt-emoticones">T-shirt émoticônes</a></li><li><a href="#" data-product="tshirt-citation">T-shirt citation</a></li></ul></div>
+      <div><h4>Boutique</h4><ul><li><a href="#" data-go="vetements">Tous les vêtements</a></li><li><a href="#" data-product="tshirt-citation">T-shirt citation</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#">Mentions légales</a></li><li><a href="#">Confidentialité</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
@@ -338,9 +338,7 @@ function teeHTML(w,prod,side='front'){
 
 /* ---------- Produits ---------- */
 const PRODUCTS=[
-  {id:'tshirt-emoticones',type:'T-shirt',name:'T-shirt émoticônes',ways:TEE_WAYS,isNew:true,
-   print:{front:{mask:'print-emo-front.webp'},back:{mask:'print-emo-back.webp'}}},
-  {id:'tshirt-citation',type:'T-shirt',name:'T-shirt citation',ways:TEE_WAYS,
+  {id:'tshirt-citation',type:'T-shirt',name:'T-shirt citation',ways:TEE_WAYS,isNew:true,
    print:{front:{html:TEE_PRINT}}}
 ];
 function cardHTML(p){
