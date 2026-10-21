@@ -84,8 +84,8 @@ h2{font-size:clamp(26px,3.6vw,40px);line-height:1.1;margin:0 0 8px;letter-spacin
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .tag{display:inline-block;margin-top:14px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--cyan)}
 .tile2 .tag + h3{margin-top:4px}
-.tee-duo{display:flex;justify-content:center;align-items:flex-end;gap:0;padding-top:10px}
-.tee-duo .tee{width:44%}
+.tile-vis.tee-duo{display:flex;justify-content:center;align-items:center;gap:0;cursor:pointer}
+.tee-duo .tee{width:120px;flex:none}
 .tee-duo .tee + .tee{margin-left:-8%}
 .tee{position:relative;width:100%;aspect-ratio:400/440}
 .tee svg{position:absolute;inset:0;width:100%;height:100%}
@@ -304,7 +304,7 @@ input[type=range]{accent-color:var(--cyan);width:100%}
     </div>
     <div class="tiles" id="tiles">
       <div class="tile2" data-cat="vetements">
-        <div class="tile-vis tee-duo" id="teeTileVis"></div>
+        <div class="tile-vis tee-duo" id="teeTileVis" data-go="tshirt"></div>
         <span class="tag">Vêtements</span>
         <h3>T-shirt citation</h3>
         <p>Plusieurs coloris, du XS au 3XL. Prix bientôt disponible.</p>
