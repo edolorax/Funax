@@ -134,8 +134,9 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 /* T-shirt photo */
 .tee{position:relative;width:100%;aspect-ratio:1}
 .tee-color{position:absolute;inset:0;background:var(--tpat),var(--tc);-webkit-mask:var(--tm) center/100% 100% no-repeat;mask:var(--tm) center/100% 100% no-repeat}
-.tee-pimg{position:absolute;left:25%;top:16%;width:50%;aspect-ratio:1000/1320;background:var(--tink);-webkit-mask:var(--pm) center/100% 100% no-repeat;mask:var(--pm) center/100% 100% no-repeat}
+.tee-pimg{position:absolute;left:33.8%;top:18.5%;width:32.4%;aspect-ratio:1000/1320;background:var(--tink);-webkit-mask:var(--pm) center/100% 100% no-repeat;mask:var(--pm) center/100% 100% no-repeat}
 .tee-pimg.ink-dark{mix-blend-mode:multiply}
+.tee-pimg.on-back{top:14%}
 .tee-pimg.ink-light{opacity:.94}
 .sides{display:flex;gap:6px;margin:12px 0 0}
 .sides button{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:7px 16px;font-weight:700;font-size:14px}
@@ -143,7 +144,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .tee-shade{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply;pointer-events:none}
 .tee-hi{display:none}
 .tee-dark .tee-hi{display:block;position:absolute;inset:0;width:100%;height:100%;opacity:.32;pointer-events:none}
-.tee-print{position:absolute;left:29%;width:42%;top:17.5%;container-type:inline-size;color:var(--tink);text-align:center;font-family:"DM Serif Display",Georgia,serif}
+.tee-print{position:absolute;left:33.8%;width:32.4%;top:18.5%;container-type:inline-size;color:var(--tink);text-align:center;font-family:"DM Serif Display",Georgia,serif}
 .tee-print.ink-dark{mix-blend-mode:multiply}
 .tee-print.ink-light{opacity:.94}
 .tl{white-space:nowrap;line-height:1.08}
@@ -262,6 +263,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
         <div><span>Coloris</span><b id="pCount"></b></div>
         <div><span>Tailles</span><b>XS à 3XL</b></div>
         <div><span>Impression</span><b id="pPrint"></b></div>
+        <div><span>Zone d’impression</span><b>30 × 40 cm max.</b></div>
       </div>
     </div>
   </div>
@@ -330,7 +332,7 @@ function teeHTML(w,prod,side='front'){
   const pat=w.pat==='stripes'?`repeating-linear-gradient(0deg,${w.p2} 0 1.1%,transparent 1.1% 2.6%)`
     :w.pat==='dots'?`radial-gradient(circle,${w.p2} 0 26%,transparent 30%) 0 0/2.6% 2.6%`:'none';
   const base=side==='back'?'tee-back':'tee', pr=prod.print[side], ink=L(w.ink)<128?'ink-dark':'ink-light';
-  const printHTML=!pr?'':pr.html?`<div class="tee-print ${ink}">${pr.html}</div>`:`<div class="tee-pimg ${ink}" style="--pm:url(${pr.mask})"></div>`;
+  const printHTML=!pr?'':pr.html?`<div class="tee-print ${ink}">${pr.html}</div>`:`<div class="tee-pimg ${ink}${side==='back'?' on-back':''}" style="--pm:url(${pr.mask})"></div>`;
   return `<div class="tee${L(w.tee)<110?' tee-dark':''}" style="--tink:${w.ink};--tc:${w.tee};--tpat:${pat};--tm:url(${base}.webp)"><div class="tee-color"></div><img class="tee-shade" src="${base}.webp" alt="" draggable="false"><img class="tee-hi" src="${base}-hi.webp" alt="" draggable="false">${printHTML}</div>`;
 }
 
