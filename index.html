@@ -73,7 +73,14 @@ h2{font-size:clamp(26px,3.6vw,40px);line-height:1.1;margin:0 0 8px;letter-spacin
 .fan{position:relative;height:180px}
 .fan span{position:absolute;left:50%;top:10px;width:100px;height:140px;margin-left:-50px;border-radius:10px;background:#fff;border:4px solid var(--c);transform-origin:50% 120%;transform:rotate(var(--a))}
 .fan span::before{content:"";position:absolute;inset:0 0 auto;height:22px;background:var(--c)}
-.soon{color:var(--muted);font-size:14px;margin-top:18px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.tile2{border:1px solid var(--line);background:var(--bg2);border-radius:20px;padding:18px;display:flex;flex-direction:column;align-items:flex-start}
+.tile2 h3{font-size:17px;margin:14px 0 4px}
+.tile2 p{color:var(--muted);font-size:14px;margin:0 0 14px;flex:1}
+.tile-vis{width:100%;height:150px;border-radius:14px;background:var(--surface);display:grid;place-items:center;overflow:hidden}
+.tile-vis .fan{height:150px;width:100%;transform:scale(.75)}
+.soon-tile{border-style:dashed}
+.plus{font-size:40px;color:var(--line);font-family:"Unbounded",sans-serif}
 .news{border:1px solid var(--line);background:var(--bg2);border-radius:28px;padding:44px;display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
 .news p{color:var(--muted);margin:0}
 .news form{display:flex;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px}
@@ -220,14 +227,13 @@ input[type=range]{accent-color:var(--cyan);width:100%}
 </head>
 <body>
 
-<div class="bar">Crée et enregistre ton propre jeu des 7 familles</div>
 
 <header>
   <div class="wrap head">
     <button class="logo" data-go="accueil"><i aria-hidden="true"></i>FUNAX</button>
     <div class="tabs" role="navigation" aria-label="Navigation principale">
       <button data-go="accueil" aria-current="page">Accueil</button>
-      <button data-go="jeu">7 familles</button>
+      <button data-go="jeu">Créer</button>
       <button data-go="saves">Mes créations</button>
     </div>
     <div class="right">
@@ -241,26 +247,25 @@ input[type=range]{accent-color:var(--cyan);width:100%}
   <div class="hero">
     <div>
       <h1>Des jeux à ton image.</h1>
-      <p>Funax, ce sont des jeux que tu personnalises toi-même. On commence avec le jeu des 7 familles.</p>
-      <button class="btn btn-main" data-go="jeu">Créer mon jeu des 7 familles</button>
+      <p>Funax, ce sont des jeux et des objets que tu imagines et personnalises toi-même, à ton style.</p>
+      <a href="#creations" class="btn btn-main">Découvrir les créations</a>
     </div>
     <div class="orb" aria-hidden="true"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div></div>
   </div>
 
-  <section>
-    <h2>À créer sur Funax</h2>
-    <p class="sub">Dessine, importe tes photos, place tes textes où tu veux.</p>
-    <div class="tile">
-      <div>
+  <section id="creations">
+    <h2>Les créations</h2>
+    <p class="sub">Choisis ce que tu veux personnaliser. Le catalogue va s’agrandir.</p>
+    <div class="tiles">
+      <div class="tile2">
+        <div class="tile-vis"><div class="fan" aria-hidden="true"><span style="--c:#E63946;--a:-16deg"></span><span style="--c:#2A9D8F;--a:0deg"></span><span style="--c:#8E6CC9;--a:16deg"></span></div></div>
         <h3>Jeu des 7 familles</h3>
-        <p>28 cartes à illustrer et une boîte à habiller en 3D. Avec un compte, tu enregistres tes jeux et tu les retrouves quand tu veux.</p>
-        <button class="btn btn-main" data-go="jeu">Commencer</button>
+        <p>Illustre tes cartes et habille la boîte.</p>
+        <button class="btn btn-ghost btn-sm" data-go="jeu">Personnaliser</button>
       </div>
-      <div class="fan" aria-hidden="true">
-        <span style="--c:#E63946;--a:-16deg"></span><span style="--c:#2A9D8F;--a:0deg"></span><span style="--c:#8E6CC9;--a:16deg"></span>
-      </div>
+      <div class="tile2 soon-tile"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Une nouvelle création arrive.</p></div>
+      <div class="tile2 soon-tile"><div class="tile-vis"><span class="plus">+</span></div><h3>Bientôt</h3><p>Une nouvelle création arrive.</p></div>
     </div>
-    <p class="soon">D’autres créations arriveront bientôt.</p>
   </section>
 
   <section>
@@ -420,8 +425,8 @@ input[type=range]{accent-color:var(--cyan);width:100%}
 <main id="saves" class="page wrap" hidden>
   <section>
     <div class="jeu-head" style="margin-bottom:24px">
-      <div><h2>Mes créations</h2><p class="sub" style="margin:0">Les jeux enregistrés dans ton compte.</p></div>
-      <button class="btn btn-main" id="newBtn">Nouveau jeu</button>
+      <div><h2>Mes créations</h2><p class="sub" style="margin:0">Tout ce que tu as enregistré dans ton compte.</p></div>
+      <button class="btn btn-main" id="newBtn">Nouveau jeu des 7 familles</button>
     </div>
     <div class="empty" id="savesGuest" hidden>
       <h3>Connecte-toi pour retrouver tes créations</h3>
@@ -937,7 +942,7 @@ async function renderSaves(){
     <div class="save-thumb">${m.thumb?`<img src="${m.thumb}" alt="">`:''}</div>
     <div class="save-info"><b>${esc(m.name)}</b><span>Modifié le ${new Date(m.updated).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</span>${m.id===S.saveId?'<em>Ouvert en ce moment</em>':''}</div>
     <div class="tool-row"><button class="btn btn-main btn-sm" data-open="${m.id}">Ouvrir</button><button class="btn btn-ghost btn-sm" data-del="${m.id}">Supprimer</button></div>
-  </div>`).join(''):`<div class="empty" style="grid-column:1/-1"><h3>Aucun jeu enregistré</h3><p>Crée ton jeu des 7 familles, puis clique sur Enregistrer.</p><button class="btn btn-main" data-go="jeu">Créer mon jeu</button></div>`;
+  </div>`).join(''):`<div class="empty" style="grid-column:1/-1"><h3>Aucune création enregistrée</h3><p>Personnalise une création, puis clique sur Enregistrer.</p><button class="btn btn-main" data-go="accueil">Voir les créations</button></div>`;
 }
 async function openSave(id){
   const d=await idb.get(who()+':save:'+id);if(!valid(d))return;
