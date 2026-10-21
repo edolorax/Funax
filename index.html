@@ -133,7 +133,13 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 
 /* T-shirt photo */
 .tee{position:relative;width:100%;aspect-ratio:1}
-.tee-color{position:absolute;inset:0;background:var(--tpat),var(--tc);-webkit-mask:url(tee.webp) center/100% 100% no-repeat;mask:url(tee.webp) center/100% 100% no-repeat}
+.tee-color{position:absolute;inset:0;background:var(--tpat),var(--tc);-webkit-mask:var(--tm) center/100% 100% no-repeat;mask:var(--tm) center/100% 100% no-repeat}
+.tee-pimg{position:absolute;left:25%;top:16%;width:50%;aspect-ratio:1000/1320;background:var(--tink);-webkit-mask:var(--pm) center/100% 100% no-repeat;mask:var(--pm) center/100% 100% no-repeat}
+.tee-pimg.ink-dark{mix-blend-mode:multiply}
+.tee-pimg.ink-light{opacity:.94}
+.sides{display:flex;gap:6px;margin:12px 0 0}
+.sides button{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:7px 16px;font-weight:700;font-size:14px}
+.sides button[aria-pressed="true"]{background:var(--accent);color:#0B0D11;border-color:var(--accent)}
 .tee-shade{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply;pointer-events:none}
 .tee-hi{display:none}
 .tee-dark .tee-hi{display:block;position:absolute;inset:0;width:100%;height:100%;opacity:.32;pointer-events:none}
@@ -188,7 +194,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <p>Funax, ce sont des vêtements avec des phrases qui font sourire, réfléchir, ou les deux.</p>
       <div class="ctas">
         <button class="btn btn-main" data-go="vetements">Voir les vêtements</button>
-        <button class="btn btn-ghost" data-product="tshirt-citation">Le T-shirt citation</button>
+        <button class="btn btn-ghost" data-product="tshirt-emoticones">Le T-shirt émoticônes</button>
       </div>
       <div class="stats">
         <div><b>8</b><span>coloris</span></div>
@@ -235,6 +241,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div class="product">
     <div>
       <div class="tee-stage" id="pBig"></div>
+      <div class="sides" id="pSides" role="group" aria-label="Côté"></div>
       <div class="tee-thumbs" id="pThumbs" role="group" aria-label="Coloris"></div>
     </div>
     <div>
@@ -254,7 +261,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <div class="specs">
         <div><span>Coloris</span><b id="pCount"></b></div>
         <div><span>Tailles</span><b>XS à 3XL</b></div>
-        <div><span>Impression</span><b>Face avant</b></div>
+        <div><span>Impression</span><b id="pPrint"></b></div>
       </div>
     </div>
   </div>
@@ -265,7 +272,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div class="wrap">
     <div class="foot">
       <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Des vêtements qui font parler.</p></div>
-      <div><h4>Boutique</h4><ul><li><a href="#" data-go="vetements">Tous les vêtements</a></li><li><a href="#" data-product="tshirt-citation">T-shirt citation</a></li></ul></div>
+      <div><h4>Boutique</h4><ul><li><a href="#" data-go="vetements">Tous les vêtements</a></li><li><a href="#" data-product="tshirt-emoticones">T-shirt émoticônes</a></li><li><a href="#" data-product="tshirt-citation">T-shirt citation</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#">Mentions légales</a></li><li><a href="#">Confidentialité</a></li><li><a href="#">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
@@ -318,18 +325,24 @@ const TEE_WAYS=[
 ];
 const SIZES=['XS','S','M','L','XL','XXL','3XL'];
 const L=h=>parseInt(h.slice(1,3),16)*.3+parseInt(h.slice(3,5),16)*.59+parseInt(h.slice(5,7),16)*.11;
-function teeHTML(w,print=true){
+function teeHTML(w,prod,side='front'){
+  prod=prod||PRODUCTS[0];
   const pat=w.pat==='stripes'?`repeating-linear-gradient(0deg,${w.p2} 0 1.1%,transparent 1.1% 2.6%)`
     :w.pat==='dots'?`radial-gradient(circle,${w.p2} 0 26%,transparent 30%) 0 0/2.6% 2.6%`:'none';
-  return `<div class="tee${L(w.tee)<110?' tee-dark':''}" style="--tink:${w.ink};--tc:${w.tee};--tpat:${pat}"><div class="tee-color"></div><img class="tee-shade" src="tee.webp" alt="" draggable="false"><img class="tee-hi" src="tee-hi.webp" alt="" draggable="false">${print?`<div class="tee-print ${L(w.ink)<128?'ink-dark':'ink-light'}">${TEE_PRINT}</div>`:''}</div>`;
+  const base=side==='back'?'tee-back':'tee', pr=prod.print[side], ink=L(w.ink)<128?'ink-dark':'ink-light';
+  const printHTML=!pr?'':pr.html?`<div class="tee-print ${ink}">${pr.html}</div>`:`<div class="tee-pimg ${ink}" style="--pm:url(${pr.mask})"></div>`;
+  return `<div class="tee${L(w.tee)<110?' tee-dark':''}" style="--tink:${w.ink};--tc:${w.tee};--tpat:${pat};--tm:url(${base}.webp)"><div class="tee-color"></div><img class="tee-shade" src="${base}.webp" alt="" draggable="false"><img class="tee-hi" src="${base}-hi.webp" alt="" draggable="false">${printHTML}</div>`;
 }
 
 /* ---------- Produits ---------- */
 const PRODUCTS=[
-  {id:'tshirt-citation',type:'T-shirt',name:'T-shirt citation',ways:TEE_WAYS,isNew:true}
+  {id:'tshirt-emoticones',type:'T-shirt',name:'T-shirt émoticônes',ways:TEE_WAYS,isNew:true,
+   print:{front:{mask:'print-emo-front.webp'},back:{mask:'print-emo-back.webp'}}},
+  {id:'tshirt-citation',type:'T-shirt',name:'T-shirt citation',ways:TEE_WAYS,
+   print:{front:{html:TEE_PRINT}}}
 ];
 function cardHTML(p){
-  return `<button class="pcard" data-product="${p.id}"><div class="pcard-img">${p.isNew?'<span class="badge">Nouveau</span>':''}${teeHTML(p.ways[0])}</div>
+  return `<button class="pcard" data-product="${p.id}"><div class="pcard-img">${p.isNew?'<span class="badge">Nouveau</span>':''}${teeHTML(p.ways[0],p)}</div>
     <div class="pcard-body"><h3>${esc(p.name)}</h3><span class="price">Prix bientôt disponible</span>
     <div class="dots" aria-label="${p.ways.length} coloris">${p.ways.map(w=>`<span style="background:${w.tee}"></span>`).join('')}</div></div></button>`;
 }
@@ -338,12 +351,16 @@ function renderGrids(){
   $('#homeGrid').innerHTML=PRODUCTS.map(cardHTML).join('')+soonHTML;
   $('#catGrid').innerHTML=PRODUCTS.map(cardHTML).join('')+soonHTML;
 }
-let cur=PRODUCTS[0],way=0,size=null;
+let cur=PRODUCTS[0],way=0,size=null,side='front';
 function renderProduct(){
   const w=cur.ways[way];
   $('#pType').textContent=cur.type;$('#pName').textContent=cur.name;
-  $('#pBig').innerHTML=teeHTML(w);$('#pWayName').textContent=w.name;$('#pCount').textContent=cur.ways.length;
-  $('#pThumbs').innerHTML=cur.ways.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${x.name}">${teeHTML(x)}</button>`).join('');
+  $('#pBig').innerHTML=teeHTML(w,cur,side);
+  const sides=Object.keys(cur.print);
+  $('#pSides').hidden=sides.length<2;
+  $('#pSides').innerHTML=sides.map(k=>`<button data-side="${k}" aria-pressed="${k===side}">${k==='back'?'Dos':'Devant'}</button>`).join('');
+  $('#pPrint').textContent=sides.length>1?'Devant et dos':'Devant';$('#pWayName').textContent=w.name;$('#pCount').textContent=cur.ways.length;
+  $('#pThumbs').innerHTML=cur.ways.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${x.name}">${teeHTML(x,cur,side)}</button>`).join('');
   $('#pSwatches').innerHTML=cur.ways.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${x.name}" style="background:linear-gradient(135deg,${x.tee} 50%,${x.ink} 50%)"></button>`).join('');
   $('#pSizes').innerHTML=SIZES.map(z=>`<button data-size="${z}" aria-pressed="${z===size}">${z}</button>`).join('');
   $('#pSizeName').textContent=size||'choisis ta taille';
@@ -352,6 +369,7 @@ $('#produit').addEventListener('click',e=>{
   const w=e.target.closest('[data-way]'),z=e.target.closest('[data-size]');
   if(w){way=+w.dataset.way;renderProduct()}
   if(z){size=z.dataset.size;renderProduct()}
+  const sd=e.target.closest('[data-side]');if(sd){side=sd.dataset.side;renderProduct()}
 });
 
 /* ---------- Navigation ---------- */
@@ -363,7 +381,7 @@ function go(page){
 }
 document.addEventListener('click',e=>{
   const g=e.target.closest('[data-go]'),p=e.target.closest('[data-product]');
-  if(p){e.preventDefault();closeAcc();cur=PRODUCTS.find(x=>x.id===p.dataset.product)||PRODUCTS[0];way=0;size=null;go('produit');return}
+  if(p){e.preventDefault();closeAcc();cur=PRODUCTS.find(x=>x.id===p.dataset.product)||PRODUCTS[0];way=0;size=null;side='front';go('produit');return}
   if(g){e.preventDefault();closeAcc();go(g.dataset.go)}
 });
 $('#newsForm').onsubmit=e=>{e.preventDefault();$('#newsMsg').textContent='Inscription enregistrée.';e.target.reset()};
@@ -417,7 +435,7 @@ $('#accForm').onsubmit=async e=>{
 $('#logoutBtn').onclick=()=>{session=null;ls.del('funax3-session');renderAccBtn();closeAcc()};
 
 /* ---------- Démarrage ---------- */
-$('#heroTee').insertAdjacentHTML('beforeend',teeHTML(TEE_WAYS[0]));
+$('#heroTee').insertAdjacentHTML('beforeend',teeHTML(TEE_WAYS[0],PRODUCTS[0]));
 renderGrids();renderAccBtn();
 </script>
 </body>
