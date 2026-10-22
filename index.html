@@ -154,6 +154,33 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .tl:nth-child(n+3){font-family:Georgia,"Times New Roman",serif;line-height:1.2}
 .tl:nth-child(-n+5){font-weight:700}
 
+/* Panier */
+.cart-btn{position:relative}
+.cart-count{position:absolute;top:-6px;right:-6px;background:var(--accent);color:#0B0D11;font-size:11px;font-weight:800;min-width:19px;height:19px;border-radius:999px;display:grid;place-items:center;padding:0 4px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(420px,100%);background:var(--bg2);border-left:1px solid var(--line);z-index:21;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;padding:calc(22px + env(safe-area-inset-top,0px)) 22px calc(22px + env(safe-area-inset-bottom,0px))}
+.cart-open .overlay{opacity:1;pointer-events:auto}
+.cart-open .drawer{transform:none}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.drawer-head h3{margin:0;font-size:22px}
+.cart-list{flex:1;overflow:auto;display:grid;gap:12px;align-content:start}
+.cart-empty{color:var(--muted);text-align:center;margin-top:40px}
+.citem{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
+.citem img{width:72px;height:72px;object-fit:cover;border-radius:8px;background:#fff}
+.citem b{display:block;font-size:14px}
+.citem small{color:var(--muted)}
+.qty{display:flex;align-items:center;gap:6px;margin-top:6px}
+.qty button{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:var(--bg2);padding:0;font-weight:800}
+.citem .rm{background:none;border:0;color:var(--muted);font-size:13px;align-self:start}
+.cart-foot{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:8px;margin-top:12px}
+.row2{display:flex;justify-content:space-between;font-size:15px}
+.row2 span:first-child{color:var(--muted)}
+.row2.total{font-weight:800;font-size:17px}
+.ship-hint{font-size:13px;color:var(--accent);min-height:1.2em}
+.p-ship{font-size:14px;color:var(--muted);margin:12px 0 0}
+.p-ship b{color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px 18px;z-index:40;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+
 /* Compte */
 .modal{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:20px}
 .modal-box{position:relative;width:min(420px,100%);background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:28px}
@@ -185,7 +212,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <button data-go="accueil" aria-current="page">Accueil</button>
       <button data-go="vetements">Vêtements</button>
     </nav>
-    <div class="right"><button class="icon-btn" id="accBtn" aria-label="Se connecter ou créer un compte"></button></div>
+    <div class="right"><button class="icon-btn" id="accBtn" aria-label="Se connecter ou créer un compte"></button>
+      <button class="icon-btn cart-btn" id="cartBtn" aria-label="Ouvrir le panier"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-count" id="cartCount" hidden>0</span></button></div>
   </div>
 </header>
 
@@ -261,7 +289,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
         <div class="sizes" id="pSizes"></div>
       </div>
       <button class="btn btn-main" id="addBtn" disabled style="width:100%">Bientôt disponible</button>
-      <p class="p-note">Matière, coupe et guide des tailles arriveront avec le choix du fournisseur.</p>
+      <p class="p-ship" id="pShip" hidden>Livraison <b>4,90 €</b> en France, <b>offerte dès 60 €</b>. Expédié sous 3 à 7 jours ouvrés.</p>
+      <p class="p-note" id="pNote">Matière, coupe et guide des tailles arriveront avec le choix du fournisseur.</p>
       <div class="specs">
         <div><span>Coloris</span><b id="pCount"></b></div>
         <div><span>Tailles</span><b id="pSizesSpec">XS à 3XL</b></div>
@@ -283,6 +312,30 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <div class="legal">© 2026 Funax</div>
   </div>
 </footer>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Panier" aria-hidden="true">
+  <div class="drawer-head"><h3>Panier</h3>
+    <button class="icon-btn" id="closeCart" aria-label="Fermer le panier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="cart-list" id="cartList"></div>
+  <div class="cart-foot">
+    <div class="row2"><span>Sous-total</span><span id="cSub">0,00 €</span></div>
+    <div class="row2"><span>Livraison</span><span id="cShip">–</span></div>
+    <div class="ship-hint" id="cHint"></div>
+    <div class="row2 total"><span>Total</span><span id="cTotal">0,00 €</span></div>
+    <button class="btn btn-main" id="payBtn" style="width:100%">Payer</button>
+    <div class="err" id="payErr" role="alert" style="margin:0"></div>
+  </div>
+</aside>
+
+<div class="modal" id="orderModal" hidden role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+  <div class="modal-box" style="text-align:center">
+    <h3 id="orderTitle" style="margin-top:4px">Merci pour ta commande !</h3>
+    <p class="sub" id="orderMsg" style="margin:0 auto 20px">Vérification du paiement…</p>
+    <button class="btn btn-main" id="orderClose">Continuer</button>
+  </div>
+</div>
 
 <div class="modal" id="accModal" hidden role="dialog" aria-modal="true" aria-labelledby="accTitle">
   <div class="modal-box">
@@ -372,11 +425,12 @@ function renderPF(){
   $('#pPrice').textContent=money(sel?sel.price:f.price,f.currency);
   $('#pPrint').textContent='Devant';
   $('#pSizesSpec').textContent=f.sizes.length?f.sizes[0]+' à '+f.sizes[f.sizes.length-1]:'';
-  $('#addBtn').textContent='Paiement bientôt disponible';
+  $('#addBtn').disabled=!sel;$('#addBtn').textContent=sel?'Ajouter au panier':'Choisis une taille';
+  $('#pShip').hidden=false;$('#pNote').hidden=true;
 }
 function renderProduct(){
   if(cur.pf)return renderPF();
-  $('#pPrice').textContent='Prix bientôt disponible';$('#pSizesSpec').textContent='XS à 3XL';$('#addBtn').textContent='Bientôt disponible';
+  $('#pPrice').textContent='Prix bientôt disponible';$('#pSizesSpec').textContent='XS à 3XL';$('#addBtn').disabled=true;$('#addBtn').textContent='Bientôt disponible';$('#pShip').hidden=true;$('#pNote').hidden=false;
   const w=cur.ways[way];
   $('#pType').textContent=cur.type;$('#pName').textContent=cur.name;
   $('#pBig').innerHTML=teeHTML(w,cur,side);
@@ -440,7 +494,7 @@ function openAcc(){
 function closeAcc(){$('#accModal').hidden=true}
 $('#accBtn').onclick=openAcc;$('#accClose').onclick=closeAcc;
 $('#accModal').onclick=e=>{if(e.target.id==='accModal')closeAcc()};
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAcc()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeAcc();openCart(false)}});
 $('#accForm').onsubmit=async e=>{
   e.preventDefault();
   const email=$('#accEmail').value.trim().toLowerCase(),pw=$('#accPw').value,pseudo=$('#accPseudo').value.trim(),err=$('#accErr');
@@ -458,6 +512,59 @@ $('#accForm').onsubmit=async e=>{
 };
 $('#logoutBtn').onclick=()=>{session=null;ls.del('funax3-session');renderAccBtn();closeAcc()};
 
+/* ---------- Panier ---------- */
+const SHIP={base:4.9,extra:1.5,freeFrom:60};
+let cart=ls.get('funax-cart')||[];
+const cartQty=()=>cart.reduce((n,i)=>n+i.qty,0);
+const cartSub=()=>cart.reduce((n,i)=>n+i.price*i.qty,0);
+const shipCost=()=>!cart.length?0:cartSub()>=SHIP.freeFrom?0:SHIP.base+SHIP.extra*(cartQty()-1);
+function saveCart(){ls.set('funax-cart',cart);renderCart()}
+function renderCart(){
+  const n=cartQty();$('#cartCount').hidden=!n;$('#cartCount').textContent=n;
+  $('#cartList').innerHTML=cart.length?cart.map((i,k)=>`<div class="citem"><img src="${i.image}" alt=""><div><b>${esc(i.name)}</b><small>${esc(i.color)}, taille ${esc(i.size)} · ${money(i.price,i.currency)}</small>
+    <div class="qty"><button data-q="${k}" data-d="-1" aria-label="Retirer un">−</button><span>${i.qty}</span><button data-q="${k}" data-d="1" aria-label="Ajouter un">+</button></div></div>
+    <button class="rm" data-rm="${k}">Retirer</button></div>`).join(''):'<p class="cart-empty">Ton panier est vide.</p>';
+  const sub=cartSub(),sh=shipCost();
+  $('#cSub').textContent=money(sub);$('#cShip').textContent=!cart.length?'–':sh?money(sh):'Offerte';
+  $('#cTotal').textContent=money(sub+sh);
+  $('#cHint').textContent=cart.length&&sub<SHIP.freeFrom?`Plus que ${money(SHIP.freeFrom-sub)} pour la livraison offerte`:'';
+  $('#payBtn').disabled=!cart.length;
+}
+function openCart(o){document.body.classList.toggle('cart-open',o);$('#drawer').setAttribute('aria-hidden',!o);if(o)$('#closeCart').focus()}
+$('#cartBtn').onclick=()=>openCart(true);$('#closeCart').onclick=()=>openCart(false);$('#overlay').onclick=()=>openCart(false);
+$('#cartList').onclick=e=>{
+  const q=e.target.closest('[data-q]'),r=e.target.closest('[data-rm]');
+  if(q){const i=cart[+q.dataset.q];i.qty=Math.max(0,Math.min(10,i.qty+ +q.dataset.d));if(!i.qty)cart.splice(+q.dataset.q,1);saveCart()}
+  if(r){cart.splice(+r.dataset.rm,1);saveCart()}
+};
+$('#addBtn').onclick=()=>{
+  if(!cur.pf)return;const f=cur.pf,c=f.colors[way],v=f.variants.find(x=>x.color===c.name&&x.size===size);if(!v)return;
+  const e=cart.find(x=>x.id===v.id);
+  if(e)e.qty=Math.min(10,e.qty+1);else cart.push({id:v.id,name:f.name,color:v.color,size:v.size,price:v.price,currency:v.currency,image:v.image,qty:1});
+  saveCart();openCart(true);
+};
+$('#payBtn').onclick=async()=>{
+  const b=$('#payBtn');b.disabled=true;b.textContent='Redirection vers le paiement…';$('#payErr').textContent='';
+  try{
+    const r=await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart.map(i=>({variantId:i.id,qty:i.qty}))})});
+    const d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'Paiement indisponible');
+    location.href=d.url;
+  }catch(e){$('#payErr').textContent=e.message;b.disabled=false;b.textContent='Payer'}
+};
+function toast(t){const n=document.createElement('div');n.className='toast';n.setAttribute('role','status');n.textContent=t;document.body.appendChild(n);setTimeout(()=>n.remove(),4500)}
+(function handleReturn(){
+  const q=new URLSearchParams(location.search),st=q.get('commande');if(!st)return;
+  history.replaceState(null,'',location.pathname);
+  if(st==='annulee'){toast('Paiement annulé. Ton panier est toujours là.');return}
+  const id=q.get('session_id');if(st!=='ok'||!id)return;
+  cart=[];saveCart();$('#orderModal').hidden=false;
+  fetch('/api/order?session_id='+encodeURIComponent(id)).then(r=>r.json()).then(d=>{
+    $('#orderMsg').textContent=d.ok?`Paiement reçu. Ton T-shirt part en fabrication, et un e-mail de confirmation arrive${d.email?' à '+d.email:''}.`
+      :d.error?'Paiement reçu. Ta commande est en cours d’enregistrement, tu recevras un e-mail de confirmation.':'Le paiement n’est pas encore confirmé. Si tu as été débité, contacte-nous.';
+  }).catch(()=>{$('#orderMsg').textContent='Paiement reçu. Tu recevras un e-mail de confirmation.'});
+})();
+$('#orderClose').onclick=()=>{$('#orderModal').hidden=true};
+
 /* ---------- Produits Printful ---------- */
 async function loadPrintful(){
   try{
@@ -472,7 +579,7 @@ async function loadPrintful(){
 
 /* ---------- Démarrage ---------- */
 $('#heroTee').insertAdjacentHTML('beforeend',teeHTML(TEE_WAYS[0],PRODUCTS[0]));
-renderGrids();renderAccBtn();loadPrintful();
+renderGrids();renderAccBtn();renderCart();loadPrintful();
 </script>
 </body>
 </html>
