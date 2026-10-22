@@ -181,6 +181,16 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .p-ship b{color:var(--ink)}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px 18px;z-index:40;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 
+/* Pages légales */
+.legal-page section{max-width:760px}
+.legal-page h2{font-size:20px;margin:30px 0 8px}
+.legal-page p{color:#C9CED8;margin:0 0 12px}
+.legal-page a{color:var(--accent)}
+.upd{color:var(--muted)!important;font-size:14px}
+.todo{background:rgba(255,107,139,.15);color:#FF8FA8;padding:0 4px;border-radius:4px}
+.cgv-note{font-size:12px;color:var(--muted);margin:0;text-align:center}
+.cgv-note a{color:var(--ink)}
+
 /* Compte */
 .modal{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:20px}
 .modal-box{position:relative;width:min(420px,100%);background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:28px}
@@ -302,12 +312,80 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <section style="padding-top:32px"></section>
 </main>
 
+<!-- PAGES LÉGALES -->
+<main id="mentions" class="page wrap legal-page" hidden>
+  <section>
+    <span class="eyebrow">Informations</span>
+    <h1 class="p-title">Mentions légales</h1>
+    <p class="upd">Dernière mise à jour : 22 octobre 2026</p>
+    <h2>Éditeur du site</h2>
+    <p>Le site Funax est édité par <b>Édouard Lorain</b>, entrepreneur individuel (micro-entreprise).<br>
+    SIRET : 131 344 095 00016<br>
+    Adresse : <span class="todo">[adresse postale à compléter]</span><br>
+    E-mail : <a href="mailto:lorain.edouard@gmail.com">lorain.edouard@gmail.com</a><br>
+    TVA non applicable, article 293 B du Code général des impôts.<br>
+    Directeur de la publication : Édouard Lorain.</p>
+    <h2>Hébergement</h2>
+    <p>Le site est hébergé par Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis (vercel.com).</p>
+    <h2>Fabrication et paiement</h2>
+    <p>Les articles sont fabriqués et expédiés par Printful. Les paiements sont traités de façon sécurisée par Stripe : Funax n’a jamais accès à tes données bancaires.</p>
+    <h2>Propriété intellectuelle</h2>
+    <p>Les textes, designs et visuels du site sont la propriété de Funax. Toute reproduction sans autorisation est interdite.</p>
+  </section>
+</main>
+
+<main id="cgv" class="page wrap legal-page" hidden>
+  <section>
+    <span class="eyebrow">Informations</span>
+    <h1 class="p-title">Conditions générales de vente</h1>
+    <p class="upd">Dernière mise à jour : 22 octobre 2026</p>
+    <h2>1. Objet</h2>
+    <p>Les présentes conditions s’appliquent à toutes les ventes conclues sur le site Funax entre Édouard Lorain, entrepreneur individuel (SIRET 131 344 095 00016), ci-après « le vendeur », et tout client consommateur. Passer commande vaut acceptation de ces conditions.</p>
+    <h2>2. Produits</h2>
+    <p>Les produits sont des vêtements imprimés, fabriqués à la commande par notre partenaire Printful. Les photos sont des visuels de présentation : de légères différences de couleur peuvent exister selon l’écran.</p>
+    <h2>3. Prix</h2>
+    <p>Les prix sont indiqués en euros, toutes taxes comprises. TVA non applicable, article 293 B du CGI. Les frais de livraison sont indiqués avant le paiement : 4,90 € pour le premier article, 1,50 € par article supplémentaire, et livraison offerte à partir de 60 € d’achat.</p>
+    <h2>4. Commande et paiement</h2>
+    <p>La commande est définitive après le paiement, effectué par carte bancaire via la plateforme sécurisée Stripe. Une confirmation est envoyée par e-mail.</p>
+    <h2>5. Livraison</h2>
+    <p>Les commandes sont livrées en France, en Belgique, au Luxembourg, en Suisse et à Monaco. Le délai indicatif est de 3 à 7 jours ouvrés après fabrication. En cas de retard important ou de colis perdu, contacte-nous : nous trouverons une solution (renvoi ou remboursement).</p>
+    <h2>6. Droit de rétractation</h2>
+    <p>Tu disposes de 14 jours à compter de la réception de ta commande pour te rétracter, sans avoir à te justifier. Préviens-nous par e-mail à <a href="mailto:lorain.edouard@gmail.com">lorain.edouard@gmail.com</a>, puis renvoie l’article non porté et en bon état dans les 14 jours suivants, à l’adresse que nous t’indiquerons. Les frais de retour sont à ta charge. Le remboursement, frais de livraison initiaux compris, intervient dans les 14 jours suivant ta demande, une fois l’article reçu ou la preuve de son envoi fournie.</p>
+    <h2>7. Article défectueux et garanties</h2>
+    <p>Si ton article arrive abîmé, mal imprimé ou ne correspond pas à ta commande, envoie-nous une photo dans les 30 jours suivant la réception : nous le remplaçons ou le remboursons gratuitement. Tu bénéficies en outre de la garantie légale de conformité (articles L217-3 et suivants du Code de la consommation) et de la garantie des vices cachés (articles 1641 et suivants du Code civil).</p>
+    <h2>8. Réclamations et médiation</h2>
+    <p>Pour toute question ou réclamation, écris-nous à <a href="mailto:lorain.edouard@gmail.com">lorain.edouard@gmail.com</a>. En cas de litige non résolu, tu peux recourir gratuitement à un médiateur de la consommation : <span class="todo">[nom et site du médiateur à compléter]</span>.</p>
+    <h2>9. Droit applicable</h2>
+    <p>Les présentes conditions sont soumises au droit français.</p>
+  </section>
+</main>
+
+<main id="confidentialite" class="page wrap legal-page" hidden>
+  <section>
+    <span class="eyebrow">Informations</span>
+    <h1 class="p-title">Politique de confidentialité</h1>
+    <p class="upd">Dernière mise à jour : 22 octobre 2026</p>
+    <h2>Responsable du traitement</h2>
+    <p>Édouard Lorain (Funax), joignable à <a href="mailto:lorain.edouard@gmail.com">lorain.edouard@gmail.com</a>.</p>
+    <h2>Données collectées et utilisation</h2>
+    <p>Lors d’une commande, nous recueillons ton nom, ton adresse e-mail et ton adresse de livraison, uniquement pour traiter, fabriquer et livrer ta commande, et pour te contacter à son sujet. Si tu t’inscris à la newsletter, ton e-mail sert seulement à te prévenir des nouveautés ; tu peux te désinscrire à tout moment.</p>
+    <h2>Partenaires</h2>
+    <p>Ces données sont transmises uniquement aux prestataires nécessaires : Stripe (paiement), Printful (fabrication et livraison) et Vercel (hébergement du site). Tes données bancaires sont traitées par Stripe et ne nous sont jamais communiquées. Certains de ces prestataires peuvent traiter des données hors de l’Union européenne, avec les garanties prévues par le RGPD.</p>
+    <h2>Durée de conservation</h2>
+    <p>Les données de commande sont conservées le temps nécessaire à la gestion de la commande et aux obligations comptables (10 ans pour les pièces comptables).</p>
+    <h2>Compte et stockage local</h2>
+    <p>Ton panier et ton compte Funax sont enregistrés dans ton navigateur (stockage local). Le site n’utilise pas de cookies publicitaires ni de traceurs.</p>
+    <h2>Tes droits</h2>
+    <p>Tu peux demander l’accès, la rectification ou la suppression de tes données, ou t’opposer à leur utilisation, en écrivant à <a href="mailto:lorain.edouard@gmail.com">lorain.edouard@gmail.com</a>. Tu peux aussi adresser une réclamation à la CNIL (cnil.fr).</p>
+  </section>
+</main>
+
 <footer>
   <div class="wrap">
     <div class="foot">
       <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Des vêtements qui font parler.</p></div>
       <div><h4>Boutique</h4><ul><li><a href="#" data-go="vetements">Tous les vêtements</a></li><li><a href="#" data-product="tshirt-citation">T-shirt citation</a></li></ul></div>
-      <div><h4>Infos</h4><ul><li><a href="#">Mentions légales</a></li><li><a href="#">Confidentialité</a></li><li><a href="#">Contact</a></li></ul></div>
+      <div><h4>Infos</h4><ul><li><a href="#" data-go="mentions">Mentions légales</a></li><li><a href="#" data-go="cgv">Conditions générales de vente</a></li><li><a href="#" data-go="confidentialite">Confidentialité</a></li><li><a href="mailto:lorain.edouard@gmail.com">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
   </div>
@@ -325,6 +403,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <div class="ship-hint" id="cHint"></div>
     <div class="row2 total"><span>Total</span><span id="cTotal">0,00 €</span></div>
     <button class="btn btn-main" id="payBtn" style="width:100%">Payer</button>
+    <p class="cgv-note">En payant, tu acceptes nos <a href="#" data-go="cgv">conditions générales de vente</a>.</p>
     <div class="err" id="payErr" role="alert" style="margin:0"></div>
   </div>
 </aside>
@@ -458,7 +537,8 @@ function go(page){
   window.scrollTo(0,0);
 }
 document.addEventListener('click',e=>{
-  const g=e.target.closest('[data-go]'),p=e.target.closest('[data-product]');
+  const g=e.target.closest('[data-go]');if(g&&g.closest('#drawer'))openCart(false);
+  const _g=g,p=e.target.closest('[data-product]');
   if(p){e.preventDefault();closeAcc();cur=PRODUCTS.find(x=>x.id===p.dataset.product)||PRODUCTS[0];way=0;size=null;side='front';go('produit');return}
   if(g){e.preventDefault();closeAcc();go(g.dataset.go)}
 });
