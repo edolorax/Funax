@@ -9,6 +9,9 @@ async function pf(path, token) {
   return data.result;
 }
 
+const FR = { 'White':'Blanc','Black':'Noir','Navy':'Marine','Athletic Heather':'Gris chiné','Dark Grey Heather':'Gris foncé chiné','Heather Dust':'Sable chiné','Asphalt':'Asphalte','Army':'Kaki','Olive':'Olive','Forest':'Vert forêt','Kelly':'Vert','Leaf':'Vert feuille','Red':'Rouge','Cardinal':'Bordeaux','Maroon':'Bordeaux foncé','Pink':'Rose','Soft Pink':'Rose pâle','Coral':'Corail','Orange':'Orange','Gold':'Or','Yellow':'Jaune','Mustard':'Moutarde','Natural':'Naturel','Soft Cream':'Crème','Tan':'Beige','Brown':'Marron','Team Purple':'Violet','Purple':'Violet','Lavender':'Lavande','Heather Prism Lilac':'Lilas chiné','True Royal':'Bleu roi','Royal':'Bleu roi','Light Blue':'Bleu clair','Baby Blue':'Bleu ciel','Steel Blue':'Bleu acier','Aqua':'Turquoise','Ash':'Gris cendre','Silver':'Argent','Charcoal':'Anthracite','Heather Navy':'Marine chiné','Heather Mauve':'Mauve chiné','Vintage White':'Blanc vintage' };
+const fr = c => FR[c] || c;
+
 const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', '2XL', 'XXL', '3XL', '4XL', '5XL'];
 
 module.exports = async (req, res) => {
@@ -39,7 +42,7 @@ module.exports = async (req, res) => {
         const preview = (v.files || []).find(f => f.type === 'preview');
         prod.variants.push({
           id: v.id,
-          color: v.color || (v.name || '').split('/').slice(-2, -1)[0] || 'Couleur',
+          color: fr((v.color || (v.name || '').split('/').slice(-2, -1)[0] || 'Couleur').trim()),
           size: v.size || (v.name || '').split('/').pop().trim(),
           hex: colorCode[v.variant_id] || '#888888',
           price: Number(v.retail_price) || null,
