@@ -561,6 +561,7 @@ function toast(t){const n=document.createElement('div');n.className='toast';n.se
   fetch('/api/order?session_id='+encodeURIComponent(id)).then(r=>r.json()).then(d=>{
     $('#orderMsg').textContent=d.ok?`Paiement reçu. Ton T-shirt part en fabrication, et un e-mail de confirmation arrive${d.email?' à '+d.email:''}.`
       :d.error?'Paiement reçu. Ta commande est en cours d’enregistrement, tu recevras un e-mail de confirmation.':'Le paiement n’est pas encore confirmé. Si tu as été débité, contacte-nous.';
+    if(d.error)console.warn('Funax commande :',d.error),$('#orderMsg').insertAdjacentHTML('beforeend',`<br><small style="opacity:.6">Détail : ${esc(d.error)}</small>`);
   }).catch(()=>{$('#orderMsg').textContent='Paiement reçu. Tu recevras un e-mail de confirmation.'});
 })();
 $('#orderClose').onclick=()=>{$('#orderModal').hidden=true};
