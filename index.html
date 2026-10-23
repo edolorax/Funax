@@ -193,6 +193,9 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .gtile-body span{font-size:12px;color:var(--muted);font-weight:700}
 .gtile.on .gtile-body span{color:var(--accent)}
 
+.pack-badge{display:inline-block;background:rgba(198,255,61,.12);color:var(--accent);font-weight:800;font-size:13px;border-radius:6px;padding:3px 8px;margin-bottom:6px}
+.pack-strip{background:var(--accent);color:#0B0D11;text-align:center;font-weight:800;font-size:13px;padding:7px 16px}
+
 /* Recherche */
 .word{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
 .word .gtile{width:132px}
@@ -274,6 +277,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 </head>
 <body>
 
+<div class="pack-strip">-20 % dès 2 T-shirts · -30 % dès 5 · réduction automatique dans le panier</div>
 <header>
   <div class="wrap head">
     <button class="logo" data-go="accueil"><i aria-hidden="true"></i>FUNAX</button>
@@ -391,7 +395,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
         <div class="sizes" id="pSizes"></div>
       </div>
       <button class="btn btn-main" id="addBtn" disabled style="width:100%">Bientôt disponible</button>
-      <p class="p-ship" id="pShip" hidden>Livraison <b>4,90 €</b> en France, <b>offerte dès 60 €</b>. Expédié sous 3 à 7 jours ouvrés.</p>
+      <p class="p-ship" id="pShip" hidden><span class="pack-badge">-20 % dès 2 T-shirts · -30 % dès 5</span><br>Livraison <b>4,90 €</b> en France, <b>offerte dès 60 €</b>. Expédié sous 3 à 7 jours ouvrés.</p>
       <p class="p-note" id="pNote">Matière, coupe et guide des tailles arriveront avec le choix du fournisseur.</p>
       <div class="specs">
         <div><span>Coloris</span><b id="pCount"></b></div>
@@ -436,7 +440,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <h2>2. Produits</h2>
     <p>Les produits sont des vêtements imprimés, fabriqués à la commande par notre partenaire Printful. Les photos sont des visuels de présentation : de légères différences de couleur peuvent exister selon l’écran.</p>
     <h2>3. Prix</h2>
-    <p>Les prix sont indiqués en euros, toutes taxes comprises. TVA non applicable, article 293 B du CGI. Les frais de livraison sont indiqués avant le paiement : 4,90 € pour le premier article, 1,50 € par article supplémentaire, et livraison offerte à partir de 60 € d’achat.</p>
+    <p>Les prix sont indiqués en euros, toutes taxes comprises. TVA non applicable, article 293 B du CGI. Les frais de livraison sont indiqués avant le paiement : 4,90 € pour le premier article, 1,50 € par article supplémentaire, et livraison offerte à partir de 60 € d’achat après réduction.</p>
+    <p>Une réduction s’applique automatiquement selon le nombre de T-shirts dans une même commande : -20 % à partir de 2 T-shirts, -30 % à partir de 5 T-shirts. Elle porte sur le prix des articles, hors frais de livraison, et n’est pas cumulable avec d’autres offres.</p>
     <h2>4. Commande et paiement</h2>
     <p>La commande est définitive après le paiement, effectué par carte bancaire via la plateforme sécurisée Stripe. Une confirmation est envoyée par e-mail.</p>
     <h2>5. Livraison</h2>
@@ -491,6 +496,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div class="cart-list" id="cartList"></div>
   <div class="cart-foot">
     <div class="row2"><span>Sous-total</span><span id="cSub">0,00 €</span></div>
+    <div class="row2" id="cDiscRow" hidden><span id="cDiscLbl"></span><span id="cDisc" style="color:var(--accent);font-weight:800"></span></div>
     <div class="row2"><span>Livraison</span><span id="cShip">–</span></div>
     <div class="ship-hint" id="cHint"></div>
     <div class="row2 total"><span>Total</span><span id="cTotal">0,00 €</span></div>
@@ -683,8 +689,8 @@ function renderSearch(){
     const sizes=[...new Set(avail.flatMap(g=>g.pf.sizes))].filter(z=>avail.every(g=>g.pf.sizes.includes(z)));
     const sel=$('#sSize'),prev=sel.value;sel.innerHTML=sizes.map(z=>`<option${z===prev?' selected':''}>${z}</option>`).join('');
     if(!prev&&sizes.includes('M'))sel.value='M';
-    const total=avail.reduce((n,g)=>n+(g.pf.price||0),0);
-    $('#sBuyInfo').textContent=`${avail.length} T-shirt${avail.length>1?'s':''} disponible${avail.length>1?'s':''}, à partir de ${money(total)}`+(avail.length<gl.length?` (${gl.length-avail.length} pas encore en vente)`:'');
+    const total=avail.reduce((n,g)=>n+(g.pf.price||0),0),pk=packFor(avail.length),after=pk?total*(100-pk.pct)/100:total;
+    $('#sBuyInfo').innerHTML=`${avail.length} T-shirt${avail.length>1?'s':''} disponible${avail.length>1?'s':''} : `+(pk?`<s>${money(total)}</s> <b style="color:var(--accent)">${money(after)}</b> avec -${pk.pct} %`:money(total))+(avail.length<gl.length?` (${gl.length-avail.length} pas encore en vente)`:'');
   }
   const pq=plain(q),msg=pq.length>=3?PRODUCTS.filter(p=>plain(p.name).includes(pq)):[];
   $('#sMsgWrap').hidden=!msg.length;$('#sMsg').innerHTML=msg.map(cardHTML).join('');
@@ -776,18 +782,25 @@ $('#logoutBtn').onclick=()=>{session=null;ls.del('funax3-session');renderAccBtn(
 const SHIP={base:4.9,extra:1.5,freeFrom:60};
 let cart=ls.get('funax-cart')||[];
 const cartQty=()=>cart.reduce((n,i)=>n+i.qty,0);
+const PACKS=[{min:5,pct:30},{min:2,pct:20}];
+const packFor=q=>PACKS.find(p=>q>=p.min)||null;
 const cartSub=()=>cart.reduce((n,i)=>n+i.price*i.qty,0);
-const shipCost=()=>!cart.length?0:cartSub()>=SHIP.freeFrom?0:SHIP.base+SHIP.extra*(cartQty()-1);
+const cartDisc=()=>{const p=packFor(cartQty());return p?Math.round(cartSub()*p.pct)/100:0};
+const shipCost=()=>!cart.length?0:cartSub()-cartDisc()>=SHIP.freeFrom?0:SHIP.base+SHIP.extra*(cartQty()-1);
 function saveCart(){ls.set('funax-cart',cart);renderCart()}
 function renderCart(){
   const n=cartQty();$('#cartCount').hidden=!n;$('#cartCount').textContent=n;
   $('#cartList').innerHTML=cart.length?cart.map((i,k)=>`<div class="citem"><img src="${i.image}" alt=""><div><b>${esc(i.name)}</b><small>${esc(i.color)}, taille ${esc(i.size)} · ${money(i.price,i.currency)}</small>
     <div class="qty"><button data-q="${k}" data-d="-1" aria-label="Retirer un">−</button><span>${i.qty}</span><button data-q="${k}" data-d="1" aria-label="Ajouter un">+</button></div></div>
     <button class="rm" data-rm="${k}">Retirer</button></div>`).join(''):'<p class="cart-empty">Ton panier est vide.</p>';
-  const sub=cartSub(),sh=shipCost();
+  const sub=cartSub(),dis=cartDisc(),sh=shipCost(),pk=packFor(n),next=PACKS.slice().reverse().find(p=>n<p.min);
   $('#cSub').textContent=money(sub);$('#cShip').textContent=!cart.length?'–':sh?money(sh):'Offerte';
-  $('#cTotal').textContent=money(sub+sh);
-  $('#cHint').textContent=cart.length&&sub<SHIP.freeFrom?`Plus que ${money(SHIP.freeFrom-sub)} pour la livraison offerte`:'';
+  $('#cDiscRow').hidden=!dis;$('#cDiscLbl').textContent=pk?`Réduction pack (-${pk.pct} %)`:'';$('#cDisc').textContent='− '+money(dis);
+  $('#cTotal').textContent=money(sub-dis+sh);
+  const hints=[];
+  if(cart.length&&next)hints.push(`Ajoute ${next.min-n} T-shirt${next.min-n>1?'s':''} pour -${next.pct} % sur tout le panier`);
+  if(cart.length&&sub-dis<SHIP.freeFrom)hints.push(`Plus que ${money(SHIP.freeFrom-(sub-dis))} pour la livraison offerte`);
+  $('#cHint').innerHTML=hints.map(esc).join('<br>');
   $('#payBtn').disabled=!cart.length;
 }
 function openCart(o){document.body.classList.toggle('cart-open',o);$('#drawer').setAttribute('aria-hidden',!o);if(o)$('#closeCart').focus()}
