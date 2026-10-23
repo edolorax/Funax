@@ -535,9 +535,7 @@ const GLYPHS=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(c=>({c,label:c,group:'Lettres
 const GPRODUCTS=GLYPHS.map(g=>({id:'glyph-'+g.label,type:'T-shirt alphabet',name:'T-shirt '+g.c,glyph:g,ways:[WHITE],print:{front:{mask:`glyphs/${g.label}.webp`,ratio:'3/4'}}}));
 const pfWay=c=>({name:c.name,tee:c.hex||'#ffffff',ink:L(c.hex||'#ffffff')<110?'#FFFFFF':'#141414'});
 const pfPrint=c=>({front:c.front?{img:c.front}:null,back:c.back?{img:c.back}:null});
-function tee3dHTML(w,prod,sd){
-  return `<div class="t3d" data-side="${sd}"><div class="t3d-card"><div class="t3d-face">${teeHTML(w,prod,'front')}</div><div class="t3d-face t3d-back">${teeHTML(w,prod,'back')}</div></div><div class="t3d-floor"></div></div><p class="t3d-hint">Bouge la souris ou glisse pour tourner le T-shirt</p>`;
-}
+function tee3dHTML(w,prod,sd){return teeHTML(w,prod,sd)}
 const findProduct=id=>GPRODUCTS.find(x=>x.id===id)||PRODUCTS.find(x=>x.id===id);
 function glyphKey(name){
   const n=String(name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
@@ -615,25 +613,8 @@ function sidesHTML(hasBack){
   $('#pSides').hidden=false;
   $('#pSides').innerHTML=['front','back'].map(k=>`<button data-side="${k}" aria-pressed="${k===side}">${k==='back'?(hasBack?'Dos':'Dos (uni)'):'Devant'}</button>`).join('');
 }
-function setSide(k){
-  side=k;const t=$('#pBig .t3d');if(t)t.dataset.side=k;
-  $$('#pSides [data-side]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.side===k));
-}
-(function tee3d(){
-  const st=$('#pBig');let drag=null;
-  const card=()=>st.querySelector('.t3d');
-  st.addEventListener('pointermove',e=>{
-    const t=card();if(!t)return;const r=t.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
-    t.classList.add('active');
-    if(drag){const dx=e.clientX-drag.x;t.style.setProperty('--ry',(drag.ry+dx*.6)+'deg');if(Math.abs(dx)>110){setSide(side==='front'?'back':'front');drag=null;t.classList.remove('dragging');t.style.setProperty('--ry','0deg')}return}
-    t.style.setProperty('--ry',((x-.5)*34)+'deg');t.style.setProperty('--rx',(-(y-.5)*18)+'deg');
-    st.querySelectorAll('.tee-sheen').forEach(n=>{n.style.setProperty('--mx',(x*100)+'%');n.style.setProperty('--my',(y*100)+'%')});
-  });
-  st.addEventListener('pointerdown',e=>{const t=card();if(!t)return;drag={x:e.clientX,ry:parseFloat(t.style.getPropertyValue('--ry'))||0};t.classList.add('dragging')});
-  const end=()=>{const t=card();drag=null;if(t){t.classList.remove('dragging','active');t.style.setProperty('--ry','0deg');t.style.setProperty('--rx','0deg')}};
-  st.addEventListener('pointerup',()=>{drag=null;const t=card();if(t)t.classList.remove('dragging')});
-  st.addEventListener('pointerleave',end);st.addEventListener('pointercancel',end);
-})();
+function setSide(k){side=k;renderProduct()}
+
 
 /* ---------- Navigation ---------- */
 function go(page,scroll){
