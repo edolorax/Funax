@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Funax · Vêtements</title>
-<meta name="description" content="Funax, des T-shirts et vêtements qui font parler.">
+<title>Funax · T-shirts alphabet</title>
+<meta name="description" content="Funax : une lettre, un chiffre ou un symbole, en grand sur un T-shirt blanc.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display&family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,100,1&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0B0D11; --bg2:#11141A; --surface:#171B23; --surface2:#1E232D;
@@ -154,6 +154,24 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .tl:nth-child(n+3){font-family:Georgia,"Times New Roman",serif;line-height:1.2}
 .tl:nth-child(-n+5){font-weight:700}
 
+/* Alphabet */
+.hero h1{font-size:clamp(48px,7vw,96px)}
+.hero-char{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:min(46vw,520px);line-height:1;color:rgba(198,255,61,.07);pointer-events:none;user-select:none}
+.hero-vis .tee{z-index:1}
+.gtabs{margin-bottom:18px}
+.chip2{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px}
+.chip2[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.ggroup{grid-column:1/-1;font-family:"Space Grotesk",sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:14px}
+.ggroup:first-child{margin-top:0}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.gtile{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:0;overflow:hidden;text-align:left;transition:border-color .2s,transform .2s}
+.gtile:hover{border-color:rgba(198,255,61,.5);transform:translateY(-2px)}
+.gtile-img{aspect-ratio:1;background:radial-gradient(ellipse at 50% 40%,#232836,#12151B 80%);padding:6%}
+.gtile-body{display:flex;justify-content:space-between;align-items:baseline;padding:8px 12px 10px}
+.gtile-body b{font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:22px;line-height:1}
+.gtile-body span{font-size:12px;color:var(--muted);font-weight:700}
+.gtile.on .gtile-body span{color:var(--accent)}
+
 /* Panier */
 .cart-btn{position:relative}
 .cart-count{position:absolute;top:-6px;right:-6px;background:var(--accent);color:#0B0D11;font-size:11px;font-weight:800;min-width:19px;height:19px;border-radius:999px;display:grid;place-items:center;padding:0 4px}
@@ -220,7 +238,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <button class="logo" data-go="accueil"><i aria-hidden="true"></i>FUNAX</button>
     <nav aria-label="Navigation principale">
       <button data-go="accueil" aria-current="page">Accueil</button>
-      <button data-go="vetements">Vêtements</button>
+      <button data-go="accueil" data-scroll="alphabet" data-nav="alphabet">Alphabet</button>
+      <button data-go="vetements">Tous les T-shirts</button>
     </nav>
     <div class="right"><button class="icon-btn" id="accBtn" aria-label="Se connecter ou créer un compte"></button>
       <button class="icon-btn cart-btn" id="cartBtn" aria-label="Ouvrir le panier"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-count" id="cartCount" hidden>0</span></button></div>
@@ -231,31 +250,44 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 <main id="accueil" class="page wrap">
   <div class="hero">
     <div>
-      <span class="eyebrow">Nouvelle collection</span>
-      <h1>Des T-shirts qui <em>font parler.</em></h1>
-      <p>Funax, ce sont des vêtements avec des phrases qui font sourire, réfléchir, ou les deux.</p>
+      <span class="eyebrow">La collection Alphabet</span>
+      <h1>Une lettre.<br><em>Un T-shirt.</em></h1>
+      <p>26 lettres, 10 chiffres et 3 symboles, imprimés en grand sur un T-shirt blanc. Ton initiale, ton numéro fétiche, ton signe : choisis le tien.</p>
       <div class="ctas">
-        <button class="btn btn-main" data-go="vetements">Voir les vêtements</button>
-        <button class="btn btn-ghost" data-product="tshirt-citation">Le T-shirt citation</button>
+        <button class="btn btn-main" data-go="accueil" data-scroll="alphabet">Choisir mon caractère</button>
+        <button class="btn btn-ghost" data-go="vetements">Tous les T-shirts</button>
       </div>
       <div class="stats">
-        <div><b>8</b><span>coloris</span></div>
-        <div><b>XS–3XL</b><span>toutes les tailles</span></div>
+        <div><b>39</b><span>caractères</span></div>
+        <div><b>XS–4XL</b><span>toutes les tailles</span></div>
       </div>
     </div>
-    <div class="hero-vis" aria-hidden="true" id="heroTee"><div class="chip-float"><b>●</b> Nouveau</div></div>
+    <div class="hero-vis" aria-hidden="true" id="heroTee"><div class="hero-char" id="heroChar">A</div></div>
   </div>
 
+  <section id="alphabet">
+    <span class="eyebrow">L’alphabet</span>
+    <h2 style="margin-top:12px">Choisis ton caractère</h2>
+    <p class="sub">Un seul caractère, imprimé en noir sur toute la face d’un T-shirt blanc, dans une typographie au caractère bien trempé.</p>
+    <div class="seg gtabs" id="gTabs" role="group" aria-label="Catégorie">
+      <button class="chip2" data-group="all" aria-pressed="true">Tout</button>
+      <button class="chip2" data-group="Lettres" aria-pressed="false">Lettres</button>
+      <button class="chip2" data-group="Chiffres" aria-pressed="false">Chiffres</button>
+      <button class="chip2" data-group="Symboles" aria-pressed="false">Symboles</button>
+    </div>
+    <div class="ggrid" id="glyphGrid"></div>
+  </section>
+
   <section>
-    <span class="eyebrow">Boutique</span>
-    <h2 style="margin-top:12px">Nos vêtements</h2>
-    <p class="sub">De nouveaux modèles arrivent bientôt.</p>
+    <span class="eyebrow">Et aussi</span>
+    <h2 style="margin-top:12px">Les T-shirts à message</h2>
+    <p class="sub">Des phrases qui font sourire.</p>
     <div class="grid" id="homeGrid"></div>
   </section>
 
   <section>
     <div class="news">
-      <div><h2>Reste informé</h2><p>Un e-mail quand un nouveau modèle sort.</p></div>
+      <div><h2>Reste informé</h2><p>Un e-mail quand de nouveaux caractères ou modèles sortent.</p></div>
       <div>
         <form id="newsForm">
           <input type="email" required placeholder="ton@email.fr" aria-label="Adresse e-mail">
@@ -271,15 +303,17 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 <main id="vetements" class="page wrap" hidden>
   <section>
     <span class="eyebrow">Catalogue</span>
-    <h1 class="p-title">Vêtements</h1>
-    <p class="sub">Tous nos modèles. D’autres arrivent bientôt.</p>
-    <div class="grid" id="catGrid"></div>
+    <h1 class="p-title">Tous les T-shirts</h1>
+    <h2 style="font-size:24px;margin-top:28px">Alphabet</h2>
+    <div class="ggrid" id="catGlyphGrid" style="margin-top:16px"></div>
+    <h2 style="font-size:24px;margin-top:44px">T-shirts à message</h2>
+    <div class="grid" id="catGrid" style="margin-top:16px"></div>
   </section>
 </main>
 
 <!-- PRODUIT -->
 <main id="produit" class="page wrap" hidden>
-  <button class="btn btn-ghost btn-sm back" data-go="vetements">← Vêtements</button>
+  <button class="btn btn-ghost btn-sm back" id="backBtn" data-go="vetements">← Tous les T-shirts</button>
   <div class="product">
     <div>
       <div class="tee-stage" id="pBig"></div>
@@ -383,8 +417,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 <footer>
   <div class="wrap">
     <div class="foot">
-      <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Des vêtements qui font parler.</p></div>
-      <div><h4>Boutique</h4><ul><li><a href="#" data-go="vetements">Tous les vêtements</a></li><li><a href="#" data-product="tshirt-citation">T-shirt citation</a></li></ul></div>
+      <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Une lettre, un T-shirt.</p></div>
+      <div><h4>Boutique</h4><ul><li><a href="#" data-go="accueil" data-scroll="alphabet">Alphabet</a></li><li><a href="#" data-go="vetements">Tous les T-shirts</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#" data-go="mentions">Mentions légales</a></li><li><a href="#" data-go="cgv">Conditions générales de vente</a></li><li><a href="#" data-go="confidentialite">Confidentialité</a></li><li><a href="mailto:lorain.edouard@gmail.com">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
@@ -467,7 +501,7 @@ function teeHTML(w,prod,side='front'){
   const pat=w.pat==='stripes'?`repeating-linear-gradient(0deg,${w.p2} 0 1.1%,transparent 1.1% 2.6%)`
     :w.pat==='dots'?`radial-gradient(circle,${w.p2} 0 26%,transparent 30%) 0 0/2.6% 2.6%`:'none';
   const base=side==='back'?'tee-back':'tee', pr=prod.print[side], ink=L(w.ink)<128?'ink-dark':'ink-light';
-  const printHTML=!pr?'':pr.html?`<div class="tee-print ${ink}">${pr.html}</div>`:`<div class="tee-pimg ${ink}${side==='back'?' on-back':''}" style="--pm:url(${pr.mask})"></div>`;
+  const printHTML=!pr?'':pr.html?`<div class="tee-print ${ink}">${pr.html}</div>`:`<div class="tee-pimg ${ink}${side==='back'?' on-back':''}" style="--pm:url(${pr.mask});${pr.ratio?'aspect-ratio:'+pr.ratio:''}"></div>`;
   return `<div class="tee${L(w.tee)<110?' tee-dark':''}" style="--tink:${w.ink};--tc:${w.tee};--tpat:${pat};--tm:url(${base}.webp)"><div class="tee-color"></div><img class="tee-shade" src="${base}.webp" alt="" draggable="false"><img class="tee-hi" src="${base}-hi.webp" alt="" draggable="false">${printHTML}</div>`;
 }
 
@@ -476,6 +510,29 @@ let PRODUCTS=[
   {id:'tshirt-citation',type:'T-shirt',name:'T-shirt citation',ways:TEE_WAYS,isNew:true,
    print:{front:{html:TEE_PRINT}}}
 ];
+const WHITE={name:'Blanc, impression noire',tee:'#FFFFFF',ink:'#141414'};
+const GLYPHS=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(c=>({c,label:c,group:'Lettres'}))
+  .concat([...'1234567890'].map(c=>({c,label:c,group:'Chiffres'})))
+  .concat([['+','plus'],['=','egal'],['-','moins']].map(([c,label])=>({c,label,group:'Symboles'})));
+const GPRODUCTS=GLYPHS.map(g=>({id:'glyph-'+g.label,type:'T-shirt alphabet',name:'T-shirt '+g.c,glyph:g,ways:[WHITE],print:{front:{mask:`glyphs/${g.label}.webp`,ratio:'3/4'}}}));
+const findProduct=id=>GPRODUCTS.find(x=>x.id===id)||PRODUCTS.find(x=>x.id===id);
+function glyphKey(name){
+  const n=String(name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  const m=n.match(/^(?:t-?shirt\s+)?(?:lettre|chiffre|symbole|signe)?\s*([A-Za-z0-9]|plus|egal|moins|\+|=|-)$/i);
+  if(!m)return null;const k=m[1].toLowerCase();
+  return ({'+':'plus','=':'egal','-':'moins'})[k]||(k.length===1?k.toUpperCase():k);
+}
+let gGroup='all';
+function glyphGridHTML(){
+  let last='',out='';
+  for(const gp of GPRODUCTS){
+    if(gGroup!=='all'&&gp.glyph.group!==gGroup)continue;
+    if(gGroup==='all'&&gp.glyph.group!==last){out+=`<div class="ggroup">${gp.glyph.group}</div>`;last=gp.glyph.group}
+    const on=!!gp.pf;
+    out+=`<button class="gtile${on?' on':''}" data-product="${gp.id}" aria-label="T-shirt ${gp.glyph.c}${on?'':', bientôt disponible'}"><div class="gtile-img">${teeHTML(WHITE,gp)}</div><div class="gtile-body"><b>${esc(gp.glyph.c)}</b><span>${on?money(gp.pf.price,gp.pf.currency):'Bientôt'}</span></div></button>`;
+  }
+  return out;
+}
 const money=(n,c)=>n==null?'Prix bientôt disponible':new Intl.NumberFormat('fr-FR',{style:'currency',currency:c||'EUR'}).format(n);
 function cardHTML(p){
   if(p.pf){const f=p.pf;
@@ -490,11 +547,13 @@ const soonHTML='<div class="pcard soon"><div class="pcard-img"><span class="plus
 function renderGrids(){
   $('#homeGrid').innerHTML=PRODUCTS.map(cardHTML).join('')+soonHTML;
   $('#catGrid').innerHTML=PRODUCTS.map(cardHTML).join('')+soonHTML;
+  $('#glyphGrid').innerHTML=glyphGridHTML();
+  const keep=gGroup;gGroup='all';$('#catGlyphGrid').innerHTML=glyphGridHTML();gGroup=keep;
 }
 let cur=PRODUCTS[0],way=0,size=null,side='front';
 function renderPF(){
   const f=cur.pf,c=f.colors[way]||f.colors[0],avail=f.variants.filter(v=>v.color===c.name),sel=size&&avail.find(v=>v.size===size);
-  $('#pType').textContent='T-shirt';$('#pName').textContent=f.name;
+  $('#pType').textContent=cur.glyph?'T-shirt alphabet':'T-shirt';$('#pName').textContent=cur.glyph?cur.name:f.name;
   $('#pBig').innerHTML=`<img class="pf-img" src="${c.image}" alt="${esc(f.name)}, coloris ${esc(c.name)}">`;
   $('#pSides').hidden=true;$('#pWayName').textContent=c.name;$('#pCount').textContent=f.colors.length;
   $('#pThumbs').innerHTML=f.colors.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${esc(x.name)}"><img class="pf-img" src="${x.image}" alt="" loading="lazy"></button>`).join('');
@@ -530,17 +589,19 @@ $('#produit').addEventListener('click',e=>{
 });
 
 /* ---------- Navigation ---------- */
-function go(page){
+function go(page,scroll){
   $$('.page').forEach(p=>p.hidden=p.id!==page);
-  $$('nav button').forEach(b=>{if(b.dataset.go===page||(page==='produit'&&b.dataset.go==='vetements'))b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
-  if(page==='produit')renderProduct();
-  window.scrollTo(0,0);
+  const navKey=scroll==='alphabet'||(page==='produit'&&cur&&cur.glyph)?'alphabet':page==='produit'?'vetements':page;
+  $$('nav button').forEach(b=>{if((b.dataset.nav||b.dataset.go)===navKey)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  if(page==='produit'){renderProduct();const bb=$('#backBtn');if(cur.glyph){bb.dataset.go='accueil';bb.dataset.scroll='alphabet';bb.textContent='← Alphabet'}else{bb.dataset.go='vetements';delete bb.dataset.scroll;bb.textContent='← Tous les T-shirts'}}
+  if(scroll){const el=document.getElementById(scroll);if(el)requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth'}));}else window.scrollTo(0,0);
 }
+$('#gTabs').onclick=e=>{const b=e.target.closest('[data-group]');if(!b)return;gGroup=b.dataset.group;$$('#gTabs [data-group]').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#glyphGrid').innerHTML=glyphGridHTML()};
 document.addEventListener('click',e=>{
   const g=e.target.closest('[data-go]');if(g&&g.closest('#drawer'))openCart(false);
   const _g=g,p=e.target.closest('[data-product]');
-  if(p){e.preventDefault();closeAcc();cur=PRODUCTS.find(x=>x.id===p.dataset.product)||PRODUCTS[0];way=0;size=null;side='front';go('produit');return}
-  if(g){e.preventDefault();closeAcc();go(g.dataset.go)}
+  if(p){e.preventDefault();closeAcc();cur=findProduct(p.dataset.product)||PRODUCTS[0];way=0;size=null;side='front';go('produit');return}
+  if(g){e.preventDefault();closeAcc();go(g.dataset.go,g.dataset.scroll)}
 });
 $('#newsForm').onsubmit=e=>{e.preventDefault();$('#newsMsg').textContent='Inscription enregistrée.';e.target.reset()};
 
@@ -651,15 +712,25 @@ async function loadPrintful(){
   try{
     const r=await fetch('/api/products');if(!r.ok)return;
     const d=await r.json();if(!d.products||!d.products.length)return;
-    PRODUCTS=d.products.map(p=>({id:'pf-'+p.id,type:'T-shirt',name:p.name,pf:p,isNew:true}));
-    $$('[data-product="tshirt-citation"]').forEach(el=>el.dataset.product=PRODUCTS[0].id);
+    const others=[];
+    for(const p of d.products){
+      const k=glyphKey(p.name),gp=k&&GPRODUCTS.find(x=>x.glyph.label===k);
+      if(gp)gp.pf=p;else others.push({id:'pf-'+p.id,type:'T-shirt',name:p.name,pf:p,isNew:true});
+    }
+    if(others.length)PRODUCTS=others;
     renderGrids();
-    if(!$('#produit').hidden&&!cur.pf){cur=PRODUCTS[0];way=0;size=null;renderProduct()}
+    if(!$('#produit').hidden){if(!cur.pf&&!cur.glyph)cur=PRODUCTS[0];way=0;renderProduct()}
   }catch(e){}
 }
 
 /* ---------- Démarrage ---------- */
-$('#heroTee').insertAdjacentHTML('beforeend',teeHTML(TEE_WAYS[0],PRODUCTS[0]));
+$('#heroTee').insertAdjacentHTML('beforeend',teeHTML(WHITE,GPRODUCTS[0]));
+(function heroCycle(){
+  const seq=['A','F','U','N','X','7','M','+','E','3','Z'].map(c=>GPRODUCTS.find(g=>g.glyph.c===c));
+  seq.forEach(g=>{const i=new Image();i.src=g.print.front.mask});
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  let i=0;setInterval(()=>{i=(i+1)%seq.length;const g=seq[i],pm=$('#heroTee .tee-pimg');if(pm)pm.style.setProperty('--pm',`url(${g.print.front.mask})`);$('#heroChar').textContent=g.glyph.c},1600);
+})();
 renderGrids();renderAccBtn();renderCart();loadPrintful();
 </script>
 </body>
