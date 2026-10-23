@@ -1,5 +1,5 @@
 // Crée la page de paiement Stripe à partir du panier. Les prix sont relus chez Printful (jamais ceux envoyés par le navigateur).
-const { SHIP, COUNTRIES, stripe, getProducts } = require('./_shared');
+const { SHIP, COUNTRIES, packFor, ensureCoupon, stripe, getProducts } = require('./_shared');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Méthode non autorisée' });
@@ -21,7 +21,10 @@ module.exports = async (req, res) => {
       qty += q; subtotal += Math.round(v.price * 100) * q;
       lines.push({ v, q });
     }
-    const ship = subtotal >= SHIP.freeFrom ? 0 : SHIP.base + SHIP.extra * (qty - 1);
+    const pack = packFor(qty);
+    const afterDiscount = pack ? Math.round(subtotal * (100 - pack.pct) / 100) : subtotal;
+    const ship = afterDiscount >= SHIP.freeFrom ? 0 : SHIP.base + SHIP.extra * (qty - 1);
+    if (pack) await ensureCoupon(pack);
     const origin = req.headers.origin || ('https://' + req.headers.host);
 
     const session = await stripe('/checkout/sessions', {
@@ -44,6 +47,7 @@ module.exports = async (req, res) => {
           delivery_estimate: { minimum: { unit: 'business_day', value: 3 }, maximum: { unit: 'business_day', value: 7 } }
         }
       }],
+      discounts: pack ? [{ coupon: pack.id }] : undefined,
       metadata: { items: JSON.stringify(lines.map(({ v, q }) => [v.id, q])) },
       success_url: origin + '/?commande=ok&session_id={CHECKOUT_SESSION_ID}',
       cancel_url: origin + '/?commande=annulee'
