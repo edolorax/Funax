@@ -60,6 +60,8 @@ async function getProducts() {
     for (const v of d.sync_variants) {
       if (v.availability_status && v.availability_status !== 'active') continue;
       const preview = (v.files || []).find(f => f.type === 'preview');
+      const fFront = (v.files || []).find(f => f.type === 'default' || f.type === 'front');
+      const fBack = (v.files || []).find(f => f.type === 'back');
       prod.variants.push({
         id: v.id,
         color: fr((v.color || (v.name || '').split('/').slice(-2, -1)[0] || 'Couleur').trim()),
@@ -67,13 +69,15 @@ async function getProducts() {
         hex: colorCode[v.variant_id] || '#888888',
         price: Number(v.retail_price) || null,
         currency: v.currency || 'EUR',
-        image: (preview && preview.preview_url) || (v.product && v.product.image) || d.sync_product.thumbnail_url
+        image: (preview && preview.preview_url) || (v.product && v.product.image) || d.sync_product.thumbnail_url,
+        front: fFront ? (fFront.preview_url || fFront.url) : null,
+        back: fBack ? (fBack.preview_url || fBack.url) : null
       });
     }
   }
   return [...byName.values()].filter(p => p.variants.length).map(p => {
     const colors = [];
-    for (const v of p.variants) if (!colors.some(c => c.name === v.color)) colors.push({ name: v.color, hex: v.hex, image: v.image });
+    for (const v of p.variants) if (!colors.some(c => c.name === v.color)) colors.push({ name: v.color, hex: v.hex, image: v.image, front: v.front, back: v.back });
     const sizes = [...new Set(p.variants.map(v => v.size))].sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
     const prices = p.variants.map(v => v.price).filter(Boolean);
     return { ...p, colors, sizes, price: prices.length ? Math.min(...prices) : null, currency: p.variants[0].currency };
