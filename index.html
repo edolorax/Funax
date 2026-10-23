@@ -154,6 +154,24 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .tl:nth-child(n+3){font-family:Georgia,"Times New Roman",serif;line-height:1.2}
 .tl:nth-child(-n+5){font-weight:700}
 
+/* T-shirt 3D */
+.t3d{position:relative;perspective:1400px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.t3d-card{position:relative;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.8,.2,1);transform:rotateX(var(--rx,0deg)) rotateY(calc(var(--ry,0deg) + var(--flip,0deg)))}
+.t3d[data-side="back"]{--flip:180deg}
+.t3d:not(.active) .t3d-card{animation:sway 7s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotateX(2deg) rotateY(calc(-9deg + var(--flip,0deg)))}50%{transform:rotateX(-1deg) rotateY(calc(9deg + var(--flip,0deg)))}}
+.t3d.dragging .t3d-card{transition:none}
+.t3d-face{backface-visibility:hidden;-webkit-backface-visibility:hidden;position:relative}
+.t3d-back{position:absolute;inset:0;transform:rotateY(180deg)}
+.tee-sheen{display:none}
+.t3d .tee-sheen{display:block;position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;background:radial-gradient(circle at var(--mx,40%) var(--my,30%),rgba(255,255,255,.55),transparent 55%);-webkit-mask:var(--tm) center/100% 100% no-repeat;mask:var(--tm) center/100% 100% no-repeat}
+.t3d-floor{position:absolute;left:22%;right:22%;bottom:-1%;height:5%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);filter:blur(4px);transform:translateX(calc(var(--ry,0deg) / 1deg * .4%))}
+.t3d-hint{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+@media (prefers-reduced-motion:reduce){.t3d:not(.active) .t3d-card{animation:none}.t3d-card{transition:none}}
+.tee-pimg-img{position:absolute;left:33.8%;top:18.5%;width:32.4%;aspect-ratio:3/4;object-fit:contain;object-position:top center;pointer-events:none}
+.tee-pimg-img.on-back{top:14%}
+.tee-pimg-img.img-mul{mix-blend-mode:multiply}
+
 /* Alphabet */
 .hero h1{font-size:clamp(48px,7vw,96px)}
 .hero-char{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:min(46vw,520px);line-height:1;color:rgba(198,255,61,.07);pointer-events:none;user-select:none}
@@ -501,8 +519,8 @@ function teeHTML(w,prod,side='front'){
   const pat=w.pat==='stripes'?`repeating-linear-gradient(0deg,${w.p2} 0 1.1%,transparent 1.1% 2.6%)`
     :w.pat==='dots'?`radial-gradient(circle,${w.p2} 0 26%,transparent 30%) 0 0/2.6% 2.6%`:'none';
   const base=side==='back'?'tee-back':'tee', pr=prod.print[side], ink=L(w.ink)<128?'ink-dark':'ink-light';
-  const printHTML=!pr?'':pr.html?`<div class="tee-print ${ink}">${pr.html}</div>`:`<div class="tee-pimg ${ink}${side==='back'?' on-back':''}" style="--pm:url(${pr.mask});${pr.ratio?'aspect-ratio:'+pr.ratio:''}"></div>`;
-  return `<div class="tee${L(w.tee)<110?' tee-dark':''}" style="--tink:${w.ink};--tc:${w.tee};--tpat:${pat};--tm:url(${base}.webp)"><div class="tee-color"></div><img class="tee-shade" src="${base}.webp" alt="" draggable="false"><img class="tee-hi" src="${base}-hi.webp" alt="" draggable="false">${printHTML}</div>`;
+  const printHTML=!pr?'':pr.img?`<img class="tee-pimg-img${side==='back'?' on-back':''}${L(w.tee)>150?' img-mul':''}" src="${pr.img}" alt="" loading="lazy" draggable="false">`:pr.html?`<div class="tee-print ${ink}">${pr.html}</div>`:`<div class="tee-pimg ${ink}${side==='back'?' on-back':''}" style="--pm:url(${pr.mask});${pr.ratio?'aspect-ratio:'+pr.ratio:''}"></div>`;
+  return `<div class="tee${L(w.tee)<110?' tee-dark':''}" style="--tink:${w.ink};--tc:${w.tee};--tpat:${pat};--tm:url(${base}.webp)"><div class="tee-color"></div><img class="tee-shade" src="${base}.webp" alt="" draggable="false"><img class="tee-hi" src="${base}-hi.webp" alt="" draggable="false">${printHTML}<div class="tee-sheen"></div></div>`;
 }
 
 /* ---------- Produits ---------- */
@@ -515,6 +533,11 @@ const GLYPHS=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(c=>({c,label:c,group:'Lettres
   .concat([...'1234567890'].map(c=>({c,label:c,group:'Chiffres'})))
   .concat([['+','plus'],['=','egal'],['-','moins']].map(([c,label])=>({c,label,group:'Symboles'})));
 const GPRODUCTS=GLYPHS.map(g=>({id:'glyph-'+g.label,type:'T-shirt alphabet',name:'T-shirt '+g.c,glyph:g,ways:[WHITE],print:{front:{mask:`glyphs/${g.label}.webp`,ratio:'3/4'}}}));
+const pfWay=c=>({name:c.name,tee:c.hex||'#ffffff',ink:L(c.hex||'#ffffff')<110?'#FFFFFF':'#141414'});
+const pfPrint=c=>({front:c.front?{img:c.front}:null,back:c.back?{img:c.back}:null});
+function tee3dHTML(w,prod,sd){
+  return `<div class="t3d" data-side="${sd}"><div class="t3d-card"><div class="t3d-face">${teeHTML(w,prod,'front')}</div><div class="t3d-face t3d-back">${teeHTML(w,prod,'back')}</div></div><div class="t3d-floor"></div></div><p class="t3d-hint">Bouge la souris ou glisse pour tourner le T-shirt</p>`;
+}
 const findProduct=id=>GPRODUCTS.find(x=>x.id===id)||PRODUCTS.find(x=>x.id===id);
 function glyphKey(name){
   const n=String(name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
@@ -536,7 +559,7 @@ function glyphGridHTML(){
 const money=(n,c)=>n==null?'Prix bientôt disponible':new Intl.NumberFormat('fr-FR',{style:'currency',currency:c||'EUR'}).format(n);
 function cardHTML(p){
   if(p.pf){const f=p.pf;
-    return `<button class="pcard" data-product="${p.id}"><div class="pcard-img">${p.isNew?'<span class="badge">Nouveau</span>':''}<img class="pf-thumb" src="${f.colors[0].image||f.thumbnail}" alt="${esc(f.name)}" loading="lazy"></div>
+    return `<button class="pcard" data-product="${p.id}"><div class="pcard-img">${p.isNew?'<span class="badge">Nouveau</span>':''}${teeHTML(pfWay(f.colors[0]),{print:pfPrint(f.colors[0])})}</div>
     <div class="pcard-body"><h3>${esc(f.name)}</h3><span class="price">${f.price!=null?'À partir de '+money(f.price,f.currency):'Prix bientôt disponible'}</span>
     <div class="dots" aria-label="${f.colors.length} coloris">${f.colors.map(c=>`<span style="background:${c.hex}" title="${esc(c.name)}"></span>`).join('')}</div></div></button>`;}
   return `<button class="pcard" data-product="${p.id}"><div class="pcard-img">${p.isNew?'<span class="badge">Nouveau</span>':''}${teeHTML(p.ways[0],p)}</div>
@@ -554,14 +577,16 @@ let cur=PRODUCTS[0],way=0,size=null,side='front';
 function renderPF(){
   const f=cur.pf,c=f.colors[way]||f.colors[0],avail=f.variants.filter(v=>v.color===c.name),sel=size&&avail.find(v=>v.size===size);
   $('#pType').textContent=cur.glyph?'T-shirt alphabet':'T-shirt';$('#pName').textContent=cur.glyph?cur.name:f.name;
-  $('#pBig').innerHTML=`<img class="pf-img" src="${c.image}" alt="${esc(f.name)}, coloris ${esc(c.name)}">`;
-  $('#pSides').hidden=true;$('#pWayName').textContent=c.name;$('#pCount').textContent=f.colors.length;
-  $('#pThumbs').innerHTML=f.colors.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${esc(x.name)}"><img class="pf-img" src="${x.image}" alt="" loading="lazy"></button>`).join('');
+  const P=x=>cur.glyph?cur:{print:pfPrint(x)};
+  $('#pBig').innerHTML=tee3dHTML(pfWay(c),P(c),side);
+  const hasBack=!cur.glyph&&f.colors.some(x=>x.back);
+  sidesHTML(hasBack);$('#pWayName').textContent=c.name;$('#pCount').textContent=f.colors.length;
+  $('#pThumbs').innerHTML=f.colors.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${esc(x.name)}">${teeHTML(pfWay(x),P(x),'front')}</button>`).join('');
   $('#pSwatches').innerHTML=f.colors.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${esc(x.name)}" title="${esc(x.name)}" style="background:${x.hex}"></button>`).join('');
   $('#pSizes').innerHTML=f.sizes.map(z=>`<button data-size="${z}" aria-pressed="${z===size}" ${avail.some(v=>v.size===z)?'':'disabled'}>${z}</button>`).join('');
   $('#pSizeName').textContent=sel?size:'choisis ta taille';
   $('#pPrice').textContent=money(sel?sel.price:f.price,f.currency);
-  $('#pPrint').textContent='Devant';
+  $('#pPrint').textContent=hasBack?'Devant et dos':'Devant';
   $('#pSizesSpec').textContent=f.sizes.length?f.sizes[0]+' à '+f.sizes[f.sizes.length-1]:'';
   $('#addBtn').disabled=!sel;$('#addBtn').textContent=sel?'Ajouter au panier':'Choisis une taille';
   $('#pShip').hidden=false;$('#pNote').hidden=true;
@@ -571,12 +596,11 @@ function renderProduct(){
   $('#pPrice').textContent='Prix bientôt disponible';$('#pSizesSpec').textContent='XS à 3XL';$('#addBtn').disabled=true;$('#addBtn').textContent='Bientôt disponible';$('#pShip').hidden=true;$('#pNote').hidden=false;
   const w=cur.ways[way];
   $('#pType').textContent=cur.type;$('#pName').textContent=cur.name;
-  $('#pBig').innerHTML=teeHTML(w,cur,side);
+  $('#pBig').innerHTML=tee3dHTML(w,cur,side);
   const sides=Object.keys(cur.print);
-  $('#pSides').hidden=sides.length<2;
-  $('#pSides').innerHTML=sides.map(k=>`<button data-side="${k}" aria-pressed="${k===side}">${k==='back'?'Dos':'Devant'}</button>`).join('');
+  sidesHTML(sides.length>1);
   $('#pPrint').textContent=sides.length>1?'Devant et dos':'Devant';$('#pWayName').textContent=w.name;$('#pCount').textContent=cur.ways.length;
-  $('#pThumbs').innerHTML=cur.ways.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${x.name}">${teeHTML(x,cur,side)}</button>`).join('');
+  $('#pThumbs').innerHTML=cur.ways.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${x.name}">${teeHTML(x,cur,'front')}</button>`).join('');
   $('#pSwatches').innerHTML=cur.ways.map((x,i)=>`<button data-way="${i}" aria-pressed="${i===way}" aria-label="${x.name}" style="background:linear-gradient(135deg,${x.tee} 50%,${x.ink} 50%)"></button>`).join('');
   $('#pSizes').innerHTML=SIZES.map(z=>`<button data-size="${z}" aria-pressed="${z===size}">${z}</button>`).join('');
   $('#pSizeName').textContent=size||'choisis ta taille';
@@ -585,8 +609,31 @@ $('#produit').addEventListener('click',e=>{
   const w=e.target.closest('[data-way]'),z=e.target.closest('[data-size]');
   if(w){way=+w.dataset.way;renderProduct()}
   if(z){size=z.dataset.size;renderProduct()}
-  const sd=e.target.closest('[data-side]');if(sd){side=sd.dataset.side;renderProduct()}
+  const sd=e.target.closest('[data-side]');if(sd)setSide(sd.dataset.side);
 });
+function sidesHTML(hasBack){
+  $('#pSides').hidden=false;
+  $('#pSides').innerHTML=['front','back'].map(k=>`<button data-side="${k}" aria-pressed="${k===side}">${k==='back'?(hasBack?'Dos':'Dos (uni)'):'Devant'}</button>`).join('');
+}
+function setSide(k){
+  side=k;const t=$('#pBig .t3d');if(t)t.dataset.side=k;
+  $$('#pSides [data-side]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.side===k));
+}
+(function tee3d(){
+  const st=$('#pBig');let drag=null;
+  const card=()=>st.querySelector('.t3d');
+  st.addEventListener('pointermove',e=>{
+    const t=card();if(!t)return;const r=t.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+    t.classList.add('active');
+    if(drag){const dx=e.clientX-drag.x;t.style.setProperty('--ry',(drag.ry+dx*.6)+'deg');if(Math.abs(dx)>110){setSide(side==='front'?'back':'front');drag=null;t.classList.remove('dragging');t.style.setProperty('--ry','0deg')}return}
+    t.style.setProperty('--ry',((x-.5)*34)+'deg');t.style.setProperty('--rx',(-(y-.5)*18)+'deg');
+    st.querySelectorAll('.tee-sheen').forEach(n=>{n.style.setProperty('--mx',(x*100)+'%');n.style.setProperty('--my',(y*100)+'%')});
+  });
+  st.addEventListener('pointerdown',e=>{const t=card();if(!t)return;drag={x:e.clientX,ry:parseFloat(t.style.getPropertyValue('--ry'))||0};t.classList.add('dragging')});
+  const end=()=>{const t=card();drag=null;if(t){t.classList.remove('dragging','active');t.style.setProperty('--ry','0deg');t.style.setProperty('--rx','0deg')}};
+  st.addEventListener('pointerup',()=>{drag=null;const t=card();if(t)t.classList.remove('dragging')});
+  st.addEventListener('pointerleave',end);st.addEventListener('pointercancel',end);
+})();
 
 /* ---------- Navigation ---------- */
 function go(page,scroll){
