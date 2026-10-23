@@ -200,10 +200,15 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .word{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
 .word .gtile{width:132px}
 .wgap{width:34px}
+.wcell{display:flex;flex-direction:column;gap:6px}
+.wsize{width:132px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:6px 8px;color:var(--ink);font-weight:700;font-size:13px;text-align:center}
+.wsize.off{color:var(--muted);font-weight:400;display:block}
+.all-size{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:700}
+.row-buy{align-items:center;flex-wrap:wrap}
 .word-empty{color:var(--muted)}
 .word-buy{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;border:1px solid var(--line);background:var(--bg2);border-radius:16px;padding:16px 18px}
-.word-buy b{display:block;font-family:"Space Grotesk",sans-serif;font-size:17px}
-.word-buy span{color:var(--muted);font-size:14px}
+.word-buy>div>b{display:block;font-family:"Space Grotesk",sans-serif;font-size:17px}
+.word-buy>div>span{color:var(--muted);font-size:14px}
 .row-buy{display:flex;gap:8px}
 .row-buy select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--ink);font-weight:700}
 
@@ -269,7 +274,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   nav button{white-space:nowrap}
   .search,.search:focus-within{order:5;width:100%;margin-left:0}
   .word{gap:8px}
-  .word .gtile{width:calc((100% - 16px)/3)}
+  .word .wcell{width:calc((100% - 16px)/3)}
+  .word .gtile,.wsize{width:100%}
   .word .gtile-body b{font-size:18px}
   .wgap{width:100%;height:4px}
 }
@@ -355,7 +361,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <div class="word" id="sWord"></div>
     <div class="word-buy" id="sBuy" hidden>
       <div><b>Toute la bande en T-shirts ?</b><span id="sBuyInfo"></span></div>
-      <div class="row-buy"><select id="sSize" aria-label="Taille pour tous les T-shirts"></select><button class="btn btn-main btn-sm" id="sAdd">Ajouter le mot au panier</button></div>
+      <div class="row-buy"><label class="all-size">Même taille pour tous <select id="sSize" aria-label="Même taille pour tous les T-shirts"></select></label><button class="btn btn-main btn-sm" id="sAdd">Ajouter le mot au panier</button></div>
     </div>
     <div id="sMsgWrap" hidden><h2 style="font-size:22px;margin-top:40px">T-shirts qui correspondent</h2><div class="grid" id="sMsg" style="margin-top:14px"></div></div>
   </section>
@@ -677,38 +683,55 @@ function wordGlyphs(q){
   const t=q.replace(/œ/gi,m=>m==='Œ'?'OE':'oe').replace(/æ/gi,m=>m==='Æ'?'AE':'ae').replace(/ß/g,'ss').slice(0,40);
   return [...t].map(ch=>/\s/.test(ch)?'gap':(k=>k&&GPRODUCTS.find(g=>g.glyph.label===k))(charKey(ch))).filter(Boolean);
 }
-let query='';
+let query='',globalSize='M',wordSizes=[],lastList=[];
+const priceFor=(g,z)=>{const v=g.pf&&(g.pf.variants.find(x=>x.size===z&&x.color===g.pf.colors[0].name)||g.pf.variants.find(x=>x.size===z));return v||null};
 function renderSearch(){
   const q=query.trim(),list=wordGlyphs(q),gl=list.filter(x=>x!=='gap');
   $('#sTitle').textContent=q?`« ${q} »`:'Écris un mot';
   $('#sSub').textContent=!q?'Tape un mot dans la barre de recherche : on te l’écrit en T-shirts.':gl.length?`${gl.length} T-shirt${gl.length>1?'s':''} pour l’écrire. À porter à plusieurs pour la photo de groupe !`:'Aucune lettre ni aucun chiffre à afficher.';
-  $('#sWord').innerHTML=list.map(x=>x==='gap'?'<span class="wgap" aria-hidden="true"></span>':gtileHTML(x)).join('');
+  // garder les tailles déjà choisies quand on modifie le mot
+  wordSizes=list.map((x,i)=>{if(x==='gap'||!x.pf)return null;const keep=lastList[i]===x&&wordSizes[i];const z=keep||globalSize;return x.pf.sizes.includes(z)?z:(x.pf.sizes.includes('M')?'M':x.pf.sizes[0])});
+  lastList=list;
+  $('#sWord').innerHTML=list.map((x,i)=>x==='gap'?'<span class="wgap" aria-hidden="true"></span>'
+    :`<div class="wcell">${gtileHTML(x)}${x.pf?`<select class="wsize" data-i="${i}" aria-label="Taille du T-shirt ${esc(x.glyph.c)}">${x.pf.sizes.map(z=>`<option${z===wordSizes[i]?' selected':''}>${z}</option>`).join('')}</select>`:'<span class="wsize off">—</span>'}</div>`).join('');
   const avail=gl.filter(g=>g.pf);
   $('#sBuy').hidden=!avail.length||gl.length<2;
   if(avail.length){
     const sizes=[...new Set(avail.flatMap(g=>g.pf.sizes))].filter(z=>avail.every(g=>g.pf.sizes.includes(z)));
-    const sel=$('#sSize'),prev=sel.value;sel.innerHTML=sizes.map(z=>`<option${z===prev?' selected':''}>${z}</option>`).join('');
-    if(!prev&&sizes.includes('M'))sel.value='M';
-    const total=avail.reduce((n,g)=>n+(g.pf.price||0),0),pk=packFor(avail.length),after=pk?total*(100-pk.pct)/100:total;
-    $('#sBuyInfo').innerHTML=`${avail.length} T-shirt${avail.length>1?'s':''} disponible${avail.length>1?'s':''} : `+(pk?`<s>${money(total)}</s> <b style="color:var(--accent)">${money(after)}</b> avec -${pk.pct} %`:money(total))+(avail.length<gl.length?` (${gl.length-avail.length} pas encore en vente)`:'');
+    $('#sSize').innerHTML='<option value="" disabled>Tailles différentes</option>'+sizes.map(z=>`<option>${z}</option>`).join('');
   }
+  updateBuy();
   const pq=plain(q),msg=pq.length>=3?PRODUCTS.filter(p=>plain(p.name).includes(pq)):[];
   $('#sMsgWrap').hidden=!msg.length;$('#sMsg').innerHTML=msg.map(cardHTML).join('');
 }
+function updateBuy(){
+  const picked=lastList.map((g,i)=>g!=='gap'&&g.pf?priceFor(g,wordSizes[i]):null).filter(Boolean);
+  const all=lastList.filter(g=>g!=='gap'),n=picked.length;
+  const uniq=[...new Set(wordSizes.filter(Boolean))];
+  $('#sSize').value=uniq.length===1?uniq[0]:'';
+  if(!n){$('#sBuyInfo').textContent='';return}
+  const total=picked.reduce((t,v)=>t+(v.price||0),0),pk=packFor(n),after=pk?total*(100-pk.pct)/100:total;
+  $('#sBuyInfo').innerHTML=`${n} T-shirt${n>1?'s':''} : `+(pk?`<s>${money(total)}</s> <b style="color:var(--accent)">${money(after)}</b> avec -${pk.pct} %`:money(total))+(n<all.length?` (${all.length-n} pas encore en vente)`:'');
+}
+$('#sWord').addEventListener('change',e=>{const s=e.target.closest('.wsize');if(!s)return;wordSizes[+s.dataset.i]=s.value;updateBuy()});
+$('#sSize').addEventListener('change',e=>{
+  const z=e.target.value;if(!z)return;globalSize=z;
+  $$('#sWord .wsize[data-i]').forEach(sel=>{const i=+sel.dataset.i;if([...sel.options].some(o=>o.value===z)){sel.value=z;wordSizes[i]=z}});
+  updateBuy();
+});
 let qT;
 $('#q').addEventListener('input',e=>{
   clearTimeout(qT);qT=setTimeout(()=>{query=e.target.value;if(query.trim()){if($('#recherche').hidden)go('recherche');else renderSearch()}},160);
 });
 $('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){query=e.target.value;go('recherche')}});
 $('#sAdd').onclick=()=>{
-  const z=$('#sSize').value;let n=0;
-  for(const g of wordGlyphs(query)){
-    if(g==='gap'||!g.pf)continue;
-    const v=g.pf.variants.find(x=>x.size===z&&x.color===g.pf.colors[0].name)||g.pf.variants.find(x=>x.size===z);if(!v)continue;
+  let n=0;
+  lastList.forEach((g,i)=>{
+    if(g==='gap'||!g.pf)return;const v=priceFor(g,wordSizes[i]);if(!v)return;
     const e=cart.find(x=>x.id===v.id);
     if(e)e.qty=Math.min(10,e.qty+1);else cart.push({id:v.id,name:g.name,color:v.color,size:v.size,price:v.price,currency:v.currency,image:'glyphs/'+g.glyph.label+'.webp',qty:1});
     n++;
-  }
+  });
   if(n){saveCart();openCart(true)}
 };
 
