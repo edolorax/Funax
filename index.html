@@ -39,7 +39,10 @@ nav{display:flex;gap:4px}
 nav button{background:none;border:0;padding:8px 14px;border-radius:8px;color:var(--muted);font-weight:600}
 nav button:hover{color:var(--ink)}
 nav button[aria-current="page"]{color:var(--ink);background:var(--surface)}
-.right{margin-left:auto;display:flex;gap:8px}
+.right{display:flex;gap:8px}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 12px;height:42px;width:220px;transition:width .25s,border-color .2s;color:var(--muted)}
+.search:focus-within{width:300px;border-color:var(--accent);color:var(--ink)}
+.search input{border:0;background:none;outline:none;width:100%;min-width:0}
 .icon-btn{background:var(--surface);border:1px solid var(--line);width:42px;height:42px;border-radius:10px;display:grid;place-items:center;flex:none}
 .acc-on{border-color:var(--accent);color:var(--accent);font-weight:700;font-family:"Space Grotesk",sans-serif}
 
@@ -190,6 +193,17 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .gtile-body span{font-size:12px;color:var(--muted);font-weight:700}
 .gtile.on .gtile-body span{color:var(--accent)}
 
+/* Recherche */
+.word{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.word .gtile{width:132px}
+.wgap{width:34px}
+.word-empty{color:var(--muted)}
+.word-buy{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;border:1px solid var(--line);background:var(--bg2);border-radius:16px;padding:16px 18px}
+.word-buy b{display:block;font-family:"Space Grotesk",sans-serif;font-size:17px}
+.word-buy span{color:var(--muted);font-size:14px}
+.row-buy{display:flex;gap:8px}
+.row-buy select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--ink);font-weight:700}
+
 /* Panier */
 .cart-btn{position:relative}
 .cart-count{position:absolute;top:-6px;right:-6px;background:var(--accent);color:#0B0D11;font-size:11px;font-weight:800;min-width:19px;height:19px;border-radius:999px;display:grid;place-items:center;padding:0 4px}
@@ -246,6 +260,15 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   .news{grid-template-columns:1fr;padding:26px}
   .foot{grid-template-columns:1fr 1fr}
   nav button{padding:8px 10px}
+  .head{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:10px;gap:10px 14px}
+  .right{margin-left:auto;order:2}
+  nav{order:4;width:100%;overflow-x:auto}
+  nav button{white-space:nowrap}
+  .search,.search:focus-within{order:5;width:100%;margin-left:0}
+  .word{gap:8px}
+  .word .gtile{width:calc((100% - 16px)/3)}
+  .word .gtile-body b{font-size:18px}
+  .wgap{width:100%;height:4px}
 }
 </style>
 </head>
@@ -259,6 +282,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <button data-go="accueil" data-scroll="alphabet" data-nav="alphabet">Alphabet</button>
       <button data-go="vetements">Tous les T-shirts</button>
     </nav>
+    <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="q" placeholder="Écris un mot…" aria-label="Rechercher ou écrire un mot en T-shirts" autocomplete="off" maxlength="40"></label>
     <div class="right"><button class="icon-btn" id="accBtn" aria-label="Se connecter ou créer un compte"></button>
       <button class="icon-btn cart-btn" id="cartBtn" aria-label="Ouvrir le panier"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg><span class="cart-count" id="cartCount" hidden>0</span></button></div>
   </div>
@@ -314,6 +339,21 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
         <div class="msg" id="newsMsg" role="status"></div>
       </div>
     </div>
+  </section>
+</main>
+
+<!-- RECHERCHE -->
+<main id="recherche" class="page wrap" hidden>
+  <section>
+    <span class="eyebrow">Ton mot en T-shirts</span>
+    <h1 class="p-title" id="sTitle"></h1>
+    <p class="sub" id="sSub"></p>
+    <div class="word" id="sWord"></div>
+    <div class="word-buy" id="sBuy" hidden>
+      <div><b>Toute la bande en T-shirts ?</b><span id="sBuyInfo"></span></div>
+      <div class="row-buy"><select id="sSize" aria-label="Taille pour tous les T-shirts"></select><button class="btn btn-main btn-sm" id="sAdd">Ajouter le mot au panier</button></div>
+    </div>
+    <div id="sMsgWrap" hidden><h2 style="font-size:22px;margin-top:40px">T-shirts qui correspondent</h2><div class="grid" id="sMsg" style="margin-top:14px"></div></div>
   </section>
 </main>
 
@@ -544,13 +584,17 @@ function glyphKey(name){
   return ({'+':'plus','=':'egal','-':'moins'})[k]||(k.length===1?k.toUpperCase():k);
 }
 let gGroup='all';
+function gtileHTML(gp){
+  const on=!!gp.pf;
+  return `<button class="gtile${on?' on':''}" data-product="${gp.id}" aria-label="T-shirt ${gp.glyph.c}${on?'':', bientôt disponible'}"><div class="gtile-img">${teeHTML(WHITE,gp)}</div><div class="gtile-body"><b>${esc(gp.glyph.c)}</b><span>${on?money(gp.pf.price,gp.pf.currency):'Bientôt'}</span></div></button>`;
+}
 function glyphGridHTML(){
   let last='',out='';
   for(const gp of GPRODUCTS){
     if(gGroup!=='all'&&gp.glyph.group!==gGroup)continue;
     if(gGroup==='all'&&gp.glyph.group!==last){out+=`<div class="ggroup">${gp.glyph.group}</div>`;last=gp.glyph.group}
     const on=!!gp.pf;
-    out+=`<button class="gtile${on?' on':''}" data-product="${gp.id}" aria-label="T-shirt ${gp.glyph.c}${on?'':', bientôt disponible'}"><div class="gtile-img">${teeHTML(WHITE,gp)}</div><div class="gtile-body"><b>${esc(gp.glyph.c)}</b><span>${on?money(gp.pf.price,gp.pf.currency):'Bientôt'}</span></div></button>`;
+    out+=gtileHTML(gp);
   }
   return out;
 }
@@ -616,11 +660,58 @@ function sidesHTML(hasBack){
 function setSide(k){side=k;renderProduct()}
 
 
+/* ---------- Recherche : écrire un mot en T-shirts ---------- */
+const plain=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+function charKey(ch){
+  const c=plain(ch).toUpperCase();
+  if(/^[A-Z0-9]$/.test(c))return c;
+  return {'+':'plus','=':'egal','-':'moins','–':'moins','—':'moins'}[ch]||null;
+}
+function wordGlyphs(q){
+  const t=q.replace(/œ/gi,m=>m==='Œ'?'OE':'oe').replace(/æ/gi,m=>m==='Æ'?'AE':'ae').replace(/ß/g,'ss').slice(0,40);
+  return [...t].map(ch=>/\s/.test(ch)?'gap':(k=>k&&GPRODUCTS.find(g=>g.glyph.label===k))(charKey(ch))).filter(Boolean);
+}
+let query='';
+function renderSearch(){
+  const q=query.trim(),list=wordGlyphs(q),gl=list.filter(x=>x!=='gap');
+  $('#sTitle').textContent=q?`« ${q} »`:'Écris un mot';
+  $('#sSub').textContent=!q?'Tape un mot dans la barre de recherche : on te l’écrit en T-shirts.':gl.length?`${gl.length} T-shirt${gl.length>1?'s':''} pour l’écrire. À porter à plusieurs pour la photo de groupe !`:'Aucune lettre ni aucun chiffre à afficher.';
+  $('#sWord').innerHTML=list.map(x=>x==='gap'?'<span class="wgap" aria-hidden="true"></span>':gtileHTML(x)).join('');
+  const avail=gl.filter(g=>g.pf);
+  $('#sBuy').hidden=!avail.length||gl.length<2;
+  if(avail.length){
+    const sizes=[...new Set(avail.flatMap(g=>g.pf.sizes))].filter(z=>avail.every(g=>g.pf.sizes.includes(z)));
+    const sel=$('#sSize'),prev=sel.value;sel.innerHTML=sizes.map(z=>`<option${z===prev?' selected':''}>${z}</option>`).join('');
+    if(!prev&&sizes.includes('M'))sel.value='M';
+    const total=avail.reduce((n,g)=>n+(g.pf.price||0),0);
+    $('#sBuyInfo').textContent=`${avail.length} T-shirt${avail.length>1?'s':''} disponible${avail.length>1?'s':''}, à partir de ${money(total)}`+(avail.length<gl.length?` (${gl.length-avail.length} pas encore en vente)`:'');
+  }
+  const pq=plain(q),msg=pq.length>=3?PRODUCTS.filter(p=>plain(p.name).includes(pq)):[];
+  $('#sMsgWrap').hidden=!msg.length;$('#sMsg').innerHTML=msg.map(cardHTML).join('');
+}
+let qT;
+$('#q').addEventListener('input',e=>{
+  clearTimeout(qT);qT=setTimeout(()=>{query=e.target.value;if(query.trim()){if($('#recherche').hidden)go('recherche');else renderSearch()}},160);
+});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){query=e.target.value;go('recherche')}});
+$('#sAdd').onclick=()=>{
+  const z=$('#sSize').value;let n=0;
+  for(const g of wordGlyphs(query)){
+    if(g==='gap'||!g.pf)continue;
+    const v=g.pf.variants.find(x=>x.size===z&&x.color===g.pf.colors[0].name)||g.pf.variants.find(x=>x.size===z);if(!v)continue;
+    const e=cart.find(x=>x.id===v.id);
+    if(e)e.qty=Math.min(10,e.qty+1);else cart.push({id:v.id,name:g.name,color:v.color,size:v.size,price:v.price,currency:v.currency,image:'glyphs/'+g.glyph.label+'.webp',qty:1});
+    n++;
+  }
+  if(n){saveCart();openCart(true)}
+};
+
 /* ---------- Navigation ---------- */
 function go(page,scroll){
   $$('.page').forEach(p=>p.hidden=p.id!==page);
   const navKey=scroll==='alphabet'||(page==='produit'&&cur&&cur.glyph)?'alphabet':page==='produit'?'vetements':page;
   $$('nav button').forEach(b=>{if((b.dataset.nav||b.dataset.go)===navKey)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  if(page==='recherche')renderSearch();
   if(page==='produit'){renderProduct();const bb=$('#backBtn');if(cur.glyph){bb.dataset.go='accueil';bb.dataset.scroll='alphabet';bb.textContent='← Alphabet'}else{bb.dataset.go='vetements';delete bb.dataset.scroll;bb.textContent='← Tous les T-shirts'}}
   if(scroll){const el=document.getElementById(scroll);if(el)requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth'}));}else window.scrollTo(0,0);
 }
