@@ -5,6 +5,13 @@ const crypto = require('crypto');
 const SHIP = { base: 490, extra: 150, freeFrom: 6000 };
 const COUNTRIES = ['FR', 'BE', 'LU', 'CH', 'MC'];
 
+// Réductions automatiques selon le nombre de T-shirts dans la commande (hors livraison)
+const PACKS = [
+  { min: 5, pct: 30, id: 'FUNAX-PACK-30', name: 'Pack 5 T-shirts et plus (-30 %)' },
+  { min: 2, pct: 20, id: 'FUNAX-PACK-20', name: 'Pack 2 T-shirts et plus (-20 %)' }
+];
+const packFor = qty => PACKS.find(p => qty >= p.min) || null;
+
 async function pf(path, opts = {}) {
   const r = await fetch('https://api.printful.com' + path, {
     ...opts,
@@ -112,4 +119,13 @@ async function createOrderFromSession(sessionId) {
   }
 }
 
-module.exports = { SHIP, COUNTRIES, pf, stripe, getProducts, createOrderFromSession };
+// Crée le coupon Stripe de la réduction s'il n'existe pas encore (une seule fois par mode test / réel)
+async function ensureCoupon(pack) {
+  try { return await stripe('/coupons/' + pack.id); }
+  catch (e) {
+    if (!/no such coupon/i.test(e.message)) throw e;
+    return stripe('/coupons', { id: pack.id, percent_off: pack.pct, duration: 'once', name: pack.name });
+  }
+}
+
+module.exports = { SHIP, COUNTRIES, PACKS, packFor, ensureCoupon, pf, stripe, getProducts, createOrderFromSession };
