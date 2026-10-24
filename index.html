@@ -836,6 +836,10 @@ $('#payBtn').onclick=async()=>{
     location.href=d.url;
   }catch(e){$('#payErr').textContent=e.message;b.disabled=false;b.textContent='Payer'}
 };
+// Retour arrière depuis Stripe : on réactive le bouton Payer (le navigateur restaure sinon l'ancien état bloqué)
+function resetPay(){const b=$('#payBtn');if(!b)return;b.textContent='Payer';b.disabled=!cart.length;$('#payErr').textContent=''}
+window.addEventListener('pageshow',e=>{cart=ls.get('funax-cart')||[];renderCart();resetPay()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&$('#payBtn').textContent!=='Payer')setTimeout(resetPay,1500)});
 function toast(t){const n=document.createElement('div');n.className='toast';n.setAttribute('role','status');n.textContent=t;document.body.appendChild(n);setTimeout(()=>n.remove(),4500)}
 (function handleReturn(){
   const q=new URLSearchParams(location.search),st=q.get('commande');if(!st)return;
