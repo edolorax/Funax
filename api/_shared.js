@@ -10,6 +10,9 @@ const PACKS = [
   { min: 5, pct: 30, id: 'FUNAX-PACK-30', name: 'Pack 5 T-shirts et plus (-30 %)' },
   { min: 2, pct: 20, id: 'FUNAX-PACK-20', name: 'Pack 2 T-shirts et plus (-20 %)' }
 ];
+// Prix de vente Funax par taille (remplacent ceux de Printful, partout : site, panier, Stripe)
+const PRICE_BY_SIZE = { XS: 25, S: 25, M: 25, L: 25, XL: 25, '2XL': 27, XXL: 27, '3XL': 28, '4XL': 30, '5XL': 30 };
+const priceFor = size => PRICE_BY_SIZE[String(size).toUpperCase()] || 30;
 const packFor = qty => PACKS.find(p => qty >= p.min) || null;
 
 async function pf(path, opts = {}) {
@@ -74,8 +77,8 @@ async function getProducts() {
         color: fr((v.color || (v.name || '').split('/').slice(-2, -1)[0] || 'Couleur').trim()),
         size: v.size || (v.name || '').split('/').pop().trim(),
         hex: colorCode[v.variant_id] || '#888888',
-        price: Number(v.retail_price) || null,
-        currency: v.currency || 'EUR',
+        price: priceFor(v.size || (v.name || '').split('/').pop().trim()),
+        currency: 'EUR',
         image: (preview && preview.preview_url) || (v.product && v.product.image) || d.sync_product.thumbnail_url,
         front: fFront ? (fFront.preview_url || fFront.url) : null,
         back: fBack ? (fBack.preview_url || fBack.url) : null
