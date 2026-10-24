@@ -109,7 +109,9 @@ async function getProductsCached(maxAge = 5 * 60 * 1000) {
 async function createOrderFromSession(sessionId) {
   const s = await stripe('/checkout/sessions/' + encodeURIComponent(sessionId));
   if (s.payment_status !== 'paid') return { ok: false, status: s.payment_status };
-  const items = JSON.parse((s.metadata && s.metadata.items) || '[]');
+  const md = s.metadata || {};
+  const raw = md.items || Object.keys(md).filter(k => /^items_\d+$/.test(k)).sort((a, b) => a.split('_')[1] - b.split('_')[1]).map(k => md[k]).join('');
+  const items = JSON.parse(raw || '[]');
   const sh = s.shipping_details || (s.collected_information && s.collected_information.shipping_details);
   if (!sh || !sh.address) throw new Error('Adresse de livraison absente');
   const a = sh.address;
