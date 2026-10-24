@@ -310,7 +310,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
         <button class="btn btn-ghost" data-go="accueil" data-scroll="alphabet">Voir l’alphabet</button>
       </div>
       <div class="stats">
-        <div><b>39</b><span>caractères</span></div>
+        <div><b>41</b><span>caractères</span></div>
         <div><b>XS–4XL</b><span>toutes les tailles</span></div>
       </div>
     </div>
@@ -320,7 +320,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <section id="alphabet">
     <span class="eyebrow">L’alphabet</span>
     <h2 style="margin-top:12px">Choisis ton caractère</h2>
-    <p class="sub">26 lettres, 10 chiffres et 3 symboles, imprimés en noir sur toute la face d’un T-shirt blanc. Compose ton mot lettre par lettre, ou tape-le directement dans la recherche : on te montre toute la bande, et plus vous êtes nombreux, plus la réduction grimpe.</p>
+    <p class="sub">26 lettres, 10 chiffres et 5 symboles, imprimés en noir sur toute la face d’un T-shirt blanc. Compose ton mot lettre par lettre, ou tape-le directement dans la recherche : on te montre toute la bande, et plus vous êtes nombreux, plus la réduction grimpe.</p>
     <div class="seg gtabs" id="gTabs" role="group" aria-label="Catégorie">
       <button class="chip2" data-group="all" aria-pressed="true">Tout</button>
       <button class="chip2" data-group="Lettres" aria-pressed="false">Lettres</button>
@@ -576,7 +576,7 @@ let PRODUCTS=[];
 const WHITE={name:'Blanc, impression noire',tee:'#FFFFFF',ink:'#141414'};
 const GLYPHS=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(c=>({c,label:c,group:'Lettres'}))
   .concat([...'1234567890'].map(c=>({c,label:c,group:'Chiffres'})))
-  .concat([['+','plus'],['=','egal'],['-','moins']].map(([c,label])=>({c,label,group:'Symboles'})));
+  .concat([['+','plus'],['=','egal'],['-','moins'],['?','interrogation'],['!','exclamation']].map(([c,label])=>({c,label,group:'Symboles'})));
 const GPRODUCTS=GLYPHS.map(g=>({id:'glyph-'+g.label,type:'T-shirt alphabet',name:'T-shirt '+g.c,glyph:g,ways:[WHITE],print:{front:{mask:`glyphs/${g.label}.webp`,ratio:'3/4'}}}));
 const pfWay=c=>({name:c.name,tee:c.hex||'#ffffff',ink:L(c.hex||'#ffffff')<110?'#FFFFFF':'#141414'});
 const pfPrint=c=>({front:c.front?{img:c.front}:null,back:c.back?{img:c.back}:null});
@@ -584,9 +584,9 @@ function tee3dHTML(w,prod,sd){return teeHTML(w,prod,sd)}
 const findProduct=id=>GPRODUCTS.find(x=>x.id===id)||PRODUCTS.find(x=>x.id===id);
 function glyphKey(name){
   const n=String(name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
-  const m=n.match(/^(?:t-?shirt\s+)?(?:lettre|chiffre|symbole|signe)?\s*([A-Za-z0-9]|plus|egal|moins|\+|=|-)$/i);
+  const m=n.match(/^(?:t-?shirt\s+)?(?:lettre|chiffre|symbole|signe)?\s*([A-Za-z0-9]|plus|egal|moins|interrogation|exclamation|\+|=|-|\?|!)$/i);
   if(!m)return null;const k=m[1].toLowerCase();
-  return ({'+':'plus','=':'egal','-':'moins'})[k]||(k.length===1?k.toUpperCase():k);
+  return ({'+':'plus','=':'egal','-':'moins','?':'interrogation','!':'exclamation'})[k]||(k.length===1?k.toUpperCase():k);
 }
 let gGroup='all';
 function gtileHTML(gp){
@@ -668,7 +668,7 @@ const plain=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLower
 function charKey(ch){
   const c=plain(ch).toUpperCase();
   if(/^[A-Z0-9]$/.test(c))return c;
-  return {'+':'plus','=':'egal','-':'moins','–':'moins','—':'moins'}[ch]||null;
+  return {'+':'plus','=':'egal','-':'moins','–':'moins','—':'moins','?':'interrogation','!':'exclamation','¿':'interrogation','¡':'exclamation'}[ch]||null;
 }
 function wordGlyphs(q){
   const t=q.replace(/œ/gi,m=>m==='Œ'?'OE':'oe').replace(/æ/gi,m=>m==='Æ'?'AE':'ae').replace(/ß/g,'ss').slice(0,40);
@@ -875,7 +875,7 @@ async function loadPrintful(){
 /* ---------- Démarrage ---------- */
 $('#heroTee').insertAdjacentHTML('beforeend',teeHTML(WHITE,GPRODUCTS[0]));
 (function heroCycle(){
-  const seq=['A','F','U','N','X','7','M','+','E','3','Z'].map(c=>GPRODUCTS.find(g=>g.glyph.c===c));
+  const seq=['A','F','U','N','X','!','7','M','?','E','3','Z'].map(c=>GPRODUCTS.find(g=>g.glyph.c===c));
   seq.forEach(g=>{const i=new Image();i.src=g.print.front.mask});
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   let i=0;setInterval(()=>{i=(i+1)%seq.length;const g=seq[i],pm=$('#heroTee .tee-pimg');if(pm)pm.style.setProperty('--pm',`url(${g.print.front.mask})`);$('#heroChar').textContent=g.glyph.c},1600);
