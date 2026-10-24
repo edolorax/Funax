@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Funax · T-shirts alphabet</title>
-<meta name="description" content="Funax : une lettre, un chiffre ou un symbole, en grand sur un T-shirt blanc.">
+<meta name="description" content="Funax : un T-shirt, une lettre. Seul, c’est ton initiale ; entre amis, alignez-vous et écrivez ce que vous voulez : un prénom, une blague, une date, un cri de ralliement.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display&family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,100,1&display=swap" rel="stylesheet">
 <style>
@@ -176,7 +176,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .tee-pimg-img.img-mul{mix-blend-mode:multiply}
 
 /* Alphabet */
-.hero h1{font-size:clamp(48px,7vw,96px)}
+.hero h1{font-size:clamp(40px,5.2vw,74px)}
 .hero-char{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:min(46vw,520px);line-height:1;color:rgba(198,255,61,.07);pointer-events:none;user-select:none}
 .hero-vis .tee{z-index:1}
 .gtabs{margin-bottom:18px}
@@ -302,11 +302,12 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 <main id="accueil" class="page wrap">
   <div class="hero">
     <div>
-      <span class="eyebrow">La collection Alphabet</span>
-      <h1>Une lettre.<br><em>Un T-shirt.</em></h1>
-      <p>26 lettres, 10 chiffres et 3 symboles, imprimés en grand sur un T-shirt blanc. Ton initiale, ton numéro fétiche, ton signe : choisis le tien.</p>
+      <span class="eyebrow">Les T-shirts qui s’assemblent</span>
+      <h1>Une lettre chacun.<br><em>Un message ensemble.</em></h1>
+      <p>Chaque T-shirt Funax porte un seul caractère, en grand. Seul, c’est ton initiale. À plusieurs, c’est votre message : un prénom, une blague, une date, un cri de ralliement… Alignez-vous, la photo fait le reste.</p>
       <div class="ctas">
-        <button class="btn btn-main" data-go="accueil" data-scroll="alphabet">Choisir mon caractère</button>
+        <button class="btn btn-main" id="heroWrite">Écrire notre mot</button>
+        <button class="btn btn-ghost" data-go="accueil" data-scroll="alphabet">Voir l’alphabet</button>
       </div>
       <div class="stats">
         <div><b>39</b><span>caractères</span></div>
@@ -319,7 +320,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <section id="alphabet">
     <span class="eyebrow">L’alphabet</span>
     <h2 style="margin-top:12px">Choisis ton caractère</h2>
-    <p class="sub">Un seul caractère, imprimé en noir sur toute la face d’un T-shirt blanc, dans une typographie au caractère bien trempé.</p>
+    <p class="sub">26 lettres, 10 chiffres et 3 symboles, imprimés en noir sur toute la face d’un T-shirt blanc. Compose ton mot lettre par lettre, ou tape-le directement dans la recherche : on te montre toute la bande, et plus vous êtes nombreux, plus la réduction grimpe.</p>
     <div class="seg gtabs" id="gTabs" role="group" aria-label="Catégorie">
       <button class="chip2" data-group="all" aria-pressed="true">Tout</button>
       <button class="chip2" data-group="Lettres" aria-pressed="false">Lettres</button>
@@ -481,7 +482,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 <footer>
   <div class="wrap">
     <div class="foot">
-      <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Une lettre, un T-shirt.</p></div>
+      <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Une lettre chacun, un message ensemble.</p></div>
       <div><h4>Boutique</h4><ul><li><a href="#" data-go="accueil" data-scroll="alphabet">Alphabet</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#" data-go="mentions">Mentions légales</a></li><li><a href="#" data-go="cgv">Conditions générales de vente</a></li><li><a href="#" data-go="confidentialite">Confidentialité</a></li><li><a href="mailto:lorain.edouard@gmail.com">Contact</a></li></ul></div>
     </div>
@@ -740,6 +741,7 @@ document.addEventListener('click',e=>{
   if(p){e.preventDefault();closeAcc();cur=findProduct(p.dataset.product);if(!cur)return;way=0;size=null;side='front';go('produit');return}
   if(g){e.preventDefault();closeAcc();go(g.dataset.go,g.dataset.scroll)}
 });
+$('#heroWrite').onclick=()=>{window.scrollTo({top:0,behavior:'smooth'});const q=$('#q');q.focus();if(!q.value)q.placeholder='Écris votre mot ici…'};
 $('#newsForm').onsubmit=e=>{e.preventDefault();$('#newsMsg').textContent='Inscription enregistrée.';e.target.reset()};
 
 /* ---------- Compte ---------- */
