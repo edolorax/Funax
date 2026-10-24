@@ -10,12 +10,19 @@ async function loadProducts(req) {
   return getProductsCached();
 }
 
+// Stripe limite chaque info à 500 caractères : on découpe la liste des articles en plusieurs morceaux.
+function chunkMeta(str) {
+  const meta = {};
+  for (let i = 0, n = 0; i < str.length; i += 480, n++) meta['items_' + n] = str.slice(i, i + 480);
+  return meta;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Méthode non autorisée' });
   if (!process.env.STRIPE_SECRET_KEY) return res.status(500).json({ error: 'STRIPE_SECRET_KEY manquant dans Vercel' });
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-    const items = (body.items || []).filter(i => i && i.variantId && i.qty > 0).slice(0, 20);
+    const items = (body.items || []).filter(i => i && i.variantId && i.qty > 0).slice(0, 80);
     if (!items.length) return res.status(400).json({ error: 'Ton panier est vide.' });
 
     const products = await loadProducts(req);
@@ -26,7 +33,7 @@ module.exports = async (req, res) => {
     for (const it of items) {
       const v = all.get(String(it.variantId));
       if (!v || !v.price) return res.status(400).json({ error: 'Un article de ton panier n’est plus disponible.' });
-      const q = Math.max(1, Math.min(10, Math.floor(it.qty)));
+      const q = Math.max(1, Math.min(50, Math.floor(it.qty)));
       qty += q; subtotal += Math.round(v.price * 100) * q;
       lines.push({ v, q });
     }
@@ -57,7 +64,7 @@ module.exports = async (req, res) => {
         }
       }],
       discounts: pack ? [{ coupon: pack.id }] : undefined,
-      metadata: { items: JSON.stringify(lines.map(({ v, q }) => [v.id, q])) },
+      metadata: chunkMeta(JSON.stringify(lines.map(({ v, q }) => [v.id, q]))),
       success_url: origin + '/?commande=ok&session_id={CHECKOUT_SESSION_ID}',
       cancel_url: origin + '/?commande=annulee'
     });
