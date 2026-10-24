@@ -1,5 +1,14 @@
 // Crée la page de paiement Stripe à partir du panier. Les prix sont relus chez Printful (jamais ceux envoyés par le navigateur).
-const { SHIP, COUNTRIES, packFor, ensureCoupon, stripe, getProducts } = require('./_shared');
+const { SHIP, COUNTRIES, packFor, ensureCoupon, stripe, getProductsCached } = require('./_shared');
+
+// Lit la liste des produits depuis notre propre page /api/products (déjà en cache), pour ne pas solliciter Printful à chaque paiement.
+async function loadProducts(req) {
+  try {
+    const r = await fetch('https://' + req.headers.host + '/api/products');
+    if (r.ok) { const d = await r.json(); if (d.products && d.products.length) return d.products; }
+  } catch (e) {}
+  return getProductsCached();
+}
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Méthode non autorisée' });
@@ -9,7 +18,7 @@ module.exports = async (req, res) => {
     const items = (body.items || []).filter(i => i && i.variantId && i.qty > 0).slice(0, 20);
     if (!items.length) return res.status(400).json({ error: 'Ton panier est vide.' });
 
-    const products = await getProducts();
+    const products = await loadProducts(req);
     const all = new Map();
     products.forEach(p => p.variants.forEach(v => all.set(String(v.id), { ...v, product: p.name })));
 
@@ -54,6 +63,7 @@ module.exports = async (req, res) => {
     });
     res.status(200).json({ url: session.url });
   } catch (e) {
-    res.status(500).json({ error: String(e.message || e) });
+    const msg = String(e.message || e);
+    res.status(500).json({ error: /too many requests/i.test(msg) ? 'Beaucoup de monde en ce moment : réessaie dans une minute.' : msg });
   }
 };
