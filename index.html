@@ -290,7 +290,6 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <nav aria-label="Navigation principale">
       <button data-go="accueil" aria-current="page">Accueil</button>
       <button data-go="accueil" data-scroll="alphabet" data-nav="alphabet">Alphabet</button>
-      <button data-go="vetements">Tous les T-shirts</button>
     </nav>
     <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input type="search" id="q" placeholder="Écris un mot…" aria-label="Rechercher ou écrire un mot en T-shirts" autocomplete="off" maxlength="40"></label>
@@ -308,7 +307,6 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <p>26 lettres, 10 chiffres et 3 symboles, imprimés en grand sur un T-shirt blanc. Ton initiale, ton numéro fétiche, ton signe : choisis le tien.</p>
       <div class="ctas">
         <button class="btn btn-main" data-go="accueil" data-scroll="alphabet">Choisir mon caractère</button>
-        <button class="btn btn-ghost" data-go="vetements">Tous les T-shirts</button>
       </div>
       <div class="stats">
         <div><b>39</b><span>caractères</span></div>
@@ -329,13 +327,6 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <button class="chip2" data-group="Symboles" aria-pressed="false">Symboles</button>
     </div>
     <div class="ggrid" id="glyphGrid"></div>
-  </section>
-
-  <section>
-    <span class="eyebrow">Et aussi</span>
-    <h2 style="margin-top:12px">Les T-shirts à message</h2>
-    <p class="sub">Des phrases qui font sourire.</p>
-    <div class="grid" id="homeGrid"></div>
   </section>
 
   <section>
@@ -363,7 +354,6 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <div><b>Toute la bande en T-shirts ?</b><span id="sBuyInfo"></span></div>
       <div class="row-buy"><label class="all-size">Même taille pour tous <select id="sSize" aria-label="Même taille pour tous les T-shirts"></select></label><button class="btn btn-main btn-sm" id="sAdd">Ajouter le mot au panier</button></div>
     </div>
-    <div id="sMsgWrap" hidden><h2 style="font-size:22px;margin-top:40px">T-shirts qui correspondent</h2><div class="grid" id="sMsg" style="margin-top:14px"></div></div>
   </section>
 </main>
 
@@ -374,14 +364,13 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <h1 class="p-title">Tous les T-shirts</h1>
     <h2 style="font-size:24px;margin-top:28px">Alphabet</h2>
     <div class="ggrid" id="catGlyphGrid" style="margin-top:16px"></div>
-    <h2 style="font-size:24px;margin-top:44px">T-shirts à message</h2>
-    <div class="grid" id="catGrid" style="margin-top:16px"></div>
+
   </section>
 </main>
 
 <!-- PRODUIT -->
 <main id="produit" class="page wrap" hidden>
-  <button class="btn btn-ghost btn-sm back" id="backBtn" data-go="vetements">← Tous les T-shirts</button>
+  <button class="btn btn-ghost btn-sm back" id="backBtn" data-go="accueil" data-scroll="alphabet">← Alphabet</button>
   <div class="product">
     <div>
       <div class="tee-stage" id="pBig"></div>
@@ -487,7 +476,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div class="wrap">
     <div class="foot">
       <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Une lettre, un T-shirt.</p></div>
-      <div><h4>Boutique</h4><ul><li><a href="#" data-go="accueil" data-scroll="alphabet">Alphabet</a></li><li><a href="#" data-go="vetements">Tous les T-shirts</a></li></ul></div>
+      <div><h4>Boutique</h4><ul><li><a href="#" data-go="accueil" data-scroll="alphabet">Alphabet</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#" data-go="mentions">Mentions légales</a></li><li><a href="#" data-go="cgv">Conditions générales de vente</a></li><li><a href="#" data-go="confidentialite">Confidentialité</a></li><li><a href="mailto:lorain.edouard@gmail.com">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
@@ -567,7 +556,7 @@ const TEE_WAYS=[
 const SIZES=['XS','S','M','L','XL','XXL','3XL'];
 const L=h=>parseInt(h.slice(1,3),16)*.3+parseInt(h.slice(3,5),16)*.59+parseInt(h.slice(5,7),16)*.11;
 function teeHTML(w,prod,side='front'){
-  prod=prod||PRODUCTS[0];
+  prod=prod||GPRODUCTS[0];
   const pat=w.pat==='stripes'?`repeating-linear-gradient(0deg,${w.p2} 0 1.1%,transparent 1.1% 2.6%)`
     :w.pat==='dots'?`radial-gradient(circle,${w.p2} 0 26%,transparent 30%) 0 0/2.6% 2.6%`:'none';
   const base=side==='back'?'tee-back':'tee', pr=prod.print[side], ink=L(w.ink)<128?'ink-dark':'ink-light';
@@ -576,10 +565,7 @@ function teeHTML(w,prod,side='front'){
 }
 
 /* ---------- Produits ---------- */
-let PRODUCTS=[
-  {id:'tshirt-citation',type:'T-shirt',name:'T-shirt citation',ways:TEE_WAYS,isNew:true,
-   print:{front:{html:TEE_PRINT}}}
-];
+let PRODUCTS=[];
 const WHITE={name:'Blanc, impression noire',tee:'#FFFFFF',ink:'#141414'};
 const GLYPHS=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map(c=>({c,label:c,group:'Lettres'}))
   .concat([...'1234567890'].map(c=>({c,label:c,group:'Chiffres'})))
@@ -622,12 +608,10 @@ function cardHTML(p){
 }
 const soonHTML='<div class="pcard soon"><div class="pcard-img"><span class="plus">+</span></div><div class="pcard-body"><h3>Bientôt</h3><span class="price">Un nouveau modèle arrive.</span></div></div>';
 function renderGrids(){
-  $('#homeGrid').innerHTML=PRODUCTS.map(cardHTML).join('')+soonHTML;
-  $('#catGrid').innerHTML=PRODUCTS.map(cardHTML).join('')+soonHTML;
   $('#glyphGrid').innerHTML=glyphGridHTML();
   const keep=gGroup;gGroup='all';$('#catGlyphGrid').innerHTML=glyphGridHTML();gGroup=keep;
 }
-let cur=PRODUCTS[0],way=0,size=null,side='front';
+let cur=null,way=0,size=null,side='front';
 function renderPF(){
   const f=cur.pf,c=f.colors[way]||f.colors[0],avail=f.variants.filter(v=>v.color===c.name),sel=size&&avail.find(v=>v.size===size);
   $('#pType').textContent=cur.glyph?'T-shirt alphabet':'T-shirt';$('#pName').textContent=cur.glyph?cur.name:f.name;
@@ -701,8 +685,7 @@ function renderSearch(){
     $('#sSize').innerHTML='<option value="" disabled>Tailles différentes</option>'+sizes.map(z=>`<option>${z}</option>`).join('');
   }
   updateBuy();
-  const pq=plain(q),msg=pq.length>=3?PRODUCTS.filter(p=>plain(p.name).includes(pq)):[];
-  $('#sMsgWrap').hidden=!msg.length;$('#sMsg').innerHTML=msg.map(cardHTML).join('');
+
 }
 function updateBuy(){
   const picked=lastList.map((g,i)=>g!=='gap'&&g.pf?priceFor(g,wordSizes[i]):null).filter(Boolean);
@@ -748,7 +731,7 @@ $('#gTabs').onclick=e=>{const b=e.target.closest('[data-group]');if(!b)return;gG
 document.addEventListener('click',e=>{
   const g=e.target.closest('[data-go]');if(g&&g.closest('#drawer'))openCart(false);
   const _g=g,p=e.target.closest('[data-product]');
-  if(p){e.preventDefault();closeAcc();cur=findProduct(p.dataset.product)||PRODUCTS[0];way=0;size=null;side='front';go('produit');return}
+  if(p){e.preventDefault();closeAcc();cur=findProduct(p.dataset.product);if(!cur)return;way=0;size=null;side='front';go('produit');return}
   if(g){e.preventDefault();closeAcc();go(g.dataset.go,g.dataset.scroll)}
 });
 $('#newsForm').onsubmit=e=>{e.preventDefault();$('#newsMsg').textContent='Inscription enregistrée.';e.target.reset()};
@@ -872,9 +855,8 @@ async function loadPrintful(){
       const k=glyphKey(p.name),gp=k&&GPRODUCTS.find(x=>x.glyph.label===k);
       if(gp)gp.pf=p;else others.push({id:'pf-'+p.id,type:'T-shirt',name:p.name,pf:p,isNew:true});
     }
-    if(others.length)PRODUCTS=others;
     renderGrids();
-    if(!$('#produit').hidden){if(!cur.pf&&!cur.glyph)cur=PRODUCTS[0];way=0;renderProduct()}
+    if(!$('#produit').hidden&&cur){way=0;renderProduct()}
   }catch(e){}
 }
 
