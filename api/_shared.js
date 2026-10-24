@@ -91,6 +91,20 @@ async function getProducts() {
   });
 }
 
+// Mémoire : on évite d'interroger Printful à chaque visite (Printful limite le nombre de requêtes par minute).
+let CACHE = { t: 0, data: null };
+async function getProductsCached(maxAge = 5 * 60 * 1000) {
+  if (CACHE.data && Date.now() - CACHE.t < maxAge) return CACHE.data;
+  try {
+    const data = await getProducts();
+    CACHE = { t: Date.now(), data };
+    return data;
+  } catch (e) {
+    if (CACHE.data) return CACHE.data; // Printful indisponible ou limite atteinte : on garde la dernière version
+    throw e;
+  }
+}
+
 // Crée la commande Printful à partir d'un paiement Stripe validé (sans doublon).
 async function createOrderFromSession(sessionId) {
   const s = await stripe('/checkout/sessions/' + encodeURIComponent(sessionId));
@@ -128,4 +142,4 @@ async function ensureCoupon(pack) {
   }
 }
 
-module.exports = { SHIP, COUNTRIES, PACKS, packFor, ensureCoupon, pf, stripe, getProducts, createOrderFromSession };
+module.exports = { SHIP, COUNTRIES, PACKS, packFor, ensureCoupon, pf, stripe, getProducts, getProductsCached, createOrderFromSession };
