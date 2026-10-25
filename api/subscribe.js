@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
     if (r.ok) return res.status(200).json({ ok: true });
     const d = await r.json().catch(() => ({}));
     if (d.code === 'duplicate_parameter') return res.status(200).json({ ok: true, already: true });
-    res.status(502).json({ error: 'Inscription impossible pour le moment, réessaie plus tard.' });
+    res.status(502).json({ error: 'Inscription impossible pour le moment, réessaie plus tard. (Brevo : ' + (d.message || r.status) + ')' });
   } catch (e) {
     res.status(500).json({ error: 'Inscription impossible pour le moment, réessaie plus tard.' });
   }
