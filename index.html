@@ -100,6 +100,8 @@ h2{font-size:clamp(28px,3.6vw,40px);line-height:1.1;margin:0 0 8px}
 .news p{color:var(--muted);margin:0}
 .news form{display:flex;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:6px}
 .news input{flex:1;border:0;outline:none;padding:0 12px;background:none;min-width:0}
+.news-legal{font-size:12px;color:var(--muted);margin:6px 0 0}
+.news-legal a{color:var(--muted)}
 .msg{margin-top:10px;font-weight:600;min-height:1.5em;color:var(--accent);font-size:14px}
 
 footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:40px}
@@ -339,6 +341,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
           <button class="btn btn-main btn-sm" type="submit">S’inscrire</button>
         </form>
         <div class="msg" id="newsMsg" role="status"></div>
+        <p class="news-legal">En t’inscrivant, tu acceptes de recevoir les e-mails de Funax. Désinscription en un clic à tout moment. <a href="#" data-go="confidentialite">Confidentialité</a></p>
       </div>
     </div>
   </section>
@@ -469,7 +472,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <h2>Données collectées et utilisation</h2>
     <p>Lors d’une commande, nous recueillons ton nom, ton adresse e-mail et ton adresse de livraison, uniquement pour traiter, fabriquer et livrer ta commande, et pour te contacter à son sujet. Si tu t’inscris à la newsletter, ton e-mail sert seulement à te prévenir des nouveautés ; tu peux te désinscrire à tout moment.</p>
     <h2>Partenaires</h2>
-    <p>Ces données sont transmises uniquement aux prestataires nécessaires : Stripe (paiement), Printful (fabrication et livraison) et Vercel (hébergement du site). Tes données bancaires sont traitées par Stripe et ne nous sont jamais communiquées. Certains de ces prestataires peuvent traiter des données hors de l’Union européenne, avec les garanties prévues par le RGPD.</p>
+    <p>Ces données sont transmises uniquement aux prestataires nécessaires : Stripe (paiement), Printful (fabrication et livraison), Vercel (hébergement du site) et Brevo (envoi de la newsletter, si tu t’y inscris). Tes données bancaires sont traitées par Stripe et ne nous sont jamais communiquées. Certains de ces prestataires peuvent traiter des données hors de l’Union européenne, avec les garanties prévues par le RGPD.</p>
     <h2>Durée de conservation</h2>
     <p>Les données de commande sont conservées le temps nécessaire à la gestion de la commande et aux obligations comptables (10 ans pour les pièces comptables).</p>
     <h2>Compte et stockage local</h2>
@@ -742,7 +745,16 @@ document.addEventListener('click',e=>{
   if(g){e.preventDefault();closeAcc();go(g.dataset.go,g.dataset.scroll)}
 });
 $('#heroWrite').onclick=()=>{window.scrollTo({top:0,behavior:'smooth'});const q=$('#q');q.focus();if(!q.value)q.placeholder='Écris votre mot ici…'};
-$('#newsForm').onsubmit=e=>{e.preventDefault();$('#newsMsg').textContent='Inscription enregistrée.';e.target.reset()};
+$('#newsForm').onsubmit=async e=>{
+  e.preventDefault();const f=e.target,btn=f.querySelector('button'),msg=$('#newsMsg'),email=f.querySelector('input').value;
+  btn.disabled=true;msg.style.color='';msg.textContent='Inscription…';
+  try{
+    const r=await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const d=await r.json();if(!r.ok)throw new Error(d.error||'Erreur');
+    msg.textContent=d.already?'Tu es déjà inscrit, merci !':'C’est noté ! Tu recevras nos nouveautés.';f.reset();
+  }catch(err){msg.style.color='#FF6B8B';msg.textContent=err.message}
+  btn.disabled=false;
+};
 
 /* ---------- Compte ---------- */
 const ls={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
