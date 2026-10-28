@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Funax · T-shirts alphabet</title>
+<title>Funax · Le jeu des 5 familles de la manif</title>
 <meta name="description" content="Funax : un T-shirt, une lettre. Seul, c’est ton initiale ; entre amis, alignez-vous et écrivez ce que vous voulez : un prénom, une blague, une date, un cri de ralliement.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display&family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,100,1&display=swap" rel="stylesheet">
@@ -198,6 +198,51 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .pack-badge{display:inline-block;background:rgba(198,255,61,.12);color:var(--accent);font-weight:800;font-size:13px;border-radius:6px;padding:3px 8px;margin-bottom:6px}
 .pack-strip{background:var(--accent);color:#0B0D11;text-align:center;font-weight:800;font-size:13px;padding:7px 16px}
 
+/* Jeu des 5 familles */
+.g5-hero{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding:60px 0 24px}
+.g5-title{font-size:clamp(40px,5.4vw,76px);line-height:1;margin:16px 0 22px;font-weight:700}
+.g5-title em{font-style:normal;color:var(--accent)}
+.g5-lead{color:var(--muted);font-size:18px;max-width:46ch;margin:0 0 30px}
+.g5-fan{position:relative;height:460px}
+.g5-fan .gcard{position:absolute;left:50%;top:50%;width:210px;margin:-150px 0 0 -105px;box-shadow:0 24px 40px rgba(0,0,0,.5)}
+.gcard{--fc:#FFD23D;aspect-ratio:63/88;background:#fff;color:#141414;border-radius:12px;border:5px solid var(--fc);display:flex;flex-direction:column;overflow:hidden;font-family:"Space Grotesk",sans-serif}
+.gcard-top{background:var(--fc);color:var(--fct,#141414);font-weight:700;font-size:13px;padding:6px 9px;display:flex;justify-content:space-between;align-items:center;letter-spacing:.02em}
+.gcard-top b{font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:18px}
+.gcard-art{flex:1;margin:7px;border-radius:7px;background:repeating-linear-gradient(135deg,#F1F1EE 0 10px,#E8E8E4 10px 20px);display:grid;place-items:center;text-align:center;color:#9A9A95;font-size:11px;font-weight:600;padding:6px}
+.gcard-art big{display:block;font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:64px;color:var(--fc);line-height:1;-webkit-text-stroke:1.5px rgba(0,0,0,.15)}
+.gcard-list{display:flex;justify-content:space-around;padding:4px 8px 8px;font-size:12px;font-weight:700;color:#B5B5B0}
+.gcard-list .on{color:#141414}
+.g5-fam{margin-bottom:34px}
+.g5-fam h3{display:flex;align-items:center;gap:10px;font-size:22px;margin:0 0 14px}
+.g5-fam h3 i{width:14px;height:14px;border-radius:4px;background:var(--fc);display:inline-block}
+.g5-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+#g5Families{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:10px 40px}
+.g5-fam .gcard-art big{font-size:48px}
+.g5-fam .gcard-top{font-size:11px}
+.g5-rules{display:grid;grid-template-columns:1fr 1.4fr;gap:32px;border:1px solid var(--line);background:var(--bg2);border-radius:22px;padding:34px}
+.g5-rules ol{margin:0;padding-left:22px;display:grid;gap:12px;color:#C9CED8}
+.g5-rules b{color:var(--ink)}
+.g5-specs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:20px}
+.g5-specs div{border:1px solid var(--line);background:var(--bg2);border-radius:16px;padding:18px}
+.g5-specs b{display:block;font-family:"Space Grotesk",sans-serif;font-size:19px;margin-bottom:4px}
+.g5-specs span{color:var(--muted);font-size:14px}
+.g5-cross{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border:1px dashed var(--line);border-radius:20px;padding:24px 28px}
+.g5-cross h3{margin:8px 0 4px;font-size:22px}.g5-cross p{margin:0;color:var(--muted)}
+@media (max-width:860px){
+  .g5-hero{grid-template-columns:1fr;padding-top:34px}
+  .g5-fan{height:340px}
+  .g5-fan .gcard{width:150px;margin:-110px 0 0 -75px}
+  #g5Families{grid-template-columns:1fr}
+  .g5-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .g5-fam .gcard{border-width:3px;border-radius:8px}
+  .g5-fam .gcard-top{font-size:8px;padding:4px 5px}
+  .g5-fam .gcard-top b{font-size:12px}
+  .g5-fam .gcard-art{margin:4px;font-size:0}
+  .g5-fam .gcard-art big{font-size:30px}
+  .g5-fam .gcard-list{font-size:8px;padding:2px 4px 5px}
+  .g5-rules{grid-template-columns:1fr;padding:24px}
+}
+
 /* Recherche */
 .word{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
 .word .gtile{width:132px}
@@ -285,13 +330,13 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 </head>
 <body>
 
-<div class="pack-strip">-20 % dès 2 T-shirts · -30 % dès 5 · réduction automatique dans le panier</div>
+<div class="pack-strip">T-shirts alphabet : -20 % dès 2 · -30 % dès 5 · réduction automatique dans le panier</div>
 <header>
   <div class="wrap head">
-    <button class="logo" data-go="accueil"><i aria-hidden="true"></i>FUNAX</button>
+    <button class="logo" data-go="jeu5"><i aria-hidden="true"></i>FUNAX</button>
     <nav aria-label="Navigation principale">
-      <button data-go="accueil" aria-current="page">Accueil</button>
-      <button data-go="accueil" data-scroll="alphabet" data-nav="alphabet">Alphabet</button>
+      <button data-go="jeu5" aria-current="page">Jeu des 5 familles</button>
+      <button data-go="accueil" data-nav="accueil">T-shirts alphabet</button>
     </nav>
     <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input type="search" id="q" placeholder="Écris un mot…" aria-label="Rechercher ou écrire un mot en T-shirts" autocomplete="off" maxlength="40"></label>
@@ -300,8 +345,84 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   </div>
 </header>
 
-<!-- ACCUEIL -->
-<main id="accueil" class="page wrap">
+<!-- JEU DES 5 FAMILLES (page d’accueil) -->
+<main id="jeu5" class="page wrap">
+  <div class="g5-hero">
+    <div>
+      <span class="eyebrow">Nouveau jeu de cartes</span>
+      <h1 class="g5-title">Le jeu des 5 familles<br><em>de la manif.</em></h1>
+      <p class="g5-lead">Gilets jaunes, CRS, casseurs, lycéens, agriculteurs : tout le monde est dans la rue, mais chacun cherche sa famille. Le grand classique des 7 familles, version cortège, à jouer entre amis ou en famille… pour rire de tout ce qui fait le sel des manifs.</p>
+      <div class="ctas">
+        <a href="#g5-sortie" class="btn btn-main">Préviens-moi à la sortie</a>
+        <a href="#g5-familles" class="btn btn-ghost">Découvrir les familles</a>
+      </div>
+      <div class="stats">
+        <div><b>5</b><span>familles</span></div>
+        <div><b>20</b><span>cartes</span></div>
+        <div><b>3–5</b><span>joueurs</span></div>
+      </div>
+    </div>
+    <div class="g5-fan" id="g5Fan" aria-hidden="true"></div>
+  </div>
+
+  <section id="g5-familles">
+    <span class="eyebrow">Les familles</span>
+    <h2 style="margin-top:12px">5 familles, 4 cartes chacune</h2>
+    <p class="sub">Réunis les 4 cartes d’une même famille pour la poser devant toi. Le joueur qui complète le plus de familles gagne la partie.</p>
+    <div id="g5Families"></div>
+  </section>
+
+  <section>
+    <div class="g5-rules">
+      <div>
+        <span class="eyebrow">Comment jouer</span>
+        <h2 style="margin-top:12px">Les règles en 30 secondes</h2>
+      </div>
+      <ol>
+        <li><b>Distribue</b> 5 cartes à chaque joueur. Le reste forme la pioche, au centre.</li>
+        <li><b>À ton tour</b>, demande une carte précise à un joueur : « Dans la famille CRS, je voudrais la carte B ! » Tu dois déjà avoir au moins une carte de cette famille.</li>
+        <li><b>S’il l’a</b>, il te la donne et tu rejoues. <b>Sinon</b>, il te dit « Pioche ! » et c’est à lui de jouer.</li>
+        <li><b>Famille complète</b> ? Pose les 4 cartes devant toi.</li>
+        <li>Quand toutes les familles sont posées, <b>celui qui en a le plus gagne</b>.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Dans la boîte</span>
+    <h2 style="margin-top:12px">Ce que tu reçois</h2>
+    <div class="g5-specs">
+      <div><b>20 cartes</b><span>5 familles de 4 cartes (A, B, C, D)</span></div>
+      <div><b>Format poker</b><span>63 × 88 mm, la taille d’une carte à jouer classique</span></div>
+      <div><b>Une boîte</b><span>pour ranger le jeu et l’emporter partout</span></div>
+      <div><b>3 à 5 joueurs</b><span>parties de 10 à 15 minutes, dès 10 ans</span></div>
+    </div>
+  </section>
+
+  <section id="g5-sortie">
+    <div class="news">
+      <div><h2>Sois prévenu de la sortie</h2><p>Le jeu arrive bientôt. Laisse ton e-mail : tu seras le premier au courant, avec les infos de précommande.</p></div>
+      <div>
+        <form id="g5Form">
+          <input type="email" required placeholder="ton@email.fr" aria-label="Adresse e-mail">
+          <button class="btn btn-main btn-sm" type="submit">Me prévenir</button>
+        </form>
+        <div class="msg" id="g5Msg" role="status"></div>
+        <p class="news-legal">En t’inscrivant, tu acceptes de recevoir les e-mails de Funax. Désinscription en un clic à tout moment.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="g5-cross">
+      <div><span class="eyebrow">Aussi chez Funax</span><h3>Les T-shirts alphabet</h3><p>Une lettre chacun, un message ensemble.</p></div>
+      <button class="btn btn-ghost" data-go="accueil">Voir les T-shirts</button>
+    </div>
+  </section>
+</main>
+
+<!-- T-SHIRTS ALPHABET -->
+<main id="accueil" class="page wrap" hidden>
   <div class="hero">
     <div>
       <span class="eyebrow">Les T-shirts qui s’assemblent</span>
@@ -486,7 +607,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div class="wrap">
     <div class="foot">
       <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Une lettre chacun, un message ensemble.</p></div>
-      <div><h4>Boutique</h4><ul><li><a href="#" data-go="accueil" data-scroll="alphabet">Alphabet</a></li></ul></div>
+      <div><h4>Boutique</h4><ul><li><a href="#" data-go="jeu5">Jeu des 5 familles</a></li><li><a href="#" data-go="accueil">T-shirts alphabet</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#" data-go="mentions">Mentions légales</a></li><li><a href="#" data-go="cgv">Conditions générales de vente</a></li><li><a href="#" data-go="confidentialite">Confidentialité</a></li><li><a href="mailto:lorain.edouard@gmail.com">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
@@ -666,6 +787,33 @@ function sidesHTML(hasBack){
 function setSide(k){side=k;renderProduct()}
 
 
+/* ---------- Jeu des 5 familles ---------- */
+const FAMILLES=[
+  {name:'Gilet jaune',color:'#FFD23D'},
+  {name:'CRS',color:'#3E5FB8',text:'#fff'},
+  {name:'Casseur',color:'#E2463B',text:'#fff'},
+  {name:'Lycéen',color:'#8E6CC9',text:'#fff'},
+  {name:'Agriculteur',color:'#5E9E4A',text:'#fff'}
+];
+const G5_CARDS=['A','B','C','D'];
+// Pour ajouter les images plus tard : mettre l’adresse de l’image dans img, ex. FAMILLES[0].img={A:'cartes/gilet-a.webp'}
+function g5Card(f,c){
+  const img=f.img&&f.img[c];
+  return `<div class="gcard" style="--fc:${f.color};--fct:${f.text||'#141414'}"><div class="gcard-top"><span>${esc(f.name)}</span><b>${c}</b></div>
+    <div class="gcard-art">${img?`<img src="${img}" alt="${esc(f.name)} ${c}" style="width:100%;height:100%;object-fit:cover;border-radius:6px">`:`<div><big>${c}</big>Image à venir</div>`}</div>
+    <div class="gcard-list">${G5_CARDS.map(x=>`<span class="${x===c?'on':''}">${x}</span>`).join('')}</div></div>`;
+}
+$('#g5Families').innerHTML=FAMILLES.map(f=>`<div class="g5-fam" style="--fc:${f.color}"><h3><i></i>${esc(f.name)}</h3><div class="g5-cards">${G5_CARDS.map(c=>g5Card(f,c)).join('')}</div></div>`).join('');
+$('#g5Fan').innerHTML=FAMILLES.map((f,i)=>`<div class="gcard-wrap" style="position:absolute;inset:0;transform:rotate(${(i-2)*12}deg);transform-origin:50% 85%">${g5Card(f,G5_CARDS[i%4])}</div>`).join('');
+$$('#g5Fan .gcard').forEach(c=>c.classList.add('fan'));
+$('#g5Form').onsubmit=async e=>{
+  e.preventDefault();const f=e.target,btn=f.querySelector('button'),msg=$('#g5Msg'),email=f.querySelector('input').value;
+  btn.disabled=true;msg.style.color='';msg.textContent='Inscription…';
+  try{const r=await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Erreur');msg.textContent=d.already?'Tu es déjà inscrit, on te prévient à la sortie !':'C’est noté ! On te prévient dès la sortie du jeu.';f.reset()}
+  catch(err){msg.style.color='#FF6B8B';msg.textContent=err.message}
+  btn.disabled=false;
+};
+
 /* ---------- Recherche : écrire un mot en T-shirts ---------- */
 const plain=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 function charKey(ch){
@@ -731,7 +879,7 @@ $('#sAdd').onclick=()=>{
 /* ---------- Navigation ---------- */
 function go(page,scroll){
   $$('.page').forEach(p=>p.hidden=p.id!==page);
-  const navKey=scroll==='alphabet'||(page==='produit'&&cur&&cur.glyph)?'alphabet':page==='produit'?'vetements':page;
+  const navKey=['accueil','produit','recherche','vetements'].includes(page)?'accueil':page;
   $$('nav button').forEach(b=>{if((b.dataset.nav||b.dataset.go)===navKey)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   if(page==='recherche')renderSearch();
   if(page==='produit'){renderProduct();const bb=$('#backBtn');if(cur.glyph){bb.dataset.go='accueil';bb.dataset.scroll='alphabet';bb.textContent='← Alphabet'}else{bb.dataset.go='vetements';delete bb.dataset.scroll;bb.textContent='← Tous les T-shirts'}}
