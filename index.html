@@ -205,20 +205,18 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .g5-lead{color:var(--muted);font-size:18px;max-width:46ch;margin:0 0 30px}
 .g5-fan{position:relative;height:460px}
 .g5-fan .gcard{position:absolute;left:50%;top:50%;width:210px;margin:-150px 0 0 -105px;box-shadow:0 24px 40px rgba(0,0,0,.5)}
-.gcard{--fc:#FFD23D;aspect-ratio:63/88;background:#fff;color:#141414;border-radius:12px;border:5px solid var(--fc);display:flex;flex-direction:column;overflow:hidden;font-family:"Space Grotesk",sans-serif}
-.gcard-top{background:var(--fc);color:var(--fct,#141414);font-weight:700;font-size:13px;padding:6px 9px;display:flex;justify-content:space-between;align-items:center;letter-spacing:.02em}
-.gcard-top b{font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:18px}
-.gcard-art{flex:1;margin:7px;border-radius:7px;background:repeating-linear-gradient(135deg,#F1F1EE 0 10px,#E8E8E4 10px 20px);display:grid;place-items:center;text-align:center;color:#9A9A95;font-size:11px;font-weight:600;padding:6px}
-.gcard-art big{display:block;font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:64px;color:var(--fc);line-height:1;-webkit-text-stroke:1.5px rgba(0,0,0,.15)}
-.gcard-list{display:flex;justify-content:space-around;padding:4px 8px 8px;font-size:12px;font-weight:700;color:#B5B5B0}
-.gcard-list .on{color:#141414}
+.gcard{--fc:#FFD23D;position:relative;aspect-ratio:63/88;background:#fff;border-radius:12px;border:4px solid var(--fc);overflow:hidden;font-family:"Space Grotesk",sans-serif}
+.gcard-art{position:absolute;inset:0;background:repeating-linear-gradient(135deg,#F1F1EE 0 10px,#E6E6E1 10px 20px);display:grid;place-items:center;text-align:center;color:#9A9A95;font-size:11px;font-weight:600}
+.gcard-art img{width:100%;height:100%;object-fit:cover;display:block}
+.gcard-art small{display:block;margin-top:44%}
+.gcard-letter{position:absolute;left:7px;top:7px;width:30px;height:30px;border-radius:50%;background:var(--fc);color:var(--fct,#141414);display:grid;place-items:center;font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:19px;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.gcard-fam{position:absolute;left:0;right:0;bottom:0;padding:16px 8px 6px;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;text-align:center}
 .g5-fam{margin-bottom:34px}
 .g5-fam h3{display:flex;align-items:center;gap:10px;font-size:22px;margin:0 0 14px}
 .g5-fam h3 i{width:14px;height:14px;border-radius:4px;background:var(--fc);display:inline-block}
 .g5-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 #g5Families{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:10px 40px}
-.g5-fam .gcard-art big{font-size:48px}
-.g5-fam .gcard-top{font-size:11px}
+
 .g5-rules{display:grid;grid-template-columns:1fr 1.4fr;gap:32px;border:1px solid var(--line);background:var(--bg2);border-radius:22px;padding:34px}
 .g5-rules ol{margin:0;padding-left:22px;display:grid;gap:12px;color:#C9CED8}
 .g5-rules b{color:var(--ink)}
@@ -235,11 +233,9 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   #g5Families{grid-template-columns:1fr}
   .g5-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .g5-fam .gcard{border-width:3px;border-radius:8px}
-  .g5-fam .gcard-top{font-size:8px;padding:4px 5px}
-  .g5-fam .gcard-top b{font-size:12px}
-  .g5-fam .gcard-art{margin:4px;font-size:0}
-  .g5-fam .gcard-art big{font-size:30px}
-  .g5-fam .gcard-list{font-size:8px;padding:2px 4px 5px}
+  .g5-fam .gcard-art{font-size:0}
+  .g5-fam .gcard-letter{width:20px;height:20px;font-size:13px;left:4px;top:4px}
+  .g5-fam .gcard-fam{font-size:7px;padding:10px 4px 4px}
   .g5-rules{grid-template-columns:1fr;padding:24px}
 }
 
@@ -799,9 +795,9 @@ const G5_CARDS=['A','B','C','D'];
 // Pour ajouter les images plus tard : mettre l’adresse de l’image dans img, ex. FAMILLES[0].img={A:'cartes/gilet-a.webp'}
 function g5Card(f,c){
   const img=f.img&&f.img[c];
-  return `<div class="gcard" style="--fc:${f.color};--fct:${f.text||'#141414'}"><div class="gcard-top"><span>${esc(f.name)}</span><b>${c}</b></div>
-    <div class="gcard-art">${img?`<img src="${img}" alt="${esc(f.name)} ${c}" style="width:100%;height:100%;object-fit:cover;border-radius:6px">`:`<div><big>${c}</big>Image à venir</div>`}</div>
-    <div class="gcard-list">${G5_CARDS.map(x=>`<span class="${x===c?'on':''}">${x}</span>`).join('')}</div></div>`;
+  return `<div class="gcard" style="--fc:${f.color};--fct:${f.text||'#141414'}">
+    <div class="gcard-art">${img?`<img src="${img}" alt="${esc(f.name)}, carte ${c}" loading="lazy">`:'<small>Image à venir</small>'}</div>
+    <span class="gcard-letter">${c}</span><span class="gcard-fam">${esc(f.name)}</span></div>`;
 }
 $('#g5Families').innerHTML=FAMILLES.map(f=>`<div class="g5-fam" style="--fc:${f.color}"><h3><i></i>${esc(f.name)}</h3><div class="g5-cards">${G5_CARDS.map(c=>g5Card(f,c)).join('')}</div></div>`).join('');
 $('#g5Fan').innerHTML=FAMILLES.map((f,i)=>`<div class="gcard-wrap" style="position:absolute;inset:0;transform:rotate(${(i-2)*12}deg);transform-origin:50% 85%">${g5Card(f,G5_CARDS[i%4])}</div>`).join('');
