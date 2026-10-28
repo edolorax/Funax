@@ -212,6 +212,19 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .gcard-letter{position:absolute;left:7px;top:7px;width:30px;height:30px;border-radius:50%;background:var(--fc);color:var(--fct,#141414);display:grid;place-items:center;font-family:"Fraunces",Georgia,serif;font-variation-settings:"opsz" 144,"SOFT" 100,"WONK" 1;font-weight:900;font-size:19px;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.25)}
 .gcard-fam{position:absolute;left:0;right:0;bottom:0;padding:16px 8px 6px;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;text-align:center}
 .g5-fam{margin-bottom:34px}
+.g5-fam .gcard{cursor:zoom-in;transition:transform .2s ease,box-shadow .2s ease}
+.g5-fam .gcard:hover,.g5-fam .gcard:focus-visible{transform:translateY(-4px) scale(1.06);box-shadow:0 18px 36px rgba(0,0,0,.55);z-index:2}
+.g5-box{position:fixed;inset:0;z-index:40;background:rgba(5,7,10,.88);backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px}
+.g5-box .gcard{width:min(420px,78vw,calc((100vh - 120px) * 63 / 88));border-width:7px;border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.6);animation:g5in .22s ease}
+.g5-box .gcard-letter{width:48px;height:48px;font-size:30px;left:12px;top:12px}
+.g5-box .gcard-fam{font-size:16px;padding:30px 12px 12px}
+.g5-box .gcard-art small{font-size:16px}
+@keyframes g5in{from{transform:scale(.92);opacity:0}}
+.g5-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:rgba(23,27,35,.85);color:var(--ink);font-size:22px;display:grid;place-items:center}
+.g5-prev{left:max(14px,calc(50% - 300px))}.g5-next{right:max(14px,calc(50% - 300px))}
+.g5-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px}
+.g5-count{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){.g5-fam .gcard{transition:none}.g5-box .gcard{animation:none}}
 .g5-fam h3{display:flex;align-items:center;gap:10px;font-size:22px;margin:0 0 14px}
 .g5-fam h3 i{width:14px;height:14px;border-radius:4px;background:var(--fc);display:inline-block}
 .g5-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
@@ -628,6 +641,14 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   </div>
 </aside>
 
+<div class="g5-box" id="g5Box" hidden role="dialog" aria-modal="true" aria-label="Carte en grand">
+  <button class="icon-btn g5-x" id="g5Close" aria-label="Fermer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <button class="g5-nav g5-prev" id="g5Prev" aria-label="Carte précédente">‹</button>
+  <div id="g5Big"></div>
+  <button class="g5-nav g5-next" id="g5Next" aria-label="Carte suivante">›</button>
+  <div class="g5-count" id="g5Count"></div>
+</div>
+
 <div class="modal" id="orderModal" hidden role="dialog" aria-modal="true" aria-labelledby="orderTitle">
   <div class="modal-box" style="text-align:center">
     <h3 id="orderTitle" style="margin-top:4px">Merci pour ta commande !</h3>
@@ -799,7 +820,20 @@ function g5Card(f,c){
     <div class="gcard-art">${img?`<img src="${img}" alt="${esc(f.name)}, carte ${c}" loading="lazy">`:'<small>Image à venir</small>'}</div>
     <span class="gcard-letter">${c}</span><span class="gcard-fam">${esc(f.name)}</span></div>`;
 }
-$('#g5Families').innerHTML=FAMILLES.map(f=>`<div class="g5-fam" style="--fc:${f.color}"><h3><i></i>${esc(f.name)}</h3><div class="g5-cards">${G5_CARDS.map(c=>g5Card(f,c)).join('')}</div></div>`).join('');
+$('#g5Families').innerHTML=FAMILLES.map((f,fi)=>`<div class="g5-fam" style="--fc:${f.color}"><h3><i></i>${esc(f.name)}</h3><div class="g5-cards">${G5_CARDS.map((c,ci)=>`<div data-g5="${fi*4+ci}" tabindex="0" role="button" aria-label="Voir en grand : ${esc(f.name)}, carte ${c}">${g5Card(f,c)}</div>`).join('')}</div></div>`).join('');
+let g5i=0,g5Last=null;
+function g5Show(i){
+  g5i=(i+20)%20;const f=FAMILLES[Math.floor(g5i/4)],c=G5_CARDS[g5i%4];
+  $('#g5Big').innerHTML=g5Card(f,c);$('#g5Count').textContent=`${f.name} · carte ${c} — ${g5i+1} / 20`;
+  $('#g5Box').hidden=false;
+}
+function g5Hide(){if($('#g5Box').hidden)return;$('#g5Box').hidden=true;if(g5Last)g5Last.focus()}
+$('#g5Families').addEventListener('click',e=>{const t=e.target.closest('[data-g5]');if(t){g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
+$('#g5Families').addEventListener('keydown',e=>{const t=e.target.closest('[data-g5]');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
+$('#g5Close').onclick=g5Hide;$('#g5Prev').onclick=()=>g5Show(g5i-1);$('#g5Next').onclick=()=>g5Show(g5i+1);
+$('#g5Box').addEventListener('click',e=>{if(e.target.id==='g5Box')g5Hide()});
+document.addEventListener('keydown',e=>{if($('#g5Box').hidden)return;if(e.key==='Escape')g5Hide();if(e.key==='ArrowLeft')g5Show(g5i-1);if(e.key==='ArrowRight')g5Show(g5i+1)});
+(()=>{let x0=null;const b=$('#g5Box');b.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});b.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)g5Show(g5i+(dx<0?1:-1));x0=null})})();
 $('#g5Fan').innerHTML=FAMILLES.map((f,i)=>`<div class="gcard-wrap" style="position:absolute;inset:0;transform:rotate(${(i-2)*12}deg);transform-origin:50% 85%">${g5Card(f,G5_CARDS[i%4])}</div>`).join('');
 $$('#g5Fan .gcard').forEach(c=>c.classList.add('fan'));
 $('#g5Form').onsubmit=async e=>{
