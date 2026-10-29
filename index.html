@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Funax · Le jeu des 5 familles de la manif</title>
+<title>Funax · Le jeu des 6 familles de la manif</title>
 <meta name="description" content="Funax : un T-shirt, une lettre. Seul, c’est ton initiale ; entre amis, alignez-vous et écrivez ce que vous voulez : un prénom, une blague, une date, un cri de ralliement.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display&family=Fraunces:opsz,wght,SOFT,WONK@9..144,900,100,1&display=swap" rel="stylesheet">
@@ -198,7 +198,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .pack-badge{display:inline-block;background:rgba(198,255,61,.12);color:var(--accent);font-weight:800;font-size:13px;border-radius:6px;padding:3px 8px;margin-bottom:6px}
 .pack-strip{background:var(--accent);color:#0B0D11;text-align:center;font-weight:800;font-size:13px;padding:7px 16px}
 
-/* Jeu des 5 familles */
+/* Jeu des 6 familles */
 .g5-hero{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding:60px 0 24px}
 .g5-title{font-size:clamp(40px,5.4vw,76px);line-height:1;margin:16px 0 22px;font-weight:700}
 .g5-title em{font-style:normal;color:var(--accent)}
@@ -344,7 +344,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div class="wrap head">
     <button class="logo" data-go="jeu5"><i aria-hidden="true"></i>FUNAX</button>
     <nav aria-label="Navigation principale">
-      <button data-go="jeu5" aria-current="page">Jeu des 5 familles</button>
+      <button data-go="jeu5" aria-current="page">Jeu des 6 familles</button>
       <button data-go="accueil" data-nav="accueil">T-shirts alphabet</button>
     </nav>
     <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -354,21 +354,21 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   </div>
 </header>
 
-<!-- JEU DES 5 FAMILLES (page d’accueil) -->
+<!-- JEU DES 6 FAMILLES (page d’accueil) -->
 <main id="jeu5" class="page wrap">
   <div class="g5-hero">
     <div>
       <span class="eyebrow">Nouveau jeu de cartes</span>
-      <h1 class="g5-title">Le jeu des 5 familles<br><em>de la manif.</em></h1>
-      <p class="g5-lead">Gilets jaunes, CRS, casseurs, lycéens, agriculteurs : tout le monde est dans la rue, mais chacun cherche sa famille. Le grand classique des 7 familles, version cortège, à jouer entre amis ou en famille… pour rire de tout ce qui fait le sel des manifs.</p>
+      <h1 class="g5-title">Le jeu des 6 familles<br><em>de la manif.</em></h1>
+      <p class="g5-lead">Gilets jaunes, CRS, casseurs, lycéens, agriculteurs, pompiers : tout le monde est dans la rue, mais chacun cherche sa famille. Le grand classique des 7 familles, version cortège, à jouer entre amis ou en famille… pour rire de tout ce qui fait le sel des manifs.</p>
       <div class="ctas">
         <a href="#g5-sortie" class="btn btn-main">Préviens-moi à la sortie</a>
         <a href="#g5-familles" class="btn btn-ghost">Découvrir les familles</a>
       </div>
       <div class="stats">
-        <div><b>5</b><span>familles</span></div>
-        <div><b>20</b><span>cartes</span></div>
-        <div><b>3–5</b><span>joueurs</span></div>
+        <div><b>6</b><span>familles</span></div>
+        <div><b>24</b><span>cartes</span></div>
+        <div><b>3–6</b><span>joueurs</span></div>
       </div>
     </div>
     <div class="g5-fan" id="g5Fan" aria-hidden="true"></div>
@@ -376,7 +376,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 
   <section id="g5-familles">
     <span class="eyebrow">Les familles</span>
-    <h2 style="margin-top:12px">5 familles, 4 cartes chacune</h2>
+    <h2 style="margin-top:12px">6 familles, 4 cartes chacune</h2>
     <p class="sub">Réunis les 4 cartes d’une même famille pour la poser devant toi. Le joueur qui complète le plus de familles gagne la partie.</p>
     <div id="g5Families"></div>
   </section>
@@ -401,10 +401,10 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <span class="eyebrow">Dans la boîte</span>
     <h2 style="margin-top:12px">Ce que tu reçois</h2>
     <div class="g5-specs">
-      <div><b>20 cartes</b><span>5 familles de 4 cartes (A, B, C, D)</span></div>
+      <div><b>24 cartes</b><span>6 familles de 4 cartes (A, B, C, D)</span></div>
       <div><b>Format poker</b><span>63 × 88 mm, la taille d’une carte à jouer classique</span></div>
       <div><b>Une boîte</b><span>pour ranger le jeu et l’emporter partout</span></div>
-      <div><b>3 à 5 joueurs</b><span>parties de 10 à 15 minutes, dès 10 ans</span></div>
+      <div><b>3 à 6 joueurs</b><span>parties de 10 à 15 minutes, dès 10 ans</span></div>
     </div>
   </section>
 
@@ -616,7 +616,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div class="wrap">
     <div class="foot">
       <div><span class="logo" style="font-size:20px"><i aria-hidden="true"></i>FUNAX</span><p>Une lettre chacun, un message ensemble.</p></div>
-      <div><h4>Boutique</h4><ul><li><a href="#" data-go="jeu5">Jeu des 5 familles</a></li><li><a href="#" data-go="accueil">T-shirts alphabet</a></li></ul></div>
+      <div><h4>Boutique</h4><ul><li><a href="#" data-go="jeu5">Jeu des 6 familles</a></li><li><a href="#" data-go="accueil">T-shirts alphabet</a></li></ul></div>
       <div><h4>Infos</h4><ul><li><a href="#" data-go="mentions">Mentions légales</a></li><li><a href="#" data-go="cgv">Conditions générales de vente</a></li><li><a href="#" data-go="confidentialite">Confidentialité</a></li><li><a href="mailto:lorain.edouard@gmail.com">Contact</a></li></ul></div>
     </div>
     <div class="legal">© 2026 Funax</div>
@@ -804,13 +804,14 @@ function sidesHTML(hasBack){
 function setSide(k){side=k;renderProduct()}
 
 
-/* ---------- Jeu des 5 familles ---------- */
+/* ---------- Jeu des 6 familles ---------- */
 const FAMILLES=[
   {name:'Gilet jaune',color:'#FFD23D',img:{A:'cartes/gilet-a.webp',B:'cartes/gilet-b.webp',C:'cartes/gilet-c.webp',D:'cartes/gilet-d.webp'}},
   {name:'CRS',color:'#3E5FB8',text:'#fff',img:{A:'cartes/crs-a.webp',B:'cartes/crs-b.webp',C:'cartes/crs-c.webp',D:'cartes/crs-d.webp'}},
   {name:'Casseur',color:'#E2463B',text:'#fff',img:{A:'cartes/casseur-a.webp',B:'cartes/casseur-b.webp',C:'cartes/casseur-c.webp',D:'cartes/casseur-d.webp'}},
   {name:'Lycéen',color:'#8E6CC9',text:'#fff',img:{A:'cartes/lyceen-a.webp',B:'cartes/lyceen-b.webp',C:'cartes/lyceen-c.webp',D:'cartes/lyceen-d.webp'}},
-  {name:'Agriculteur',color:'#5E9E4A',text:'#fff'}
+  {name:'Agriculteur',color:'#5E9E4A',text:'#fff'},
+  {name:'Pompier',color:'#F08A24',text:'#141414'}
 ];
 const G5_CARDS=['A','B','C','D'];
 // Pour ajouter les images plus tard : mettre l’adresse de l’image dans img, ex. FAMILLES[0].img={A:'cartes/gilet-a.webp'}
@@ -823,8 +824,8 @@ function g5Card(f,c){
 $('#g5Families').innerHTML=FAMILLES.map((f,fi)=>`<div class="g5-fam" style="--fc:${f.color}"><h3><i></i>${esc(f.name)}</h3><div class="g5-cards">${G5_CARDS.map((c,ci)=>`<div data-g5="${fi*4+ci}" tabindex="0" role="button" aria-label="Voir en grand : ${esc(f.name)}, carte ${c}">${g5Card(f,c)}</div>`).join('')}</div></div>`).join('');
 let g5i=0,g5Last=null;
 function g5Show(i){
-  g5i=(i+20)%20;const f=FAMILLES[Math.floor(g5i/4)],c=G5_CARDS[g5i%4];
-  $('#g5Big').innerHTML=g5Card(f,c);$('#g5Count').textContent=`${f.name} · carte ${c} — ${g5i+1} / 20`;
+  const N=FAMILLES.length*4;g5i=(i+N)%N;const f=FAMILLES[Math.floor(g5i/4)],c=G5_CARDS[g5i%4];
+  $('#g5Big').innerHTML=g5Card(f,c);$('#g5Count').textContent=`${f.name} · carte ${c} — ${g5i+1} / ${FAMILLES.length*4}`;
   $('#g5Box').hidden=false;
 }
 function g5Hide(){if($('#g5Box').hidden)return;$('#g5Box').hidden=true;if(g5Last)g5Last.focus()}
@@ -834,7 +835,7 @@ $('#g5Close').onclick=g5Hide;$('#g5Prev').onclick=()=>g5Show(g5i-1);$('#g5Next')
 $('#g5Box').addEventListener('click',e=>{if(e.target.id==='g5Box')g5Hide()});
 document.addEventListener('keydown',e=>{if($('#g5Box').hidden)return;if(e.key==='Escape')g5Hide();if(e.key==='ArrowLeft')g5Show(g5i-1);if(e.key==='ArrowRight')g5Show(g5i+1)});
 (()=>{let x0=null;const b=$('#g5Box');b.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});b.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)g5Show(g5i+(dx<0?1:-1));x0=null})})();
-$('#g5Fan').innerHTML=FAMILLES.map((f,i)=>`<div class="gcard-wrap" style="position:absolute;inset:0;transform:rotate(${(i-2)*12}deg);transform-origin:50% 85%">${g5Card(f,G5_CARDS[i%4])}</div>`).join('');
+$('#g5Fan').innerHTML=FAMILLES.slice().reverse().map((f,i)=>`<div class="gcard-wrap" style="position:absolute;inset:0;transform:rotate(${(i-(FAMILLES.length-1)/2)*11}deg);transform-origin:50% 85%">${g5Card(f,G5_CARDS[i%4])}</div>`).join('');
 $$('#g5Fan .gcard').forEach(c=>c.classList.add('fan'));
 $('#g5Form').onsubmit=async e=>{
   e.preventDefault();const f=e.target,btn=f.querySelector('button'),msg=$('#g5Msg'),email=f.querySelector('input').value;
