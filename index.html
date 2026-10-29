@@ -222,6 +222,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 @keyframes g5in{from{transform:scale(.92);opacity:0}}
 .g5-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:rgba(23,27,35,.85);color:var(--ink);font-size:22px;display:grid;place-items:center}
 .g5-prev{left:max(14px,calc(50% - 300px))}.g5-next{right:max(14px,calc(50% - 300px))}
+.g5-dl{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-8px 0 24px}
+.g5-dl1{position:absolute;bottom:calc(46px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%)}
 .g5-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px}
 .g5-count{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:var(--muted);font-size:14px}
 @media (prefers-reduced-motion:reduce){.g5-fam .gcard{transition:none}.g5-box .gcard{animation:none}}
@@ -378,6 +380,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <span class="eyebrow">Les familles</span>
     <h2 style="margin-top:12px">6 familles, 4 cartes chacune</h2>
     <p class="sub">Réunis les 4 cartes d’une même famille pour la poser devant toi. Le joueur qui complète le plus de familles gagne la partie.</p>
+    <div class="g5-dl"><button class="btn btn-ghost btn-sm" id="g5All">⬇ Télécharger les 24 cartes (PNG, .zip)</button><span class="status" id="g5DlMsg"></span></div>
     <div id="g5Families"></div>
   </section>
 
@@ -647,6 +650,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   <div id="g5Big"></div>
   <button class="g5-nav g5-next" id="g5Next" aria-label="Carte suivante">›</button>
   <div class="g5-count" id="g5Count"></div>
+  <button class="btn btn-main btn-sm g5-dl1" id="g5One">⬇ Télécharger en PNG</button>
 </div>
 
 <div class="modal" id="orderModal" hidden role="dialog" aria-modal="true" aria-labelledby="orderTitle">
@@ -831,7 +835,43 @@ function g5Show(i){
 function g5Hide(){if($('#g5Box').hidden)return;$('#g5Box').hidden=true;if(g5Last)g5Last.focus()}
 $('#g5Families').addEventListener('click',e=>{const t=e.target.closest('[data-g5]');if(t){g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
 $('#g5Families').addEventListener('keydown',e=>{const t=e.target.closest('[data-g5]');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
-$('#g5Close').onclick=g5Hide;$('#g5Prev').onclick=()=>g5Show(g5i-1);$('#g5Next').onclick=()=>g5Show(g5i+1);
+$('#g5Close').onclick=g5Hide;
+/* Téléchargement des cartes en grand format (63 × 88 mm à 600 dpi) */
+const slug=t=>plain(t).replace(/[^a-z0-9]+/g,'-');
+async function cardPNG(f,c,W=1488){
+  await Promise.all([document.fonts.load('900 100px Fraunces'),document.fonts.load('700 60px "Space Grotesk"')]).catch(()=>{});
+  const H=Math.round(W*88/63),cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  const R=W*.06,B=W*.028;
+  const rr=(px,py,w,h,r)=>{x.beginPath();x.moveTo(px+r,py);x.arcTo(px+w,py,px+w,py+h,r);x.arcTo(px+w,py+h,px,py+h,r);x.arcTo(px,py+h,px,py,r);x.arcTo(px,py,px+w,py,r);x.closePath()};
+  rr(0,0,W,H,R);x.fillStyle=f.color;x.fill();
+  x.save();rr(B,B,W-2*B,H-2*B,R*.7);x.clip();
+  x.fillStyle='#F1F1EE';x.fillRect(0,0,W,H);
+  const src=f.img&&f.img[c];
+  if(src){const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src});
+    const iw=W-2*B,ih=H-2*B,k=Math.max(iw/im.width,ih/im.height);x.imageSmoothingQuality='high';
+    x.drawImage(im,B+(iw-im.width*k)/2,B+(ih-im.height*k)/2,im.width*k,im.height*k)}
+  const g=x.createLinearGradient(0,H*.8,0,H);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.6)');x.fillStyle=g;x.fillRect(0,H*.8,W,H*.2);
+  x.restore();
+  x.fillStyle='#fff';x.font=`700 ${Math.round(W*.058)}px "Space Grotesk",sans-serif`;x.textAlign='center';x.textBaseline='alphabetic';
+  if('letterSpacing' in x)x.letterSpacing=Math.round(W*.004)+'px';
+  x.fillText(f.name.toUpperCase(),W/2,H-B-W*.045);
+  if('letterSpacing' in x)x.letterSpacing='0px';
+  const r=W*.085,cx=B+W*.03+r,cy=B+W*.03+r;
+  x.save();x.shadowColor='rgba(0,0,0,.3)';x.shadowBlur=W*.015;x.shadowOffsetY=W*.005;x.beginPath();x.arc(cx,cy,r,0,7);x.fillStyle=f.color;x.fill();x.restore();
+  x.fillStyle=f.text||'#141414';x.font=`900 ${Math.round(r*1.25)}px Fraunces,Georgia,serif`;x.textBaseline='middle';x.fillText(c,cx,cy+r*.06);
+  return new Promise(res=>cv.toBlob(res,'image/png'));
+}
+function saveBlob(b,name){const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500)}
+$('#g5One').onclick=async()=>{const b=$('#g5One'),f=FAMILLES[Math.floor(g5i/4)],c=G5_CARDS[g5i%4];b.disabled=true;b.textContent='Préparation…';
+  try{saveBlob(await cardPNG(f,c),`funax-${slug(f.name)}-${c}.png`)}catch(e){alert('Téléchargement impossible : '+e.message)}
+  b.disabled=false;b.textContent='⬇ Télécharger en PNG'};
+function loadZip(){return window.JSZip?Promise.resolve():new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';s.onload=res;s.onerror=()=>rej(new Error('outil zip indisponible'));document.head.appendChild(s)})}
+$('#g5All').onclick=async()=>{const b=$('#g5All'),m=$('#g5DlMsg');b.disabled=true;
+  try{await loadZip();const z=new JSZip();let n=0;
+    for(const f of FAMILLES)for(const c of G5_CARDS){m.textContent=`Préparation des cartes… ${++n} / ${FAMILLES.length*4}`;z.file(`funax-${slug(f.name)}-${c}.png`,await cardPNG(f,c))}
+    m.textContent='Création du fichier .zip…';saveBlob(await z.generateAsync({type:'blob'}),'funax-jeu-des-6-familles-cartes.zip');m.textContent='Téléchargement lancé.';
+  }catch(e){m.textContent='Erreur : '+e.message}
+  b.disabled=false};$('#g5Prev').onclick=()=>g5Show(g5i-1);$('#g5Next').onclick=()=>g5Show(g5i+1);
 $('#g5Box').addEventListener('click',e=>{if(e.target.id==='g5Box')g5Hide()});
 document.addEventListener('keydown',e=>{if($('#g5Box').hidden)return;if(e.key==='Escape')g5Hide();if(e.key==='ArrowLeft')g5Show(g5i-1);if(e.key==='ArrowRight')g5Show(g5i+1)});
 (()=>{let x0=null;const b=$('#g5Box');b.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});b.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)g5Show(g5i+(dx<0?1:-1));x0=null})})();
