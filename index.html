@@ -241,6 +241,9 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .g5-specs span{color:var(--muted);font-size:14px}
 .g5-specs .g5-back{grid-row:span 2;display:flex;flex-direction:column;align-items:center;gap:10px;justify-content:center}
 .g5-back img{width:min(150px,100%);border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.5)}
+.g5-pricebox{text-align:center}
+.g5-price{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:54px;line-height:1;color:var(--accent);margin-bottom:8px}
+.g5-shipinfo{font-size:14px;margin:0 0 16px!important}
 .g5-cross{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border:1px dashed var(--line);border-radius:20px;padding:24px 28px}
 .g5-cross h3{margin:8px 0 4px;font-size:22px}.g5-cross p{margin:0;color:var(--muted)}
 @media (max-width:860px){
@@ -366,7 +369,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <h1 class="g5-title">Le jeu des 6 familles<br><em>de la manif.</em></h1>
       <p class="g5-lead">Gilets jaunes, CRS, casseurs, lycéens, agriculteurs, pompiers : tout le monde est dans la rue, mais chacun cherche sa famille. Le grand classique des 7 familles, version cortège, à jouer entre amis ou en famille… pour rire de tout ce qui fait le sel des manifs.</p>
       <div class="ctas">
-        <a href="#g5-sortie" class="btn btn-main">Préviens-moi à la sortie</a>
+        <button class="btn btn-main g5-buy">Ajouter au panier · 19,99 €</button>
         <a href="#g5-familles" class="btn btn-ghost">Découvrir les familles</a>
       </div>
       <div class="stats">
@@ -415,15 +418,16 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
   </section>
 
   <section id="g5-sortie">
-    <div class="news">
-      <div><h2>Sois prévenu de la sortie</h2><p>Le jeu arrive bientôt. Laisse ton e-mail : tu seras le premier au courant, avec les infos de précommande.</p></div>
+    <div class="news g5-buybox">
       <div>
-        <form id="g5Form">
-          <input type="email" required placeholder="ton@email.fr" aria-label="Adresse e-mail">
-          <button class="btn btn-main btn-sm" type="submit">Me prévenir</button>
-        </form>
-        <div class="msg" id="g5Msg" role="status"></div>
-        <p class="news-legal">En t’inscrivant, tu acceptes de recevoir les e-mails de Funax. Désinscription en un clic à tout moment.</p>
+        <span class="eyebrow">Commande</span>
+        <h2 style="margin-top:12px">Le jeu des 6 familles de la manif</h2>
+        <p>24 cartes illustrées, format poker, livrées dans leur sachet. Fabriqué à la commande.</p>
+      </div>
+      <div class="g5-pricebox">
+        <div class="g5-price">19,99 €</div>
+        <p class="g5-shipinfo">+ livraison 4,90 € en France · offerte dès 60 € d’achat</p>
+        <button class="btn btn-main g5-buy" style="width:100%">Ajouter au panier</button>
       </div>
     </div>
   </section>
@@ -882,13 +886,10 @@ document.addEventListener('keydown',e=>{if($('#g5Box').hidden)return;if(e.key===
 (()=>{let x0=null;const b=$('#g5Box');b.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});b.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)g5Show(g5i+(dx<0?1:-1));x0=null})})();
 $('#g5Fan').innerHTML=FAMILLES.slice().reverse().map((f,i)=>`<div class="gcard-wrap" style="position:absolute;inset:0;transform:rotate(${(i-(FAMILLES.length-1)/2)*11}deg);transform-origin:50% 85%">${g5Card(f,G5_CARDS[i%4])}</div>`).join('');
 $$('#g5Fan .gcard').forEach(c=>c.classList.add('fan'));
-$('#g5Form').onsubmit=async e=>{
-  e.preventDefault();const f=e.target,btn=f.querySelector('button'),msg=$('#g5Msg'),email=f.querySelector('input').value;
-  btn.disabled=true;msg.style.color='';msg.textContent='Inscription…';
-  try{const r=await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Erreur');msg.textContent=d.already?'Tu es déjà inscrit, on te prévient à la sortie !':'C’est noté ! On te prévient dès la sortie du jeu.';f.reset()}
-  catch(err){msg.style.color='#FF6B8B';msg.textContent=err.message}
-  btn.disabled=false;
-};
+document.addEventListener('click',e=>{if(!e.target.closest('.g5-buy'))return;
+  const ex=cart.find(x=>x.id==='jeu6');if(ex)ex.qty=Math.min(50,ex.qty+1);
+  else cart.push({id:'jeu6',game:true,name:'Jeu des 6 familles de la manif',price:19.99,currency:'EUR',image:'cartes/dos.png',qty:1});
+  saveCart();openCart(true)});
 
 /* ---------- Recherche : écrire un mot en T-shirts ---------- */
 const plain=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
@@ -1035,20 +1036,22 @@ const cartQty=()=>cart.reduce((n,i)=>n+i.qty,0);
 const PACKS=[{min:5,pct:30},{min:2,pct:20}];
 const packFor=q=>PACKS.find(p=>q>=p.min)||null;
 const cartSub=()=>cart.reduce((n,i)=>n+i.price*i.qty,0);
-const cartDisc=()=>{const p=packFor(cartQty());return p?Math.round(cartSub()*p.pct)/100:0};
+const teeQty=()=>cart.filter(i=>!i.game).reduce((n,i)=>n+i.qty,0);
+const teeSub=()=>cart.filter(i=>!i.game).reduce((n,i)=>n+i.price*i.qty,0);
+const cartDisc=()=>{const p=packFor(teeQty());return p?Math.round(teeSub()*p.pct)/100:0};
 const shipCost=()=>!cart.length?0:cartSub()-cartDisc()>=SHIP.freeFrom?0:SHIP.base+SHIP.extra*(cartQty()-1);
 function saveCart(){ls.set('funax-cart',cart);renderCart()}
 function renderCart(){
   const n=cartQty();$('#cartCount').hidden=!n;$('#cartCount').textContent=n;
-  $('#cartList').innerHTML=cart.length?cart.map((i,k)=>`<div class="citem"><img src="${i.image}" alt=""><div><b>${esc(i.name)}</b><small>${esc(i.color)}, taille ${esc(i.size)} · ${money(i.price,i.currency)}</small>
+  $('#cartList').innerHTML=cart.length?cart.map((i,k)=>`<div class="citem"><img src="${i.image}" alt=""><div><b>${esc(i.name)}</b><small>${i.game?'Jeu de cartes · 24 cartes':esc(i.color)+', taille '+esc(i.size)} · ${money(i.price,i.currency)}</small>
     <div class="qty"><button data-q="${k}" data-d="-1" aria-label="Retirer un">−</button><span>${i.qty}</span><button data-q="${k}" data-d="1" aria-label="Ajouter un">+</button></div></div>
     <button class="rm" data-rm="${k}">Retirer</button></div>`).join(''):'<p class="cart-empty">Ton panier est vide.</p>';
-  const sub=cartSub(),dis=cartDisc(),sh=shipCost(),pk=packFor(n),next=PACKS.slice().reverse().find(p=>n<p.min);
+  const tq=teeQty(),sub=cartSub(),dis=cartDisc(),sh=shipCost(),pk=packFor(tq),next=PACKS.slice().reverse().find(p=>tq<p.min);
   $('#cSub').textContent=money(sub);$('#cShip').textContent=!cart.length?'–':sh?money(sh):'Offerte';
-  $('#cDiscRow').hidden=!dis;$('#cDiscLbl').textContent=pk?`Réduction pack (-${pk.pct} %)`:'';$('#cDisc').textContent='− '+money(dis);
+  $('#cDiscRow').hidden=!dis;$('#cDiscLbl').textContent=pk?`Réduction pack T-shirts (-${pk.pct} %)`:'';$('#cDisc').textContent='− '+money(dis);
   $('#cTotal').textContent=money(sub-dis+sh);
   const hints=[];
-  if(cart.length&&next)hints.push(`Ajoute ${next.min-n} T-shirt${next.min-n>1?'s':''} pour -${next.pct} % sur tout le panier`);
+  if(tq&&next)hints.push(`Ajoute ${next.min-tq} T-shirt${next.min-tq>1?'s':''} pour -${next.pct} % sur tes T-shirts`);
   if(cart.length&&sub-dis<SHIP.freeFrom)hints.push(`Plus que ${money(SHIP.freeFrom-(sub-dis))} pour la livraison offerte`);
   $('#cHint').innerHTML=hints.map(esc).join('<br>');
   $('#payBtn').disabled=!cart.length;
