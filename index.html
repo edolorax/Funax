@@ -204,19 +204,23 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .g5-title{font-size:clamp(40px,5.4vw,76px);line-height:1;margin:16px 0 22px;font-weight:700}
 .g5-title em{font-style:normal;color:var(--accent)}
 .g5-lead{color:var(--muted);font-size:18px;max-width:46ch;margin:0 0 30px}
-.g5-fan{--cw:116px;position:relative;height:460px;display:grid;place-items:center;perspective:1300px}
-.g5-fan::after{content:"";position:absolute;left:12%;right:12%;bottom:22px;height:44px;border-radius:50%;background:radial-gradient(closest-side,rgba(198,255,61,.22),transparent);filter:blur(6px);pointer-events:none}
-.g5-ring{position:relative;width:var(--cw);aspect-ratio:63/88;transform-style:preserve-3d;animation:g5spin 40s linear infinite}
-.g5-fan:hover .g5-ring{animation-play-state:paused}
-@keyframes g5spin{from{transform:rotateX(-12deg) rotateY(0deg)}to{transform:rotateX(-12deg) rotateY(-360deg)}}
+.g5-hero{position:relative}
+.g5-hero>div:first-child{position:relative;z-index:2}
+.g5-fan{--cw:150px;position:relative;height:610px;display:grid;place-items:center;perspective:1500px;z-index:1;margin-right:-8%}
+.g5-fan::after{content:"";position:absolute;left:5%;right:5%;bottom:10px;height:70px;border-radius:50%;background:radial-gradient(closest-side,rgba(198,255,61,.18),transparent);filter:blur(8px);pointer-events:none}
+.g5-ring{position:relative;width:var(--cw);aspect-ratio:63/88;transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.65,0,.35,1)}
 .g5-item{position:absolute;inset:0;transform-style:preserve-3d;cursor:zoom-in}
+.g5-item .g5-scale{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.65,0,.35,1),filter 1.1s ease,opacity 1.1s ease;will-change:transform,filter,opacity}
+.g5-item.on .g5-scale{transform:translateZ(140px) scale(1.75)}
 .g5-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .g5-face .gcard{width:100%;box-shadow:0 18px 30px rgba(0,0,0,.45)}
-.g5-face .gcard-letter{width:24px;height:24px;font-size:15px;left:5px;top:5px}
-.g5-face .gcard-fam{font-size:9px;padding:12px 6px 5px}
+.g5-item.on .g5-face .gcard{box-shadow:0 30px 60px rgba(0,0,0,.6),0 0 0 2px rgba(198,255,61,.55),0 0 40px rgba(198,255,61,.25)}
+.g5-face .gcard-letter{width:26px;height:26px;font-size:16px;left:6px;top:6px}
+.g5-face .gcard-fam{font-size:10px;padding:14px 6px 6px}
 .g5-backface{transform:rotateY(180deg)}
 .g5-backface img{width:100%;height:100%;display:block;border-radius:12px}
-@media (prefers-reduced-motion:reduce){.g5-ring{animation:none;transform:rotateX(-9deg)}}
+.g5-caption{position:absolute;left:0;right:0;bottom:-22px;text-align:center;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:15px;letter-spacing:.04em;color:var(--muted);z-index:3;transition:opacity .4s}
+.g5-caption b{color:var(--ink)}
 .gcard{--fc:#FFD23D;position:relative;aspect-ratio:63/88;background:#fff;border-radius:12px;border:4px solid var(--fc);overflow:hidden;font-family:"Space Grotesk",sans-serif}
 .gcard-art{position:absolute;inset:0;background:repeating-linear-gradient(135deg,#F1F1EE 0 10px,#E6E6E1 10px 20px);display:grid;place-items:center;text-align:center;color:#9A9A95;font-size:11px;font-weight:600}
 .gcard-art img{width:100%;height:100%;object-fit:cover;display:block}
@@ -258,7 +262,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .g5-cross h3{margin:8px 0 4px;font-size:22px}.g5-cross p{margin:0;color:var(--muted)}
 @media (max-width:860px){
   .g5-hero{grid-template-columns:1fr;padding-top:34px}
-  .g5-fan{--cw:74px;height:300px}
+  .g5-fan{--cw:92px;height:360px;margin-right:0}
+  .g5-item.on .g5-scale{transform:translateZ(80px) scale(1.6)}
   .g5-face .gcard{border-width:3px;border-radius:8px}
   #g5Families{grid-template-columns:1fr}
   .g5-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
@@ -388,7 +393,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
         <div><b>3–6</b><span>joueurs</span></div>
       </div>
     </div>
-    <div class="g5-fan" id="g5Fan" aria-hidden="true"></div>
+    <div class="g5-fan" id="g5Fan"></div>
   </div>
 
   <section id="g5-familles">
@@ -852,15 +857,38 @@ $('#g5Families').addEventListener('click',e=>{const t=e.target.closest('[data-g5
 $('#g5Families').addEventListener('keydown',e=>{const t=e.target.closest('[data-g5]');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
 $('#g5Close').onclick=g5Hide;
 (function g5Ring(){
-  // 12 cartes en cercle : les cartes A et C de chaque famille, le dos visible de l'autre côté
-  const picks=[];FAMILLES.forEach((f,fi)=>['A','C'].forEach(c=>picks.push({f,fi,c})));
-  const n=picks.length,fan=$('#g5Fan');
-  fan.removeAttribute('aria-hidden');
-  fan.innerHTML='<div class="g5-ring" id="g5Ring">'+picks.map((p,k)=>`<div class="g5-item" data-g5="${p.fi*4+G5_CARDS.indexOf(p.c)}" data-k="${k}" role="button" tabindex="-1" aria-label="${esc(p.f.name)}, carte ${p.c}"><div class="g5-face">${g5Card(p.f,p.c)}</div><div class="g5-face g5-backface"><img src="cartes/dos.png" alt="" loading="lazy"></div></div>`).join('')+'</div>';
-  const place=()=>{const w=$('#g5Ring').getBoundingClientRect().width||150,r=Math.round((w+18)*n/(2*Math.PI));
-    $$('#g5Ring .g5-item').forEach(el=>{el.style.transform=`rotateY(${(+el.dataset.k)*360/n}deg) translateZ(${r}px)`})};
-  place();window.addEventListener('resize',place);
-  fan.addEventListener('click',e=>{const t=e.target.closest('[data-g5]');if(t){g5Last=null;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
+  // Grand cercle 3D avec les 24 cartes : toutes les 3 s, il tourne et présente la carte suivante en grand.
+  const picks=[];FAMILLES.forEach((f,fi)=>G5_CARDS.forEach(c=>picks.push({f,fi,c})));
+  // mélange l'ordre pour alterner les familles autour du cercle
+  const order=[];for(let c=0;c<4;c++)FAMILLES.forEach((f,fi)=>order.push(fi*4+c));
+  const items=order.map(i=>picks[i]),n=items.length,fan=$('#g5Fan');
+  fan.innerHTML='<div class="g5-ring" id="g5Ring">'+items.map((p,k)=>`<div class="g5-item" data-g5="${p.fi*4+G5_CARDS.indexOf(p.c)}" data-k="${k}" role="button" aria-label="${esc(p.f.name)}, carte ${p.c}"><div class="g5-scale"><div class="g5-face">${g5Card(p.f,p.c)}</div><div class="g5-face g5-backface"><img src="cartes/dos.png" alt="" loading="lazy"></div></div></div>`).join('')+'</div><div class="g5-caption" id="g5Cap" aria-live="polite"></div>';
+  const ring=$('#g5Ring'),els=$$('#g5Ring .g5-item');
+  let step=0,timer=null,r=0;
+  const place=()=>{const w=ring.getBoundingClientRect().width||150;r=Math.round((w+22)*n/(2*Math.PI));
+    els.forEach(el=>{el.style.transform=`rotateY(${(+el.dataset.k)*360/n}deg) translateZ(${r}px)`});render()};
+  function render(){
+    ring.style.transform=`translateZ(${-r}px) rotateX(-6deg) rotateY(${-step*360/n}deg)`;
+    const cur=((step%n)+n)%n;
+    els.forEach(el=>{
+      const k=+el.dataset.k;let a=((k-cur)*360/n)%360;if(a>180)a-=360;if(a<-180)a+=360;
+      const t=Math.cos(a*Math.PI/180),front=k===cur,sc=el.firstElementChild;
+      el.classList.toggle('on',front);
+      // les cartes du fond deviennent des ombres
+      sc.style.filter=front?'none':`brightness(${(0.1+0.32*Math.max(t,0)**4).toFixed(2)}) saturate(.6) blur(${(0.8+(1-t)*1.6).toFixed(1)}px)`;
+      sc.style.opacity=front?1:(0.25+0.4*(t+1)/2).toFixed(2);
+    });
+    const p=items[cur];$('#g5Cap').innerHTML=`<b>${esc(p.f.name)}</b> · carte ${p.c}`;
+  }
+  const next=()=>{step++;render()};
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const start=()=>{if(!reduce&&!timer)timer=setInterval(next,3000)},stop=()=>{clearInterval(timer);timer=null};
+  place();start();window.addEventListener('resize',place);
+  fan.addEventListener('mouseenter',stop);fan.addEventListener('mouseleave',start);
+  document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
+  fan.addEventListener('click',e=>{const t=e.target.closest('[data-g5]');if(!t)return;
+    if(!t.classList.contains('on')){const k=+t.dataset.k,cur=((step%n)+n)%n;let d=k-cur;if(d>n/2)d-=n;if(d<-n/2)d+=n;step+=d;render();return}
+    g5Last=null;g5Show(+t.dataset.g5);$('#g5Close').focus()});
 })();
 document.addEventListener('click',e=>{if(!e.target.closest('.g5-buy'))return;
   const ex=cart.find(x=>x.id==='jeu6');if(ex)ex.qty=Math.min(50,ex.qty+1);
