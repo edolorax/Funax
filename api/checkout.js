@@ -66,6 +66,7 @@ module.exports = async (req, res) => {
       locale: 'fr',
       line_items,
       shipping_address_collection: { allowed_countries: COUNTRIES },
+      phone_number_collection: gameQty ? { enabled: true } : undefined,
       shipping_options: [{
         shipping_rate_data: {
           type: 'fixed_amount',
