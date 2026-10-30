@@ -841,10 +841,10 @@ const slug=t=>plain(t).replace(/[^a-z0-9]+/g,'-');
 async function cardPNG(f,c,W=1488){
   await Promise.all([document.fonts.load('900 100px Fraunces'),document.fonts.load('700 60px "Space Grotesk"')]).catch(()=>{});
   const H=Math.round(W*88/63),cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
-  const R=W*.06,B=W*.056;
+  const R=W*.07,B=W*.084;
   const rr=(px,py,w,h,r)=>{x.beginPath();x.moveTo(px+r,py);x.arcTo(px+w,py,px+w,py+h,r);x.arcTo(px+w,py+h,px,py+h,r);x.arcTo(px,py+h,px,py,r);x.arcTo(px,py,px+w,py,r);x.closePath()};
   rr(0,0,W,H,R);x.fillStyle=f.color;x.fill();
-  x.save();rr(B,B,W-2*B,H-2*B,R*.45);x.clip();
+  x.save();rr(B,B,W-2*B,H-2*B,R*.3);x.clip();
   x.fillStyle='#F1F1EE';x.fillRect(0,0,W,H);
   const src=f.img&&f.img[c];
   if(src){const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src});
