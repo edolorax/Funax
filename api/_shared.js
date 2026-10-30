@@ -111,7 +111,9 @@ async function createOrderFromSession(sessionId) {
   if (s.payment_status !== 'paid') return { ok: false, status: s.payment_status };
   const md = s.metadata || {};
   const raw = md.items || Object.keys(md).filter(k => /^items_\d+$/.test(k)).sort((a, b) => a.split('_')[1] - b.split('_')[1]).map(k => md[k]).join('');
-  const items = JSON.parse(raw || '[]');
+  const items = JSON.parse(raw || '[]').filter(([id]) => Number.isFinite(Number(id)));
+  // Commande sans T-shirt (ex. jeu de cartes seul) : rien à envoyer à Printful
+  if (!items.length) return { ok: true, email: s.customer_details && s.customer_details.email };
   const sh = s.shipping_details || (s.collected_information && s.collected_information.shipping_details);
   if (!sh || !sh.address) throw new Error('Adresse de livraison absente');
   const a = sh.address;
