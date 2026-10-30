@@ -239,6 +239,8 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .g5-specs div{border:1px solid var(--line);background:var(--bg2);border-radius:16px;padding:18px}
 .g5-specs b{display:block;font-family:"Space Grotesk",sans-serif;font-size:19px;margin-bottom:4px}
 .g5-specs span{color:var(--muted);font-size:14px}
+.g5-specs .g5-back{grid-row:span 2;display:flex;flex-direction:column;align-items:center;gap:10px;justify-content:center}
+.g5-back img{width:min(150px,100%);border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.5)}
 .g5-cross{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border:1px dashed var(--line);border-radius:20px;padding:24px 28px}
 .g5-cross h3{margin:8px 0 4px;font-size:22px}.g5-cross p{margin:0;color:var(--muted)}
 @media (max-width:860px){
@@ -380,7 +382,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <span class="eyebrow">Les familles</span>
     <h2 style="margin-top:12px">6 familles, 4 cartes chacune</h2>
     <p class="sub">Réunis les 4 cartes d’une même famille pour la poser devant toi. Le joueur qui complète le plus de familles gagne la partie.</p>
-    <div class="g5-dl"><button class="btn btn-ghost btn-sm" id="g5All">⬇ Télécharger les 24 cartes (PNG, .zip)</button><span class="status" id="g5DlMsg"></span></div>
+    <div class="g5-dl"><button class="btn btn-ghost btn-sm" id="g5All">⬇ Télécharger les 24 cartes + le dos (PNG, .zip)</button><button class="btn btn-ghost btn-sm" id="g5Back">⬇ Dos des cartes (PNG)</button><span class="status" id="g5DlMsg"></span></div>
     <div id="g5Families"></div>
   </section>
 
@@ -405,8 +407,9 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
     <h2 style="margin-top:12px">Ce que tu reçois</h2>
     <div class="g5-specs">
       <div><b>24 cartes</b><span>6 familles de 4 cartes (A, B, C, D)</span></div>
+      <div class="g5-back"><img src="cartes/dos.png" alt="Dos des cartes Funax" loading="lazy"><span>Le dos des cartes</span></div>
       <div><b>Format poker</b><span>63 × 88 mm, la taille d’une carte à jouer classique</span></div>
-      <div><b>Une boîte</b><span>pour ranger le jeu et l’emporter partout</span></div>
+      <div><b>Un sachet</b><span>pour ranger le jeu et l’emporter partout</span></div>
       <div><b>3 à 6 joueurs</b><span>parties de 10 à 15 minutes, dès 10 ans</span></div>
     </div>
   </section>
@@ -866,9 +869,11 @@ $('#g5One').onclick=async()=>{const b=$('#g5One'),f=FAMILLES[Math.floor(g5i/4)],
   try{saveBlob(await cardPNG(f,c),`funax-${slug(f.name)}-${c}.png`)}catch(e){alert('Téléchargement impossible : '+e.message)}
   b.disabled=false;b.textContent='⬇ Télécharger en PNG'};
 function loadZip(){return window.JSZip?Promise.resolve():new Promise((res,rej)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';s.onload=res;s.onerror=()=>rej(new Error('outil zip indisponible'));document.head.appendChild(s)})}
+$('#g5Back').onclick=async()=>{try{const r=await fetch('cartes/dos.png');saveBlob(await r.blob(),'funax-dos.png')}catch(e){$('#g5DlMsg').textContent='Erreur : '+e.message}};
 $('#g5All').onclick=async()=>{const b=$('#g5All'),m=$('#g5DlMsg');b.disabled=true;
   try{await loadZip();const z=new JSZip();let n=0;
     for(const f of FAMILLES)for(const c of G5_CARDS){m.textContent=`Préparation des cartes… ${++n} / ${FAMILLES.length*4}`;z.file(`funax-${slug(f.name)}-${c}.png`,await cardPNG(f,c))}
+    try{z.file('funax-dos.png',await (await fetch('cartes/dos.png')).blob())}catch(e){}
     m.textContent='Création du fichier .zip…';saveBlob(await z.generateAsync({type:'blob'}),'funax-jeu-des-6-familles-cartes.zip');m.textContent='Téléchargement lancé.';
   }catch(e){m.textContent='Erreur : '+e.message}
   b.disabled=false};$('#g5Prev').onclick=()=>g5Show(g5i-1);$('#g5Next').onclick=()=>g5Show(g5i+1);
