@@ -106,33 +106,67 @@ async function getProductsCached(maxAge = 5 * 60 * 1000) {
 }
 
 // Crée la commande Printful à partir d'un paiement Stripe validé (sans doublon).
+// Commande du jeu de cartes chez QPMN (si l'API est configurée dans Vercel)
+// Réglages : QPMN_API_URL (adresse d'envoi des commandes, fournie par QPMN), QPMN_API_TOKEN, QPMN_STORE_PRODUCT_ID
+const COUNTRY_NAMES = { FR: 'France', BE: 'Belgium', LU: 'Luxembourg', CH: 'Switzerland', MC: 'Monaco' };
+async function createQpmnOrder(s, sh, qty) {
+  const url = process.env.QPMN_API_URL, token = process.env.QPMN_API_TOKEN;
+  if (!url || !token) return { skipped: true };
+  const a = sh.address, parts = String(sh.name || '').trim().split(/\s+/);
+  const first = parts.shift() || '', last = parts.join(' ') || first;
+  const cd = s.customer_details || {};
+  const addr = {
+    countryCode: a.country, countryName: COUNTRY_NAMES[a.country] || a.country, stateCode: '', state: a.state || '',
+    city: a.city, postCode: a.postal_code, firstName: first, lastName: last, mobile: '',
+    email: cd.email || '', address_1: a.line1, address_2: a.line2 || '', phone: cd.phone || ''
+  };
+  const id = crypto.createHash('md5').update('qpmn-' + s.id).digest('hex');
+  const price = 19.99;
+  const body = {
+    externalId: id, externalOrderNumber: id, shippingMethod: 'Standard',
+    paymentMethod: process.env.QPMN_PAYMENT_METHOD || 'PayPal', currency: 'EUR',
+    deliveryAddress: addr, billingAddress: addr,
+    priceInfo: { currency: 'EUR', subtotal: +(price * qty).toFixed(2), discount: 0, shipping: 0, tax: 0 },
+    items: [{ externalId: id + '-1', unitPrice: price, storeProductId: process.env.QPMN_STORE_PRODUCT_ID || '803497516', quantity: qty, productDesignData: {} }]
+  };
+  const auth = /^(Basic|Bearer) /i.test(token) ? token : 'Basic ' + token;
+  const r = await fetch(url, { method: 'POST', headers: { Authorization: auth, 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
+  const txt = await r.text();
+  if (!r.ok && !/(exist|duplicate|already)/i.test(txt)) throw new Error('QPMN ' + r.status + ' : ' + txt.slice(0, 300));
+  return { ok: true };
+}
+
 async function createOrderFromSession(sessionId) {
   const s = await stripe('/checkout/sessions/' + encodeURIComponent(sessionId));
   if (s.payment_status !== 'paid') return { ok: false, status: s.payment_status };
   const md = s.metadata || {};
+  const email = s.customer_details && s.customer_details.email;
   const raw = md.items || Object.keys(md).filter(k => /^items_\d+$/.test(k)).sort((a, b) => a.split('_')[1] - b.split('_')[1]).map(k => md[k]).join('');
   const items = JSON.parse(raw || '[]').filter(([id]) => Number.isFinite(Number(id)));
-  // Commande sans T-shirt (ex. jeu de cartes seul) : rien à envoyer à Printful
-  if (!items.length) return { ok: true, email: s.customer_details && s.customer_details.email };
+  const gameQty = Number(md.jeu_6_familles || 0);
+  if (!items.length && !gameQty) return { ok: true, email };
   const sh = s.shipping_details || (s.collected_information && s.collected_information.shipping_details);
   if (!sh || !sh.address) throw new Error('Adresse de livraison absente');
+  // Jeu de cartes → QPMN
+  if (gameQty) await createQpmnOrder(s, sh, gameQty);
+  if (!items.length) return { ok: true, email };
+  // T-shirts → Printful
   const a = sh.address;
   const order = {
     external_id: crypto.createHash('md5').update(s.id).digest('hex'),
     shipping: 'STANDARD',
     recipient: {
       name: sh.name, address1: a.line1, address2: a.line2 || undefined, city: a.city,
-      state_code: a.state || undefined, country_code: a.country, zip: a.postal_code,
-      email: s.customer_details && s.customer_details.email
+      state_code: a.state || undefined, country_code: a.country, zip: a.postal_code, email
     },
     items: items.map(([id, q]) => ({ sync_variant_id: id, quantity: q }))
   };
   const confirm = process.env.PRINTFUL_AUTO_CONFIRM === '1' ? 'true' : 'false';
   try {
     const r = await pf('/orders?confirm=' + confirm, { method: 'POST', body: JSON.stringify(order) });
-    return { ok: true, orderId: r.id, email: order.recipient.email };
+    return { ok: true, orderId: r.id, email };
   } catch (e) {
-    if (/external/i.test(e.message) && /(exist|already|unique|use)/i.test(e.message)) return { ok: true, already: true, email: order.recipient.email };
+    if (/external/i.test(e.message) && /(exist|already|unique|use)/i.test(e.message)) return { ok: true, already: true, email };
     throw e;
   }
 }
