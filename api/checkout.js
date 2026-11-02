@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
     if (!items.length) return res.status(400).json({ error: 'Ton panier est vide.' });
 
     // Jeu de cartes : prix fixé ici, côté serveur
-    const GAME = { id: 'jeu6', name: 'Le jeu des 6 familles de la manif (24 cartes, en sachet)', price: 1999 };
+    const GAME = { id: 'jeu6', name: 'Le jeu des 6 familles de la manif (24 cartes, en sachet)', price: 3999 };
     const origin = req.headers.origin || ('https://' + req.headers.host);
 
     const tees = items.filter(i => String(i.variantId) !== GAME.id), games = items.filter(i => String(i.variantId) === GAME.id);
