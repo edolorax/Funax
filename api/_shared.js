@@ -127,7 +127,7 @@ async function createQpmnOrder(s, sh, qty) {
     paymentMethod: process.env.QPMN_PAYMENT_METHOD || 'PayPal', currency: 'EUR',
     deliveryAddress: addr, billingAddress: addr,
     priceInfo: { currency: 'EUR', subtotal: +(price * qty).toFixed(2), discount: 0, shipping: 0, tax: 0 },
-    items: [{ externalId: id + '-1', unitPrice: price, storeProductId: process.env.QPMN_STORE_PRODUCT_ID || '806756943', quantity: qty, productDesignData: {} }]
+    items: [{ externalId: id + '-1', unitPrice: price, storeProductId: process.env.QPMN_STORE_PRODUCT_ID || '806759196', quantity: qty, productDesignData: {} }]
   };
   const auth = /^(Basic|Bearer) /i.test(token) ? token : 'Basic ' + token;
   const r = await fetch(url, { method: 'POST', headers: { Authorization: auth, 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
