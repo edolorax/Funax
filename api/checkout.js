@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
     if (!items.length) return res.status(400).json({ error: 'Ton panier est vide.' });
 
     // Jeu de cartes : prix fixé ici, côté serveur
-    const GAME = { id: 'jeu6', name: 'Le jeu des 6 familles de la manif (24 cartes, en sachet)', price: 3999 };
+    const GAME = { id: 'jeu6', name: 'Le jeu des 7 familles de la manif (28 cartes, en sachet)', price: 3999 };
     const origin = req.headers.origin || ('https://' + req.headers.host);
 
     if (items.some(i => String(i.variantId) === GAME.id)) return res.status(400).json({ error: 'Le jeu de cartes est momentanément indisponible. Retire-le du panier.' });
