@@ -861,6 +861,17 @@ function g5Hide(){if($('#g5Box').hidden)return;$('#g5Box').hidden=true;if(g5Last
 $('#g5Families').addEventListener('click',e=>{const t=e.target.closest('[data-g5]');if(t){g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
 $('#g5Families').addEventListener('keydown',e=>{const t=e.target.closest('[data-g5]');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
 $('#g5Close').onclick=g5Hide;
+$('#g5Prev').onclick=e=>{e.stopPropagation();g5Show(g5i-1)};
+$('#g5Next').onclick=e=>{e.stopPropagation();g5Show(g5i+1)};
+document.addEventListener('keydown',e=>{if($('#g5Box').hidden)return;
+  if(e.key==='ArrowLeft'){e.preventDefault();g5Show(g5i-1)}
+  else if(e.key==='ArrowRight'){e.preventDefault();g5Show(g5i+1)}
+  else if(e.key==='Escape')g5Hide()});
+$('#g5Box').addEventListener('click',e=>{if(e.target===$('#g5Box'))g5Hide()});
+(()=>{let x0=null;const box=$('#g5Box');
+  box.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+  box.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;
+    if(Math.abs(dx)>45)g5Show(g5i+(dx<0?1:-1))},{passive:true})})();
 (function g5Ring(){
   // Grand cercle 3D avec les 28 cartes : toutes les 3 s, il tourne et présente la carte suivante en grand.
   const picks=[];FAMILLES.forEach((f,fi)=>G5_CARDS.forEach(c=>picks.push({f,fi,c})));
