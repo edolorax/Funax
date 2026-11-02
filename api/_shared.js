@@ -121,7 +121,7 @@ async function createQpmnOrder(s, sh, qty) {
     email: cd.email || '', address_1: a.line1, address_2: a.line2 || '', phone: cd.phone || ''
   };
   const id = crypto.createHash('md5').update('qpmn-' + s.id).digest('hex');
-  const price = 19.99;
+  const price = 39.99;
   const body = {
     externalId: id, externalOrderNumber: id, shippingMethod: 'Standard',
     paymentMethod: process.env.QPMN_PAYMENT_METHOD || 'PayPal', currency: 'EUR',
