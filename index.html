@@ -388,7 +388,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <h1 class="g5-title">Le jeu des 6 familles<br><em>de la manif.</em></h1>
       <p class="g5-lead">Gilets jaunes, CRS, casseurs, lycéens, agriculteurs, pompiers : tout le monde est dans la rue, mais chacun cherche sa famille. Le grand classique des 7 familles, version cortège, à jouer entre amis ou en famille… pour rire de tout ce qui fait le sel des manifs.</p>
       <div class="ctas">
-        <button class="btn btn-main g5-buy">Ajouter au panier · 19,99 €</button>
+        <button class="btn btn-main g5-buy">Ajouter au panier · 39,99 €</button>
         <a href="#g5-familles" class="btn btn-ghost">Découvrir les familles</a>
       </div>
       <div class="stats">
@@ -443,7 +443,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
         <p>24 cartes illustrées, format poker, livrées dans leur sachet. Fabriqué à la commande.</p>
       </div>
       <div class="g5-pricebox">
-        <div class="g5-price">19,99 €</div>
+        <div class="g5-price">39,99 €</div>
         <p class="g5-shipinfo">+ livraison 4,90 € en France · offerte dès 60 € d’achat</p>
         <button class="btn btn-main g5-buy" style="width:100%">Ajouter au panier</button>
       </div>
@@ -891,7 +891,7 @@ $('#g5Close').onclick=g5Hide;
 })();
 document.addEventListener('click',e=>{if(!e.target.closest('.g5-buy'))return;
   const ex=cart.find(x=>x.id==='jeu6');if(ex)ex.qty=Math.min(50,ex.qty+1);
-  else cart.push({id:'jeu6',game:true,name:'Jeu des 6 familles de la manif',price:19.99,currency:'EUR',image:'cartes/dos.png',qty:1});
+  else cart.push({id:'jeu6',game:true,name:'Jeu des 6 familles de la manif',price:39.99,currency:'EUR',image:'cartes/dos.png',qty:1});
   saveCart();openCart(true)});
 
 /* ---------- Recherche : écrire un mot en T-shirts ---------- */
