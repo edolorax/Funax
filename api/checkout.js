@@ -29,6 +29,7 @@ module.exports = async (req, res) => {
     const GAME = { id: 'jeu6', name: 'Le jeu des 6 familles de la manif (24 cartes, en sachet)', price: 3999 };
     const origin = req.headers.origin || ('https://' + req.headers.host);
 
+    if (items.some(i => String(i.variantId) === GAME.id)) return res.status(400).json({ error: 'Le jeu de cartes est momentanément indisponible. Retire-le du panier.' });
     const tees = items.filter(i => String(i.variantId) !== GAME.id), games = items.filter(i => String(i.variantId) === GAME.id);
     const all = new Map();
     if (tees.length) {
