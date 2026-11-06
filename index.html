@@ -388,7 +388,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <h1 class="g5-title">Le jeu des 7 familles<br><em>de la manif.</em></h1>
       <p class="g5-lead">Gilets jaunes, CRS, casseurs, lycéens, agriculteurs, pompiers, journalistes : tout le monde est dans la rue, mais chacun cherche sa famille. Le grand classique des 7 familles, version cortège, à jouer entre amis ou en famille… pour rire de tout ce qui fait le sel des manifs.</p>
       <div class="ctas">
-        <button class="btn btn-main g5-buy" disabled style="opacity:.55;cursor:not-allowed">Bientôt disponible</button>
+        <button class="btn btn-main g5-buy">Ajouter au panier · 39,99 €</button>
         <a href="#g5-familles" class="btn btn-ghost">Découvrir les familles</a>
       </div>
       <div class="stats">
@@ -445,7 +445,7 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
       <div class="g5-pricebox">
         <div class="g5-price">39,99 €</div>
         <p class="g5-shipinfo">+ livraison 4,90 € en France · offerte dès 60 € d’achat</p>
-        <button class="btn btn-main g5-buy" disabled style="width:100%;opacity:.55;cursor:not-allowed">Bientôt disponible</button>
+        <button class="btn btn-main g5-buy" style="width:100%">Ajouter au panier</button>
       </div>
     </div>
   </section>
@@ -901,7 +901,7 @@ $('#g5Box').addEventListener('click',e=>{if(e.target===$('#g5Box'))g5Hide()});
   place();start();window.addEventListener('resize',place);
   document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
 })();
-const GAME_PAUSED=true;
+const GAME_PAUSED=false;
 document.addEventListener('click',e=>{if(!e.target.closest('.g5-buy')||GAME_PAUSED)return;
   const ex=cart.find(x=>x.id==='jeu6');if(ex)ex.qty=Math.min(50,ex.qty+1);
   else cart.push({id:'jeu6',game:true,name:'Jeu des 7 familles de la manif',price:39.99,currency:'EUR',image:'cartes/dos.png',qty:1});
@@ -1047,7 +1047,7 @@ $('#logoutBtn').onclick=()=>{session=null;ls.del('funax3-session');renderAccBtn(
 
 /* ---------- Panier ---------- */
 const SHIP={base:4.9,extra:1.5,freeFrom:60};
-let cart=(ls.get('funax-cart')||[]).filter(i=>i.id!=='jeu6');
+let cart=ls.get('funax-cart')||[];
 const cartQty=()=>cart.reduce((n,i)=>n+i.qty,0);
 const PACKS=[{min:5,pct:30},{min:2,pct:20}];
 const packFor=q=>PACKS.find(p=>q>=p.min)||null;
