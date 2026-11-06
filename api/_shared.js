@@ -110,7 +110,7 @@ async function getProductsCached(maxAge = 5 * 60 * 1000) {
 // Réglages : QPMN_API_URL (adresse d'envoi des commandes, fournie par QPMN), QPMN_API_TOKEN, QPMN_STORE_PRODUCT_ID
 const COUNTRY_NAMES = { FR: 'France', BE: 'Belgium', LU: 'Luxembourg', CH: 'Switzerland', MC: 'Monaco' };
 async function createQpmnOrder(s, sh, qty) {
-  const url = process.env.QPMN_API_URL, token = process.env.QPMN_API_TOKEN;
+  const url = process.env.QPMN_API_URL || 'https://partner.qpmarketnetwork.com/cgp-rest/open-api/v1/orders', token = process.env.QPMN_API_TOKEN;
   if (!url || !token) return { skipped: true };
   const a = sh.address, parts = String(sh.name || '').trim().split(/\s+/);
   const first = parts.shift() || '', last = parts.join(' ') || first;
