@@ -242,6 +242,14 @@ footer{padding:44px 0 32px;color:var(--muted);font-size:14px;border-top:1px soli
 .g5-prev{left:max(14px,calc(50% - 300px))}.g5-next{right:max(14px,calc(50% - 300px))}
 .g5-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px}
 .g5-count{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:var(--muted);font-size:14px}
+.g5-flip{position:relative;width:min(420px,78vw,calc((100vh - 120px) * 63 / 88));aspect-ratio:63/88;perspective:1600px;cursor:pointer;animation:g5in .22s ease}
+.g5-flip-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.g5-flip.flipped .g5-flip-in{transform:rotateY(180deg)}
+.g5-flip .g5-side{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.g5-flip .g5-side .gcard{width:100%!important;animation:none!important}
+.g5-flip .g5-back{transform:rotateY(180deg);border-radius:18px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.6);background:#0B0D11 url(cartes/dos.png) center/cover no-repeat}
+.g5-hint{margin-top:10px;font-size:12px;color:#9aa0aa;text-align:center}
+@media (prefers-reduced-motion:reduce){.g5-flip-in{transition:none}.g5-flip{animation:none}}
 @media (prefers-reduced-motion:reduce){.g5-fam .gcard{transition:none}.g5-box .gcard{animation:none}}
 .g5-fam h3{display:flex;align-items:center;gap:10px;font-size:22px;margin:0 0 14px}
 .g5-fam h3 i{width:14px;height:14px;border-radius:4px;background:var(--fc);display:inline-block}
@@ -854,13 +862,16 @@ $('#g5Families').innerHTML=FAMILLES.map((f,fi)=>`<div class="g5-fam" style="--fc
 let g5i=0,g5Last=null;
 function g5Show(i){
   const N=FAMILLES.length*4;g5i=(i+N)%N;const f=FAMILLES[Math.floor(g5i/4)],c=G5_CARDS[g5i%4];
-  $('#g5Big').innerHTML=g5Card(f,c);$('#g5Count').textContent=`${f.name} · carte ${c} — ${g5i+1} / ${FAMILLES.length*4}`;
+  $('#g5Big').innerHTML=`<div class="g5-flip" role="button" tabindex="0" aria-label="Retourner la carte"><div class="g5-flip-in"><div class="g5-side">${g5Card(f,c)}</div><div class="g5-side g5-back" role="img" aria-label="Dos de la carte"></div></div></div><div class="g5-hint">Clique sur la carte pour la retourner</div>`;$('#g5Count').textContent=`${f.name} · carte ${c} — ${g5i+1} / ${FAMILLES.length*4}`;
   $('#g5Box').hidden=false;
 }
 function g5Hide(){if($('#g5Box').hidden)return;$('#g5Box').hidden=true;if(g5Last)g5Last.focus()}
 $('#g5Families').addEventListener('click',e=>{const t=e.target.closest('[data-g5]');if(t){g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
 $('#g5Families').addEventListener('keydown',e=>{const t=e.target.closest('[data-g5]');if(t&&(e.key==='Enter'||e.key===' ')){e.preventDefault();g5Last=t;g5Show(+t.dataset.g5);$('#g5Close').focus()}});
 $('#g5Close').onclick=g5Hide;
+$('#g5Big').addEventListener('click',e=>{const fl=e.target.closest('.g5-flip');if(fl){e.stopPropagation();fl.classList.toggle('flipped')}});
+$('#g5Big').addEventListener('keydown',e=>{const fl=e.target.closest('.g5-flip');if(fl&&(e.key==='Enter'||e.key===' ')){e.preventDefault();fl.classList.toggle('flipped')}});
+(()=>{const im=new Image();im.src='cartes/dos.png'})();
 $('#g5Prev').onclick=e=>{e.stopPropagation();g5Show(g5i-1)};
 $('#g5Next').onclick=e=>{e.stopPropagation();g5Show(g5i+1)};
 document.addEventListener('keydown',e=>{if($('#g5Box').hidden)return;
