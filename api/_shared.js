@@ -109,6 +109,20 @@ async function getProductsCached(maxAge = 5 * 60 * 1000) {
 // Commande du jeu de cartes chez QPMN (si l'API est configurée dans Vercel)
 // Réglages : QPMN_API_URL (adresse d'envoi des commandes, fournie par QPMN), QPMN_API_TOKEN, QPMN_STORE_PRODUCT_ID
 const COUNTRY_NAMES = { FR: 'France', BE: 'Belgium', LU: 'Luxembourg', CH: 'Switzerland', MC: 'Monaco' };
+// Images d'impression envoyées à QPMN (28 faces dans l'ordre des familles + 1 dos), hébergées sur le site
+const QPMN_SITE = process.env.SITE_URL || 'https://funax.vercel.app';
+const QPMN_FAMS = ['gilet', 'crs', 'casseur', 'lyceen', 'agriculteur', 'pompier', 'journaliste'];
+const QPMN_OPTION_CODE = process.env.QPMN_OPTION_CODE || 'NDI3OTc5ODM4LDQyNzk3OTgzOSwxMTYxODA5NTU=';
+function qpmnDesignData() {
+  const img = n => [{ effect: 'CMYK', imageUrl: QPMN_SITE + '/impression/' + n + '.png' }];
+  const fronts = [];
+  QPMN_FAMS.forEach(f => ['a', 'b', 'c', 'd'].forEach(c => fronts.push({ index: fronts.length, effectImages: img(f + '-' + c) })));
+  return { designData: [{ code: QPMN_OPTION_CODE, views: [
+    { code: 'Card_Front', designs: fronts },
+    { code: 'Card_Back', designs: [{ index: 0, effectImages: img('dos') }] }
+  ] }] };
+}
+
 async function createQpmnOrder(s, sh, qty) {
   const url = process.env.QPMN_API_URL || 'https://partner.qpmarketnetwork.com/cgp-rest/open-api/v1/orders', token = process.env.QPMN_API_TOKEN;
   if (!url || !token) return { skipped: true };
@@ -127,7 +141,7 @@ async function createQpmnOrder(s, sh, qty) {
     paymentMethod: process.env.QPMN_PAYMENT_METHOD || 'PayPal', currency: 'EUR',
     deliveryAddress: addr, billingAddress: addr,
     priceInfo: { currency: 'EUR', subtotal: +(price * qty).toFixed(2), discount: 0, shipping: 0, tax: 0 },
-    items: [{ externalId: id + '-1', unitPrice: price, storeProductId: process.env.QPMN_STORE_PRODUCT_ID || '806767143', quantity: qty, productDesignData: {} }]
+    items: [{ externalId: id + '-1', unitPrice: price, storeProductId: process.env.QPMN_STORE_PRODUCT_ID || '806767143', quantity: qty, productDesignData: qpmnDesignData() }]
   };
   const auth = /^(Basic|Bearer) /i.test(token) ? token : 'Basic ' + token;
   const r = await fetch(url, { method: 'POST', headers: { Authorization: auth, 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
